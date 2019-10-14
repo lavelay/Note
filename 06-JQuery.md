@@ -1,3 +1,9 @@
+### 理解
+
+jQuery是一个免费的开源的轻量级的js库，兼容css3和各种浏览器，jQuery 2.0以后的版本不支持IE6、7、8。宗旨是write less，do more ，可提供API让开发者编写插件
+
+
+
 ### 入口函数
 
 ```javascript
