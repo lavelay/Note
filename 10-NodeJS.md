@@ -24,3 +24,20 @@ npm是世界上最大的开源生态系统，npm是基于Node.js开发的
   - npm	（node）
   - git （C语言）
   - hexo （node）
+
+
+
+## fs核心模块
+
+在Node中想进行文件操作，就要引入fs核心模块
+
+```javascript
+var fs = require('fs');//用require方法加载fs核心模块
+fs.readFile('dizhi', function (error, data) { //第一个参数是文件路径，第二个参数是回调函数
+  //成功：data 数据
+  		 //error null
+  //失败：data undefined没有数据
+       //error 错误对象
+})
+```
+
