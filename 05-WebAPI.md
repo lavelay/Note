@@ -229,7 +229,8 @@ BOM缺乏标准，JavaScript语法的标准化组织是ECMA，DOM的标准化组
 //BOM常见事件
 
 //DOMContentLoaded   DOM 加载完毕 不包含图片 flash css 等就可以执行 加载速度比load更快
-//resize 	浏览器窗口大小发生变化就会触发   window.innerWidth是当前屏幕的宽度
+//resize 	浏览器窗口大小发生变化就会触发   
+//window.innerWidth是当前屏幕的宽度
 //pageshow  重新加载页面时触发的事件
 //scroll  滚动条滚动触发的事件
 ```
