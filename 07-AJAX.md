@@ -824,52 +824,11 @@ var html = template('id', {
 
 ## axios库
 
-> 此部分在大事件项目中直接讲解使用。
-
-jquery中封装了ajax功能，但是它的体积比较大。如果我们只希望使用ajax功能，而不需要dom操作的话，我们可以选择使用axios库。(fetch)
-
-应用：
-
-```
-- 它只专注于处理http请求，比jquery的体积小的多，适用于只需要ajax请求的业务场景；
-- 后期学习三大前端框架时也会用到；
-```
-
-### 使用示例
-
-通过官网查看其使用方法。
-
-与jquery一样，要使用它，必须先引入这个文件。然后就可以按如下的格式去使用了。
+jquery中封装了ajax功能，但体积比较大，若只用ajax功能，不需要dom操作，可以使用axios库
 
 中文网站：<http://www.axios-js.com/zh-cn/docs/>
 
-```javascript
-// 获取服务器的返回值
-axios.get('/common/get?id=123').then(function(res) {
-    // res 就是本次请求的信息
-    console.info(res);
-    // 获取 从服务器返回的数据
-    console.info(res.data);
-});
-axios.get('/common/get', { params: { id: 123, name: 'jake' } }).then(function(res) {
-    // res 就是本次请求的信息
-    console.info(res);
-    // 获取 从服务器返回的数据
-    console.info(res.data);
-});
-// post请求，不带参数
-axios.post('/common/post').then(function(res) {
-    console.info(res.data);
-});
-// post请求，带参数
-axios.post('/common/post', { id: 123, name: 'jake' }).then(function(res) {
-    console.info(res.data);
-});
-```
-
-### axios是什么
-
-​	Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中。相比jquery它只专注于ajax请求。
+​	Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中
 
 - 特性
   - 从浏览器中创建 [XMLHttpRequests](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
