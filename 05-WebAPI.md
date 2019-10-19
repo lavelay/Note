@@ -63,7 +63,6 @@ function getNextElementSibling(e){
   }
   return null;
 }
-
 // previousElementSibling / nextElementSibling ：获取兄弟元素节点（不兼容IE6~8）找不到返回null
 
 // createElement('')  创建节点
@@ -96,7 +95,6 @@ input.type = 'text'/'password';
 
 ```javascript
 //JS修改style样式操作，产生的是行内样式，权重比css高
-
 //精灵图背景位置
 lis[i].style.backgroundPosition = '10px 10px';
 ```
@@ -181,7 +179,8 @@ this 返回的是绑定事件的对象（元素）
 
 ### 阻止事件冒泡
 
-- 标准写法： stopPropagation ( )
+- IE：e.cancelBubble = true
+- 标准写法： e.stopPropagation ()
 
 
 
@@ -230,7 +229,7 @@ BOM缺乏标准，JavaScript语法的标准化组织是ECMA，DOM的标准化组
 
 //DOMContentLoaded   DOM 加载完毕 不包含图片 flash css 等就可以执行 加载速度比load更快
 //resize 	浏览器窗口大小发生变化就会触发   
-//window.innerWidth是当前屏幕的宽度
+//window.innerWidth  是当前屏幕的宽度
 //pageshow  重新加载页面时触发的事件
 //scroll  滚动条滚动触发的事件
 ```
@@ -275,10 +274,12 @@ clearInterval(timeoutID);  //停止定时器
 
 ### this指向
 
-- 一般情况下this的最终指向的是那个调用它的对象
-- 全局作用域或者普通函数中this指向全局对象window（定时器里面的this指向window）
-- 方法调用中谁调用this指向谁
+- 作为方法时，this的最终指向的是那个调用它的对象
+- 全局作用域或者普通函数中this指向全局对象window
+- 定时器里面的this指向window
+- 自执行函数中的this指向window
 - 构造函数中this指向构造函数实例化的那个对象
+- call、apply、bind时，this指向方法的第一个参数
 
 
 
@@ -310,9 +311,9 @@ clearInterval(timeoutID);  //停止定时器
 >
 > 当堆内存没有被任何的变量或者其他东西所占用，浏览器会在空闲的时候，自主的进行内存回收，把所有不被占用的堆内存销毁掉（谷歌浏览器）
 >
-> 利用计数器，当没有被占用的时候就会释放掉（IE浏览器）
+> 利用计数器来记录还有没有被占用，当没有被占用的时候就会释放掉（IE浏览器）
 >
-> IE会有内存泄漏问题，记着记着记混了，释放不掉
+> 记着记着记混了，导致有的释放不掉，这就是IE的内存泄漏问题
 
 
 

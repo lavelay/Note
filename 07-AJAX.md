@@ -287,13 +287,6 @@ var xhr = new XMLHttpRequest();
 
 
 
-## FormData
-
-主要有两个使用场景：
-
-- 快速收集form表单中元素的信息，减少表单元素的拼接，提高工作效率
-- 上传文件
-
 ### 不用FormData
 
 ```javascript
@@ -778,7 +771,7 @@ $('#input_avatar').change(function () {
 
 - tempalte函数语法：`var html = template(模板id,  Object)`
 
-### 输出普通数据（字符串，数值）
+#### 输出普通数据（字符串，数值）
 
 ```js
 // 模板写法
@@ -789,7 +782,7 @@ var html = template('id', {
 });
 ```
 
-### 条件
+#### 条件
 
 ```javascript
 // 模板写法
@@ -804,7 +797,7 @@ var html = template('id', {
 });
 ```
 
-### 循环
+#### 循环
 
 ```javascript
 // 模板写法1
