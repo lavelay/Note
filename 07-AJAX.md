@@ -319,7 +319,7 @@ document.getElementById('btn').onclick = function() {
 };
 ```
 
-### 使用FormData
+## 使用FormData
 
 ```javascript
 document.getElementById('btn').onclick = function() {
