@@ -2,8 +2,6 @@
 
 免费的服务器网站	：	**http://free.3v.do**
 
-一台服务器服务于多台设备
-
 服务端无法主动对客户端发起请求
 
 > 服务器 = 硬件配置高的电脑 + 安装特殊软件
@@ -70,29 +68,6 @@ AJAX ，全称是：**A**synchronous **J**avaScript **A**nd **X**ml 。
 
 
 
-## $.ajax()的基本格式
-
-```javascript
-$.ajax(
-  url,//  '/common/getCurrentTime',
-  {
-     type: 'get',// post
-     data: {id:1},
-     success: function (result) {
-     	console.log(result)
-  	 }
-  }
-)
-// - url : 表示请求的地址，可以省略域名。
-// - type: 表示请求的类型，常见取值 get，post。如果不写，默认为'get'
-// - data: 表示发送请求时附加的参数，如果没有参数，可省略
-// - success：它是一个回调函数。当请求成功之后会自动调用这个函数，它的第一个参数是服务器端返回的数据。
-```
-
-具体可参考 ：<https://www.jq22.com/chm/jquery/jQuery.ajax.html>
-
-
-
 ## get和post区别
 
 - 不同点：
@@ -103,8 +78,6 @@ $.ajax(
   - get和post请求都能够从服务器上获取返回的数据。
 
 get传数据直接显示在url中
-
-- query string parameters 查询字符串参数
 
 post传递数据更安全
 
@@ -512,8 +485,6 @@ xhr.onload = function() {
 xhr.send();// 发送。
 ```
 
-
-
 ### 异步的ajax
 
 xhr.open()默认是异步的。通过下面的代码来理解异步。
@@ -641,6 +612,28 @@ myAjax('get','common/get','a=1&b=2');
 
 - processData: boolean值。是否让jquery帮助处理传到服务器的数据
 
+```javascript
+ $.ajax({
+        type: 'get',
+        url: 'http://localhost:3005/common/get',
+        data: {
+          username: 'jack'
+        }
+      })
+      // then() 成功时的处理函数，相当于success
+      .then(function (res) {
+        // ...
+      })
+      // fail() 失败时的处理函数，相当于error
+      .fail(function (err) {
+        // ...
+      })
+      // always() 无论成功还是失败都会执行，相当于complete
+      .always(function () {
+        // ...
+      });
+```
+
 
 
 ## $.getJSON
@@ -675,58 +668,6 @@ $.getJSON(url,[,data][,success]);
   <input type="file" accept="image/*" />
   ```
 
-其它类型
-
-| **文件类型** | **accept属性值**                        | **类型**                             |
-| ------------ | --------------------------------------- | ------------------------------------ |
-| *.3gpp       | audio/3gpp, video/3gpp                  | 3GPP Audio/Video                     |
-| *.ac3        | audio/ac3                               | AC3 Audio                            |
-| *.asf        | allpication/vnd.ms-asf                  | Advanced Streaming Format            |
-| *.au         | audio/basic                             | AU Audio                             |
-| *.css        | text/css                                | Cascading Style Sheets               |
-| *.csv        | text/csv                                | Comma Separated Values               |
-| *.doc        | application/msword                      | MS Word Document                     |
-| *.dot        | application/msword                      | MS Word Template                     |
-| *.dtd        | application/xml-dtd                     | Document Type Definition             |
-| *.dwg        | image/vnd.dwg                           | AutoCAD Drawing Database             |
-| *.dxf        | image/vnd.dxf                           | AutoCAD Drawing Interchange Format   |
-| *.gif        | image/gif                               | Graphic Interchange Format           |
-| *.htm        | text/html                               | HyperText Markup Language            |
-| *.html       | text/html                               | HyperText Markup Language            |
-| *.jp2        | image/jp2                               | JPEG-2000                            |
-| *.jpe        | image/jpeg                              | JPEG                                 |
-| *.jpeg       | image/jpeg                              | JPEG                                 |
-| *.jpg        | image/jpeg                              | JPEG                                 |
-| *.js         | text/javascript, application/javascript | JavaScript                           |
-| *.json       | application/json                        | JavaScript Object Notation           |
-| *.mp2        | audio/mpeg, video/mpeg                  | MPEG Audio/Video Stream, Layer II    |
-| *.mp3        | audio/mpeg                              | MPEG Audio Stream, Layer III         |
-| *.mp4        | audio/mp4, video/mp4                    | MPEG-4 Audio/Video                   |
-| *.mpeg       | video/mpeg                              | MPEG Video Stream, Layer II          |
-| *.mpg        | video/mpeg                              | MPEG Video Stream, Layer II          |
-| *.mpp        | application/vnd.ms-project              | MS Project Project                   |
-| *.ogg        | application/ogg, audio/ogg              | Ogg Vorbis                           |
-| *.pdf        | application/pdf                         | Portable Document Format             |
-| *.png        | image/png                               | Portable Network Graphics            |
-| *.pot        | application/vnd.ms-powerpoint           | MS PowerPoint Template               |
-| *.pps        | application/vnd.ms-powerpoint           | MS PowerPoint Slideshow              |
-| *.ppt        | application/vnd.ms-powerpoint           | MS PowerPoint Presentation           |
-| *.rtf        | application/rtf, text/rtf               | Rich Text Format                     |
-| *.svf        | image/vnd.svf                           | Simple Vector Format                 |
-| *.tif        | image/tiff                              | Tagged Image Format File             |
-| *.tiff       | image/tiff                              | Tagged Image Format File             |
-| *.txt        | text/plain                              | Plain Text                           |
-| *.wdb        | application/vnd.ms-works                | MS Works Database                    |
-| *.wps        | application/vnd.ms-works                | Works Text Document                  |
-| *.xhtml      | application/xhtml+xml                   | Extensible HyperText Markup Language |
-| *.xlc        | application/vnd.ms-excel                | MS Excel Chart                       |
-| *.xlm        | application/vnd.ms-excel                | MS Excel Macro                       |
-| *.xls        | application/vnd.ms-excel                | MS Excel Spreadsheet                 |
-| *.xlt        | application/vnd.ms-excel                | MS Excel Template                    |
-| *.xlw        | application/vnd.ms-excel                | MS Excel Workspace                   |
-| *.xml        | text/xml, application/xml               | Extensible Markup Language           |
-| *.zip        | application/zip                         | Compressed Archive                   |
-
 
 
 ## 本地图片预览
@@ -738,11 +679,9 @@ $.getJSON(url,[,data][,success]);
 ```javascript
 // input_avatar就是file控件的内容发生变化执行
 $('#input_avatar').change(function () {
-    // console.log('xxx');
     // 如果没有选择文件，返回
     if (!this.files[0]) return;
     var url = URL.createObjectURL(this.files[0]);
-    // 设置图片的src
     $('#avatar').attr('src', url);
 });
 ```
@@ -757,17 +696,6 @@ $('#input_avatar').change(function () {
 
    - 使用script标签type的推荐设置方式： text/html或text/template
 
-3. 准备数据
-
-4. 调用template函数，为模板分配数据，template函数有两个参数一个返回值
-
-   - 参数1：模板的id
-
-   - 参数2：分配的数据，必须是一个JS对象的形式
-
-   - 一个返回值：模板引擎将数据和结构结合的结构字符串
-
-5. 将 “拼接” 好的结果放回DOM容量中
 
 - tempalte函数语法：`var html = template(模板id,  Object)`
 
@@ -821,8 +749,6 @@ jquery中封装了ajax功能，但体积比较大，若只用ajax功能，不需
 
 中文网站：<http://www.axios-js.com/zh-cn/docs/>
 
-​	Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中
-
 - 特性
   - 从浏览器中创建 [XMLHttpRequests](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
   - 从 node.js 创建 [http](http://nodejs.org/api/http.html) 请求
@@ -831,3 +757,72 @@ jquery中封装了ajax功能，但体积比较大，若只用ajax功能，不需
   - 转换请求数据和响应数据
   - 取消请求
   - 自动转换 JSON 数据
+
+```javascript
+ // axios的使用:
+    axios({
+        method: 'get', // 请求方式
+        url: 'http://localhost:3005/common/get',
+        params: { / 请求参数       *********如果请求方式是post，请求参数用data********
+          username: 'jack',
+          userAge: 18
+        }
+      })
+      // then() 成功时的处理函数
+      //    - axios的res与jQuery不太相同，多包裹了一层对象
+      //      - axios中的res.data相当于jQuery中的res，是一样的
+      .then(function (res) {
+         // 访问服务端响应的数据内容
+      })
+      // catch() 失败时的处理函数
+      .catch(function (err) {
+        // ...
+      })
+      // finally() 无论成功还是失败时都会执行
+      .finally(function () {
+        // ...
+      });
+```
+
+```javascript
+   //  axios.get() 的使用
+    //   - get()中的请求参数，需要通过一个对象中设置的params传递
+    axios.get('http://localhost:3005/common/get', {
+      params: {
+        username: 'jack'
+      }
+    }).then(function (res) {
+      // ...
+    });
+
+    //  axios.post() 的使用
+    axios.post('http://localhost:3005/common/post', {
+        username: 'rose'
+      })
+      .then(function (res) {
+        // ...
+      });
+
+    // axios.post() 和 axios()post方式上传文件
+    //  - 发送文件时使用FormData无需进行额外处理，与普通post参数发送方式相同
+    btn.onclick = function () {
+      var fd = new FormData(form);
+      
+      //  post方式发送请求，无需额外处理
+       axios.post('http://localhost:3005/formData/upload', fd)
+        .then(function (res) {
+          // ...
+        }); 
+------------------------------------------------------------------
+      axios({
+          method: 'post',
+          url: 'http://localhost:3005/formData/upload',
+          data: fd
+        })
+        .then(function (res) {
+          console.log(res.data);
+        });
+      // 如果在网站看文章，有人让你改源码设置FormData操作，不用管，axios已经进行处理了
+    };
+```
+
