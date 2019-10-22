@@ -1,6 +1,6 @@
-### 理解
+### 对jQuery的理解
 
-jQuery是一个免费的开源的轻量级的js库，兼容css3和各种浏览器，jQuery 2.0以后的版本不支持IE6、7、8。宗旨是write less，do more ，可提供API让开发者编写插件
+​        jQuery是一个免费的开源的轻量级的js库，兼容css3和各种浏览器，jQuery 2.0以后的版本不支持IE6、7、8，宗旨是write less，do more ，可提供API让开发者编写插件
 
 
 
@@ -393,6 +393,22 @@ element.on(events,[selector],function(event){})
 4. objN：待考贝到目标对象的第N个对象
 5. 浅拷贝是把被拷贝的对象==复杂数据类型中的地址==拷贝给对象，修改目标对象==会影响==被拷贝对象
 6. 深拷贝，前面加true，完全克隆（拷贝的对象，而不是地址），修改目标对象==不会影响==被拷贝对象
+
+```js
+ // $.fn.extend();
+ // - jQuery提供了顶级对象$、jQuery，值为一个函数
+ // - 任意函数都有prototype属性，$也有$.prototype，为了方便操作，给$.prototype设置别名为$.fn
+
+ //  - 设置jQuery插件的方式：
+ //   - 设置jQuery插件实际上就是给任意jQuery对象设置新的方法
+ //   - 就是给$.fn设置新方法，所有jQuery对象都可以使用
+    /* $.fn.sayHehe = function () {
+      this.css({
+        width: 100,
+        height: 300
+      }).text('呵呵呵');
+    }; */
+```
 
 
 

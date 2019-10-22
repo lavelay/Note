@@ -9,6 +9,10 @@
 
 **特性：**
 
+- 可以进行文件的读写操作  
+- 可以设置web服务器功能
+- 可以操作数据库
+
 1. event-driven 事件驱动
 2. non-blocking I/O model 非阻塞IO模型（异步）
 3. lightweight and efficient 轻量且高效
@@ -17,225 +21,30 @@ npm是世界上最大的开源生态系统，npm是基于Node.js开发的
 
 
 
-## fs核心模块
+## REPL
 
-在Node中想进行文件操作，就要引入fs核心模块
-
-```javascript
-var fs = require('fs');//用require方法加载fs核心模块
-fs.readFile('dizhi', function (error, data) { //第一个参数是文件路径，第二个参数是回调函数
-  //成功：data 数据
-  		 //error null
-  //失败：data undefined没有数据
-       //error 错误对象
-})
-```
-
-
-
-#### 方法1：在 REPL中运行
-
-REPL(Read Eval Print Loop:交互式解释器) 表示一个电脑的环境，类似 Window 系统的终端或 Unix/Linux shell，我们可以在终端中输入命令，并接收系统的响应。
-
-Node 自带了交互式解释器，可以执行以下任务：
+REPL(Read Eval Print Loop:交互式解释器) 表示一个电脑的环境，类似 Window 系统的终端或 Unix/Linux shell，可以在终端中输入命令，并接收系统的响应。
 
 - **读取** - 读取用户输入，解析输入了Javascript 数据结构并存储在内存中。
 - **执行** - 执行输入的数据结构
 - **打印** - 输出结果
 - **循环** - 循环操作以上步骤直到用户两次按下 **ctrl-c** 按钮退出。
 
-具体操作：
-
-1. 在任意控制台中输入node 并回车确定，即可进行入node自带的REPL环境。
-2. 此时，你可以正常写入js代码，并执行。
-3. 如果要退出，连续按下两次ctrl+c
 
 
-
-#### 方法2：执行一个JS文件
-
-1. 请事先准备好一个js文件。
-   - 例设这的路径是：e:/index.js
-   - 具体内容是
-
-```javascript
-var a = 1;
-console.info(a + 2);
-```
-
-2. 打开小黑窗，进入到这个文件的目录
-   - 技巧，在资源管理器中按下shift，同时点击鼠标右键，可以选择在此处打开powershall窗口。
-   - cd 命令可以用来切换当前目录。
-3. 接下来 通过  ` node `  `js文件的路径 的格式来执行这个js文件。
-
-```javascript
-node index.js
-```
-
-注意:
-
-- 执行js文件时，如果当前命令行目录和js文件**不在**同一个盘符下，要先切换盘符
-- 执行js文件时，如果当前命令行目录和js文件**在**同一个盘符中，则可以使用相对路径找到js文件并执行
-
-### nodejs的helloworld程序
-
-下面，我们来通过一个最基本的http服务器程序来见识nodejs的作用。
-
-第一步：新建一个文件，名为  `d:/http.js`( 文件名及路径名可以自行设置，建议均不使用中文字符)
-
-第二步：在文件中录入如下代码。
-
-```javascript
-// 引入http模块
-const http = require('http');
-
-// 创建服务
-const server = http.createServer(function(req, res) {
-  console.log(`来自${req.connection.remoteAddress}的客户端在${new Date().toLocaleTimeString()}访问了本服务器`);
-  res.end('<h1>hello world! very good!!</h1> <p>' + req.connection.remoteAddress + '</p>');
-});
-// 启动服务
-server.listen(8081, function() {
-  console.log('服务器启动成功，请在http://localhost:8081中访问....');
-});
-```
-
-第三步：在小黑窗中进入到d盘根目录，键入命令 `node http.js`
-
-第四步：打开一个浏览器容器，输入'http://localhost:8081'，观察效果
-
-第五步：把localhost改成你自己电脑的ip地址，再把这个路径发你的同学来访问。
-
-- 如果不能访问，有可能你需要手动关闭你自己计算机的防火墙。
-
-
-
-- Node.js提供了大量的工具（API），能够让我们完成文件读写、Web服务器创建等功能。
-
-![1562665560127](E:/待办事项/JS每日/2-nodejs/node-material.assets/1562665560127.png)
-
-### nodejs和浏览器和javascript的关系
-
-#### nodejs和浏览器的关系
-
-不同之处：
-
-![1562665535479](E:/待办事项/JS每日/2-nodejs/node-material.assets/1562665535479.png)
-
-- 安装了浏览器这个软件，它不但可以执行ECMAScript，浏览器这个软件内置了window对象，所以浏览器有处理DOM和BOM的能力。
-- 安装了NodeJs这个软件，它不但可以执行ECMAScript，NodeJS这个软件也内置了一些东西，包括全局成员和模块系统，同时还可以载入第三方模块来完成更强大的功能。
-
-
-
-#### nodejs和javascript的区别？
-
-- nodejs是一个容器（不是一个新语言），ECAMScript程序可以在这个容器中运行。
-  - 不能在nodejs使用window对象，也不能在nodejs使用dom操作。因为nodejs中并不包含这个对象。
-- javascript是由三个部分组成：ECAMScrtipt,Bom,Dom
-
-### 学习Nodejs的意义
-
-在我们熟悉的浏览器上执行JS不是很好吗？为什么要学习Nodejs呢？主要原因：
-
-- 大前端必备技能
-- 使得JS能够和操作系统 “互动” （读取文件，写入文件等，管理进程）
-- 为JavaScript提供了服务端编程的能力
-  - 文件IO
-  - 网络IO
-  - 数据库
-- 了解接口开发，进一步理解Web开发，了解后端同学的工作内容
-
-
-
-## nodejs中的模块化
-
-### 模块化
-
-一个js文件中可以引入其他的js文件，能使用引入的js文件的中的变量、数据，这种特性就称为模块化。使用模块化开发可以很好的解决变量、函数名冲突问题，也能灵活的解决文件依赖问题。
-
-- 以前
-
-  es5不支持模块化，让前端人员很为难。为了让支持模块化，我们一般会借用第三方库来实现：
-
-  - sea.js. https://www.zhangxinxu.com/sp/seajs/
-  - require.js. https://requirejs.org/
-
-- 现在
-
-  - es6原生语法也支持模块化
-  - Nodejs内部也支持模块化（与es6的模块化有些不同之处），具体的语法在后面来介绍
-
-### nodejs中的模块
-
-每个模块都是一个独立的文件。每个模块都可以完成特定的功能，我们需要时就去引入它们，并调用。不需要时也不需要要管它。（理解于浏览器的js中的Math对象）
-
-nodejs模块的分类
-
-- 核心模块
-  - 就是nodejs自带的模块，在安装完nodejs之后，就可以随意使用啦。相当于学习js时使用的Array对象。
-  - 全部模块的源代码 https://github.com/nodejs/node/tree/master/lib
-- 自定义模块
-  - 程序员自己写的模块。就相当于我们在学习js时的自定义函数。
-- 第三方模块
-  - 其他程序员写好的模块。nodejs生态提供了一个专门的工具来管理第三方模块，后面我们会专门讲到。
-  - 相当于别人写好的函数或者库。例如我们前面学习的JQuery库，arttemplate等。
-
-#### 核心模块
+## 核心模块
 
 > 官网文档 https://nodejs.org/dist/latest-v10.x/docs/api/
 >
 > 中文文档 http://nodejs.cn/api/
 >
-> 学会查 API，远远比会几个 API 更重要
 
 - 核心模块就是 Node 内置的模块，需要通过唯一的标识名称来进行获取。
 - 每一个核心模块基本上都是暴露了一个对象，里面包含一些方法供我们使用
-- 一般在加载核心模块的时候，变量的起名最好就和核心模块的标识名同名即可
-  - 例如：`const fs = require('fs')`
-
-示例：用fs模块读取文件
-
-```javascript
-const fs = require('fs');
-let htmlStr = fs.readFileSync( 'index.html')).toString();
-console.log(htmlStr)
-```
-
-注意：require()中直接写模块的名字
-
-- 不要加.js
-- 不要加其它路径
 
 
 
-#### 第三方模块
-
-所谓第三方模块，顾名思义，就是别人写的模块（不是自己写的，也不是nodejs自带的）。在浏览器环境中使用第三方函数或者是库是很自然的，一般有两步：
-
-1. 去官网下载js文件。或者使用DSN外链。
-2. 在自己的html页面中引入
-
-以jquery为例
-
-1. 去jquery官网中下载jquery.js文件。
-2. 在html页面中使用 script link标签引入这个js文件
-3. 开始使用啦
-
-这个过程中很容易，我们也慢慢习惯了，但这种使用方式是有问题的：
-
-- 随着引入的第三方库越来越多，你得每一个库都去他们各自的官网上下载。引入10个库，都得下载10次
-- 各个库的版本号在升级更新时，你也无法准确得知。
-
-> 阿爷无大儿，*木兰*无长兄，愿为市鞍马，从此替爷征。
-> 东市买骏马，西市买鞍鞯，南市买辔头，北市买长鞭。旦*辞*爷娘去，暮宿黄河边，不闻爷娘唤女声，但闻黄河流水鸣溅溅。旦*辞*黄河去，暮至黑山头，不闻爷娘唤女声，但闻燕山胡骑鸣啾啾。
-
-木兰词中所述的场景：木兰替父从军，要买其参战装备要四处奔走。我们做个效果，要实现某个功能，要四处下载包，难到就没有一个类似于京东超市一样的地方，可以实现一站式配齐吗？
-
-有，这个超市就是 大名鼎鼎的 `npm`。 在node中，我们通过npm来解决下载、使用、管理第三方模块的问题。
-
- 
-
-## fs模块
+### fs模块
 
 fs模块是文件操作模块。fs是 FileSystem的简写。它用来对文件，文件夹进行操作。
 
@@ -243,16 +52,10 @@ fs模块是文件操作模块。fs是 FileSystem的简写。它用来对文件�
 
 ```js
 // 引入模块。
-// 可以使用var、let，但是建议使用const，因为我们不希望它被改变
 const fs = require('fs');
 ```
 
-fs模块中操作文件(或者文件夹)的方法，大多都提供了两种选择：
 
-- 同步版本的
-- 异步版本的
-
-### 文件内容读取 - readFile
 
 #### 异步格式
 
@@ -285,15 +88,7 @@ fs.readFile('文件路径'[,选项], (err, data) => {
     - err: 错误对象
     - data: undefined
 
-示例：
 
-```javascript
-const fs = require("fs")
-fs.readFile('文件路径',"utf8", (err, data) => {
-  if (err) throw err;
-  console.log(data);
-});
-```
 
 #### 同步格式
 
@@ -309,8 +104,6 @@ console.log(rs)
 ```
 
 
-
-### 文件写入 
 
 #### 覆盖写入 writeFile
 
@@ -367,51 +160,16 @@ fs.appendFile('./a.txt', '\n 为天地立命', err => {
 
 ### 路径问题
 
-在读取文件时，写相对路径是容易出问题的。下面我们来看会出什么问题。
-
-假设有如下两个文件，它们所处的目录及文件名如下所示：
-
-```
-day01/js/fs.js
-day01/js/text.txt
-```
-
-fs.js代码的作用是读出text.txt中的内容，并显示出来。
-
-```
-const fs = require('fs');
-fs.readfilesync("./text.txt",'utf8'); 
-//注意这里对text.txt的访问使用的是相对"fs.js" 本身的路径
-```
-
-
-
-现在，我们想要运行fs.js这个文件有两种方式：
-
-- 如果终端中的路径定位在`js目录`下，则通过`node fs.js`
-
-- 如果终端中的路径定位在`day01目录`下，则通过：`node js/fs.js` 
-
-  此时就不能正确找到文件了。
-
-
-
-原因是：我们在fs中读取文件时，使用的是相对路径，而相对路径的参考点是运行这个js文件的小黑窗的路径。而这个路径我们是可以通过cd命名来调整的。
-
 解决方法，就是在操作文件时，使用**绝对路径**来定位文件。
 
 #### \__dirname __filename 获取绝对路径
 
-绝对路径： 从磁盘根目录开始到指定文件的路径。
-
-相对路径：是以某个文件的位置为起点，相对于这个位置来找另一个文件。
-
-nodejs中提供了两个全局变量来获取获取绝对路径：
-
 - __dirname：获取当前被执行的文件的文件夹所处的绝对路径
 - __filename：获取当前被执行的文件的绝对路径
 
-#### path模块
+
+
+### path模块
 
 http://nodejs.cn/api/path.html#path_path
 
@@ -461,17 +219,7 @@ path.extname('index.html');// 返回: '.html'
 
 
 
-
-
-## http模块-基本使用
-
-http是nodejs的核心模块，让我们能够通过简单的代码创建一个Web服务器，处理http请求。
-
-------
-
-### 快速搭建Web服务器
-
-1. 新建文件，写入如下代码。
+## 快速搭建Web服务器
 
 ```js
 // http.js
@@ -506,6 +254,14 @@ server.listen(8081, function() {
 
 
 
+==IP地址用来定位计算机==
+
+==端口号用来定位具体的应用程序==
+
+==所有要联网的应用程序都会占用一个端口号==
+
+
+
 ### 理解请求与响应
 
 在上面的代码中，我们通过http.createServer方法创建一个http服务。
@@ -519,8 +275,6 @@ const server = http.createServer((req, res) => {
 ```
 
 其中的参数是一个函数，这个函数是一个匿名函数，这个函数充当回调函数的角色，当有http请求时，它会自动被调用。
-
-
 
 这个回调函数有它有两个参数。这两个参数非常重要，也非常复杂.
 
@@ -588,14 +342,11 @@ res.setHeader('content-type', 'text/html;charset=utf-8');
 
 - HTTP(HyperText Transfer Protocol) 超文本传输协议。
 - 协议双方： 浏览器与web服务器都要遵守的协议
-- 请求通常是由像浏览器这样的接受方发起的
 - HTTP 协议中明确规定了`请求数据`和`响应数据`的格式(**报文**)
   - 浏览器 请求 资源 要遵守 http 协议：  请求报文
   - 服务器 返回 资源 要遵守 http 协议：  响应报文
 
 ### 请求报文
-
-http协议规定了浏览器向服务器发请求时的格式。
 
 - 它由三个部分组成
 
@@ -610,8 +361,6 @@ http协议规定了浏览器向服务器发请求时的格式。
 #### 请求行
 
 格式： `请求方法  请求路径 协议及版本`
-
-示例：
 
 ```
 GET / HTTP/1.1
@@ -635,7 +384,8 @@ const server = http.createServer(function(req, res) {
 - 浏览器在向服务器发送请求的时候自动携带的信息，一般不需要主动去设置；
 - 信息是由键值对组成
 - 如果需要设置请求头，使用setRequestHeader方法来设置
-- [参考链接](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers)
+
+  [参考链接]https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers
 
 | 键              | 值                                      |
 | --------------- | --------------------------------------- |
@@ -714,7 +464,6 @@ HTTP/1.1 404 Not Found
 //   - 304 - 读取缓存
 //   - 404 - 请求的资源不存在
 //   - 500 - 服务器内部错误
-// 
 ```
 
 可以通过res.statusCode 来设置响应码。
@@ -730,8 +479,6 @@ res.statusCode
 - 服务器返回响应的时候携带了附加信息
 - 由键值对组成
 - 每个请求的响应头可能都不一样：它完全取决于服务器；
-
-几个常见的响应头
 
 | 键               | 值               |
 | ---------------- | ---------------- |
@@ -761,7 +508,6 @@ const server = http.createServer(function(req, res) {
 - 如果请求的是网页返回网页的内容
 - 如果请求的是css返回样式文件的内容
 - 如果请求的是图片返回图片的内容
-- ......
 
 在代码中，响应体的内容体现在res.end()中的内容上。
 
@@ -771,7 +517,7 @@ res.end(响应体)
 
 
 
-## 使用 nodemon来自动重启http服务
+## nodemon自动重启http服务
 
 我们每次修改了代码，都需要重启http服务器:
 
@@ -901,7 +647,6 @@ const server = http.createServer((req, res) => {
     // 浏览器请求的是 /message.html
     console.log(req.url);
 
-
     fs.readFile('./public' + req.url, (err, data) => {
         if (err) return console.log(err);
         // 没有错误，将读取的结果响应给浏览器
@@ -930,6 +675,7 @@ const server = http.createServer((req, res) => {
 });
 // 3. 监听端口，开启服务
 server.listen(4000, () => console.log('开始监听 4000'));
+
 ```
 
 - 2. 分析后缀名，如果是允许的，就直接返回
@@ -972,6 +718,7 @@ const app = http.createServer((req, res) => {
 app.listen(8082, () => {
   console.log('8082端口启动');
 });
+
 ```
 
 
@@ -1063,6 +810,7 @@ url:http://oa.itcast.cn/seeyon/main.do?method=main
 
 url:https://mail.qq.com/cgi-bin/frame_html?sid=aLqnlljMxF54DgtW&r=d281ced83329f34caae9786fcb5d4934
 
+
 ```
 
 显然，不能，你能从服务器上获得什么，完全是由服务器决定的。
@@ -1136,6 +884,7 @@ url:https://mail.qq.com/cgi-bin/frame_html?sid=aLqnlljMxF54DgtW&r=d281ced83329f3
   > urlobj.query: 获取用户输入的url中的查询字符串( 'id=18&name=zs' )
   > urlobj.path: '/schools/students?id=18&name=zs',
   > urlobj.href: '/schools/students?id=18&name=zs' 
+  > 
   > ```
 
 上面urlobj.query只是获得了传递的全部参数，我们一般还需从地址栏中分析传递的数据。即从 `http://itcast.cn:80/schools/students?id=18&name=zs#phot`中分析出id和name的值来。这个操作是如何实现的呢？
@@ -1176,8 +925,8 @@ console.log(obj)
 > 输入:localhost:8080/get?name=filex&age=30;
 > 返回:{name:filex,age:30,_t:1563265441778}
 > ```
->
-> 要求：能通过postman软件的测试。
+> 
+>要求：能通过postman软件的测试。
 
 
 
@@ -1228,8 +977,8 @@ server.listen(8088, function() {
 > 参数：name=filex&age=30;
 > 返回:{name:filex,age:30,_t:1563265441778}
 > ```
->
-> 要求：通过postman软件的测试。
+> 
+>要求：通过postman软件的测试。
 
 
 
@@ -1432,14 +1181,6 @@ app.listen(8080, () => {
 
 ## 自定义模块
 
-我们自己写的模块就是自定义模块。在nodejs中 ，我们对代码的封装是以模块（一个一个的文件）为单位进行的。一般的做法是实现好某一个功能之后，封装成一个模块，然后在其它文件中使用这个模块。
-
-
-
-使用一个模块，就是一个js文件中去使用另一个js文件中定义的变量，常量，函数....
-
-
-
 ###  基本步骤
 
 1.定义模块
@@ -1472,8 +1213,6 @@ module.exports = {
 
 在你需要使用模块的文件中，使用require语句引入你定义好的模块，注使用相对路径。假设我们当前的文件是index.js，而我们希望在index.js文件中使用myModule.js中的add方法。
 
-我们的做法是：
-
 ```javascript
 // index.js
 const myMath = require('./myMath');
@@ -1494,6 +1233,7 @@ console.log(myMath);
 
 let rs = myMath.add(23,45);
 console.log(rs)
+
 ```
 
 
@@ -1527,8 +1267,6 @@ exports === module.exports
 >module.exports.pi = 3.1415926
 >```
 
-
-
 区别在于：
 
 - 在引入某模块时，以该模块中module.exports指向的内容为准。
@@ -1536,12 +1274,6 @@ exports === module.exports
   - 在初始时，exports和module.exports是指向同一块内存区域，其内容都是一个空对象。
   - 如果直接给exports对象赋值（例如：exports={a:1,b:2}），此时，exports就不会再指向module.exports，而转而指向这个新对象，此时，exports与module.exports不是同一个对象。而在引入模块时，是以模块的中的module.exports为准，因此，此时写在exports上的对象是无法导出的。
 - 在导出模块过程中，建议只用一种方式（建议直接使用module.exports）。
-
-
-
-### 通过自定义模块对留言板案例进行改造
-
-
 
 
 
@@ -1588,6 +1320,7 @@ nodejs中一个模块就是一个单独的js文件
 ```javascript
 npm init --yes
 // 或者是 npm init -y
+
 ```
 
 init命令用来在根目录下生成一个package.json文件，这个文件中记录了我们当前项目的基本信息。它是一切工作的开始。
@@ -1702,6 +1435,7 @@ npm init --yes
 ```
 - 建议先创建package.json之后，再去install
 - 在分享代码时，我们一般不需要把node_modules也给别人（就像你不需要把jquery.js给别人，因为他们可以自己去下载）。对方拿到我们的代码之后，先运行`npm install`(后面不接任何的包名)，自己去安装这些个依赖包。
+
 ```
 
 ### 全局安装包和本地安装包
@@ -1721,6 +1455,7 @@ npm init --yes
       which npm   // 查看npm的安装目录
       npm root -g // 查看全局包的安装目录
       npm list -g --depth 0 //查看全局安装过的包
+      
       ```
 
 - 局部安装（或者叫本地安装)，包并安装在当前项目的根目录下，与package.json同级目录的node_modules。就只在这个项目中可以使用。
@@ -1884,20 +1619,20 @@ console.log(obj);
   npm root -g // 查看全局包的安装目录
   npm list -g --depth 0 //查看全局安装过的包
   ```
-
+  
 - 升级 npm
 
   ```bash
   npm install npm --global
   npm install npm -g
   ```
-
+  
 - 初始化 `package.json`
 
   ```bash
   npm init -y // 或者是npm init --yes
   ```
-
+  
 - 安装第三方包
 
   ```javascript
@@ -1917,14 +1652,14 @@ console.log(obj);
   // 简写。把install简写成 i
   npm i 包名
   ```
-
+  
 - 删除已安装的包 
 
   ```bash
   npm uninstall 本地安装的包名
   npm uninstall -g 全局安装的包名
   ```
-
+  
 - 从缓存目录安装包
 
   ```bash
@@ -1936,8 +1671,6 @@ console.log(obj);
   ```
 
  
-
-
 
 ## Express框架
 
@@ -2120,8 +1853,6 @@ app.post('/', function (req, res) {
 
 
 
-
-
 ### 写get接口
 
 #### get无参数
@@ -2135,7 +1866,7 @@ app.get('/get', function(req, res) {
 });
 app.listen('8088', () => {
   console.log('8088');
-});
+})
 ```
 
 #### get有参数
@@ -2167,6 +1898,7 @@ const app = express();
 app.post('/post',function(req,res){
 	res.send({name:"abc"})
 })
+
 ```
 
 #### 普通键值对参数
@@ -2444,7 +2176,6 @@ app.get('/getadmininfo', (req, res) => {
 app.listen(3000, () => {
   console.log(3000);
 });
-
 ```
 
 我们的目标就是把它们拆开到不同的文件中，以便于管理。
@@ -2499,7 +2230,6 @@ router.get('/getdetail', function(req, res) {
   res.send('管理员getdetail');
 });
 module.exports = router;
-
 ```
 
 在主入口文件中使用它们
@@ -2533,8 +2263,6 @@ app.use('/server', serverRouter);
 
 >无状态的理发店：理发店剪头发，店长不记忆是否是老客户，每人每次25元。这就是无记忆的。
 >
->
->
 >有状态的理发店：理发店剪头发，店长给你办理会员，下次你再来就记得你。这就是有记忆的。
 >
 >店长能够知道你是谁，有两种记录会员的信息：
@@ -2551,8 +2279,6 @@ app.use('/server', serverRouter);
 会话控制就是用来弥补http无记忆的缺陷的一种技术。它能够将数据持久化（保存数据）的保存在客户端(浏览器)或者服务器端，从而让浏览器和服务器进行多次数据交换时，产生连续性。
 
 让每一次的请求和响应都知道对方是谁。
-
-![1566131019358](E:/待办事项/JS每日/2-nodejs/node-讲义.assets/1566131019358.png)
 
 ### 会话控制的分类
 
@@ -2636,7 +2362,6 @@ Set-Cookie: <cookie-name>=<cookie-value>; SameSite=Lax
 
 // Multiple directives are also possible, for example:
 Set-Cookie: <cookie-name>=<cookie-value>; Domain=<domain-value>; Secure; HttpOnly
-
 ```
 
 一个cookie所具有的主要的属性包括：
@@ -2661,7 +2386,6 @@ expires字段来用设置这个cookie在哪个时间内是有效的。值得注�
 
 ```js
 res.setHeader('set-cookie', ['id=1;expires=' + new Date(Date.now() + 1000 * 5).toUTCString()]);
-
 ```
 
 表示id=1这个cookies在5秒之后失效。
@@ -2680,7 +2404,6 @@ res.setHeader('set-cookie', ['id=1;expires=' + new Date(Date.now() + 1000 * 5).t
 
 ```javascript
 req.headers.cookie; //isLogin=true; name=xsfss
-
 ```
 
 这个字符中中包含了全部的cookie，为了把它们的值解析出来成一个对象，我们可以通过node的核心对象querystring来进行解析。
@@ -2693,7 +2416,6 @@ console.log(cookiestr);
 // 2 解析成对象
 let cookieObj = qs.parse(cookiestr);
 let { isLogin, name } = cookieObj;
-
 ```
 
 2 . 使用cookie-parser进行解析
@@ -2738,8 +2460,6 @@ session 也是类似的道理，服务器要知道当前发请求给自己的是
 
 服务器使用session把用户的信息临时保存在了服务器上，用户离开网站后session会被销毁。这种用户信息存储方式相对cookie来说更安全，可是session有一个缺陷：如果web服务器做了负载均衡，那么下一个操作请求到了另一台服务器的时候session会丢失。或者服务器重启了session数据也会丢失。
 
-![1566197324554](E:/待办事项/JS每日/2-nodejs/node-material.assets/1566197324554.png)
-
 #### 安装包
 
 在express框架下， 我们可以通过安装  `express-session` 包来实现session的功能。
@@ -2774,7 +2494,6 @@ app.post('/loginAPI', (req, res) => {
     req.session.name = req.body.username;
     res.end()
 };
-
 ```
 
 #### 获取session
@@ -2783,7 +2502,6 @@ app.post('/loginAPI', (req, res) => {
 app.get('/index.html', (req, res) => {
     console.log(req.session)
 };
-
 ```
 
 #### 删除session
@@ -2792,7 +2510,6 @@ app.get('/index.html', (req, res) => {
 app.get('/quit', (req, res) => {
     req.session.destroy();
 };
-
 ```
 
 
@@ -2959,7 +2676,6 @@ cors_front/index.html. 通过ajax调用接口
     </script>
   </body>
 </html>
-
 ```
 
 
@@ -2969,8 +2685,6 @@ cors_front/index.html. 通过ajax调用接口
 ![1563502065924](E:/待办事项/JS每日/2-nodejs/node-material.assets/1563502065924.png)
 
 
-
-![1566201526753](E:/待办事项/JS每日/2-nodejs/node-讲义.assets/1566201526753.png)
 
 ### 原因
 
@@ -2991,8 +2705,6 @@ cors_front/index.html. 通过ajax调用接口
 
   - 在前后端分离开发的场景下，前端的页面和后端的服务经常是分开部署的。
 
-    ![1566136177994](E:/待办事项/JS每日/2-nodejs/node-讲义.assets/1566136177994.png)
-
 - 你的请求是xhr请求。就是常说的ajax请求。
 
 ### 实现跨域请求的方案--JSONP
@@ -3007,8 +2719,6 @@ cors_front/index.html. 通过ajax调用接口
 - 服务端的接口返回JavaScript 脚本，并附上要返回的数据。
 
 以后绝大多数情况都是采用 JSONP 的手段完成不同源地址之间的跨域请求，它其实并**不是ajax请求**。
-
-![1566202959673](E:/待办事项/JS每日/2-nodejs/node-讲义.assets/1566202959673.png)
 
 #### 让script标签的src指向一个接口
 
@@ -3065,7 +2775,6 @@ app.listen(3000, () => {
     }
 </script>
 <script src="http://localhost:3000/getTime?callback=fn"></script>
-
 ```
 
 注意：
@@ -3172,7 +2881,6 @@ app.get('/gettime', (req, res) => {
 app.listen(3000, () => {
   console.log('你可以通过http://localhost:3000来访问...');
 });
-
 ```
 
 像express框架已经提供了一个名为jsonp的方法来处理jsonp请求:
@@ -3341,169 +3049,12 @@ cors:
 
 
 
-# nodejs相关概念说明
-
-- **nodejs环境中的javascript与浏览器中的javascript的区别：**
-  - nodejs本质上就是一个独立的js解析器，无法执行html和css也无法执行webAPI
-    - ECMAScript
-    - node中的特殊功能
-      - 可以进行文件的读写操作  
-      - 可以设置web服务器功能
-      - 可以操作数据库
-
-
-
-# 模块
-
-> 模块是我们对某个独立功能的称呼，任意的一段独立的功能代码都可以称为是一个模块。
-
-- 模块的分类
-  - 内置模块
-  - 自定义模块
-  - 第三方模块
-- nodejs中也具有模块的概念，分类方式与上面是完全一样的。
-
-
-
-## 模块的特点和设置方式
-
-- 特点：
-
-  - 每个模块中的功能都是独立的，不会影响到其他模块。
-  - 模块与模块之前可能会出现**依赖**的情况
-    - 需要考虑文件的引入的情况
-
-- 设置方式：
-
-  - ES6之前采用自调用函数，并结合暴露操作
-    - 例如之前书写的  tools.js
-  - 使用一些js库
-    - sea.js
-    - require.js
-    - webpack 进行模块化操作 - vue部分
-  - ES6中提供了单独的模块设置方式
-
-
-## ES6中的模块设置方式
-
-- 基本格式：require(模块的地址或内置模块的名称); 
-- 具体操作步骤：
-  - 被其他模块引入的模块中操作： demo1.js
-    - 将需要被其他模块使用的数据进行暴露(导出)
-    - module.exports = { 数据 };
-    - exports.数据名 = 数据;  // 可以设置多个
-  - 使用其他模块的那个模块中操作: demo2.js
-    - 通过require(要引入的模块的地址)
-    - 通过常量接收，防止不小心被修改了。
-    - 使用常量内部的功能即可。。。
-
-
-
-# nodejs中的内置模块
-
-- nodejs中内置模块与浏览器中的js内置功能的区别
-  - window
-    - 浏览器中的功能都是可以直接访问的，都是全局的功能，操作时需要自己进行改进处理
-    - document
-    - console
-  - nodejs
-    - nodejs中的内置模块都是独立的功能，如果不进行引入就无法使用
-    - 所以操作时，如果希望使用内置模块需要先进行引入操作。
-
-## fs模块
-
-> 是node中用来进行文件操作的模块
-
-### readFile() 读取文件
-
-- 是一个异步的读取文件方法
-
-  ```javascript
-  // 1 引入fs模块，才能使用内部的功能
-  //    - 内置模块引入时，直接书写模块名称即可
-  const fs = require('fs');
-  
-  
-  // 2 使用readFile()读取一个文件的内容
-  //   参数1： 文件路径
-  //   参数2： 字符集  'utf8'
-  //   参数3： 回调函数，会在文件读取完毕后执行
-  //      - 参数1：err  错误信息
-  //      - 参数2：data 文件的内容
-  //   如果读取文件成功：
-  //      - err为null，  data为文件的内容
-  //   如果读取文件失败
-  //      - err为错误对象， data为undefined
-  
-  fs.readFile('./demo.txt', 'utf8', (err, data) => {
-    if (err) {
-      // 我们管设置的报错称为 '抛异常'
-      throw 'your file is bad bad';
-    }
-    console.log(data);
-  });
-  
-  
-  // 没有设置字符集参数时，读取的内容时buffer形式，可以通过toString进行处理
-  fs.readFile('./demo.txt', (err, data) => {
-    if (err) {
-      // 我们管设置的报错称为 '抛异常'
-      throw 'your file is bad bad';
-    }
-    console.log(data); // buffer
-    console.log(data.toString()); // 字符串
-  });
-  ```
-
-
-
-- 问题和改进方式
-  - 终端在不同目录下执行 04.js 时，文件的读取效果不同（某些情况下找不到正确的文件，出现报错）
-  - 原因：相对路径是相对的终端窗口
-  - 修改方式：将相对路径设置为绝对路径
-    - 打开目录复制粘贴处理太麻烦
-    - 通过__dirname进行处理，代码书写略嫌麻烦
-    - 最后使用path模块进行改进
-- __dirname  获取当前文件所在目录的绝对路径
-- __filename 获取当前文件的绝对路径（比上面的多了一个文件名称）
-
 ## path模块
 
 - path是一个node的内置模块，引入后使用
 
 - path.join() 用于进行路径信息的合并处理
 
-  - 参数：传入各种各样的地址（可以含有相对路径和绝对路径）
-
-  - 返回值：处理后的可以使用的地址
-
-  - 以后进行文件操作的地址设置方式:
-
-    ```javascript
-    fs.readFile(path.join(__dirname, '我们最习惯的相对路径'), 'utf', () => { //... });
-    ```
-
-## http模块
-
-### HTTP协议
-
-- 作用：用来对请求响应发送方式设置的一种约定。
-- 组成：
-  - 请求：是由客户端发起的，由服务端接收处理
-  - 响应：是由服务端发起的，由客户端接收处理
-- 内容形式：
-  - 请求时发送的内容称为**请求报文**：
-    - 请求报文由3部分组成：  请求行， 请求头， 请求体
-      - 请求行：  GET     /     HTTP/1.1
-      - 请求头： 包含了请求发送时的一个附加数据
-        - Content-Type  请求发送数据的内容类型
-        - User-Agent 客户端设备的相关信息
-      - 请求体：包含了请求发送的请求参数
-        - 发送get请求时，请求体为空
-          - 因为get请求的请求参数在请求行中传递
-        - 发送post请求时，请求参数都包含在请求体中
-  - 响应时发送的内容称为 **响应报文**：
-    - 响应报文由3部分组成： 状态行，响应头， 响应体
-      - 状态行： HTTP/1.1   200   OK
-      - 响应头：响应发送时的一些附加数据
-      - 响应体：就是服务端响应的数据内容
+  ```javascript
+fs.readFile(path.join(__dirname, '我们最习惯的相对路径'), 'utf', () => { //... });
+  ```
