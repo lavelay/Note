@@ -1,4 +1,4 @@
-## Node.js
+Node.js
 
 基于ChromeV8引擎的JS运行环境
 
@@ -222,10 +222,8 @@ path.extname('index.html');// 返回: '.html'
 ## 快速搭建Web服务器
 
 ```js
-// http.js
 // 引入核心模块http
 const http = require('http');
-
 // 创建服务
 const server = http.createServer(function(req, res) {
   console.log(req.connection.remoteAddress);
@@ -240,13 +238,7 @@ server.listen(8081, function() {
 2. 运行代码, `node http.js`
 3. 在浏览器地址栏中输入：localhost:8081 观察效果。
 
-说明
-
 1. 把localhost改成本机ip地址，让同一局域网的同学访问。
-
-2. 如果你修改了代码，必须先停止服务，然后再启动。这样才能生效。
-
-   ctrl+c 停止服务。
 
 3. 更改res.end()的内容，`重启`后，再次观察。
 
@@ -276,10 +268,6 @@ const server = http.createServer((req, res) => {
 
 其中的参数是一个函数，这个函数是一个匿名函数，这个函数充当回调函数的角色，当有http请求时，它会自动被调用。
 
-这个回调函数有它有两个参数。这两个参数非常重要，也非常复杂.
-
-- 第一个参数表示`来自客户端浏览器的请求`，第二个参数用来`设置对本次请求的响应`。它们的形参名并不重要，但是，一般第一个参数名使用req或者request表示，第二个参数使用res或者resposne表示。
-
 - 当某个客户端来请求这个服务器时，这个函数会自动调用，同时会自动给这两个参数赋值。第一个参数中包括本次请求的信息。
 
   - req：请求
@@ -304,40 +292,6 @@ const server = http.createServer((req, res) => {
 
 
 
-### 根据不同 url 地址处理不同请求
-
-前面已经可以对浏览器的请求做出响应了，但是响应的内容总是一样的。能不能根据url的不同，做出合适的响应呢？当然可以，那么首先就需要知道浏览器请求的url是什么。
-
-涉及到和请求相关的信息，都是通过请求响应处理函数的第一个参数完成的。代码示例
-
-```javascript
-// http.js
-// 引入核心模块http
-const http = require('http');
-
-// 创建服务
-const server = http.createServer(function(req, res) {
-  if(req.url === "/a.html"){
-      // 读出文件内容
-      // 通过res.end()返回
-  }
-  else if(req.url === "/b.html"){
-      
-  }
-    else{
-        res.end("");
-    }
-});
-// 启动服务
-server.listen(8081, function() {
-  console.log('success');
-});
-```
-
-res.setHeader('content-type', 'text/html;charset=utf-8');
-
-
-
 ### HTTP 协议是什么
 
 - HTTP(HyperText Transfer Protocol) 超文本传输协议。
@@ -353,10 +307,6 @@ res.setHeader('content-type', 'text/html;charset=utf-8');
 1. 请求行
 2. 请求头
 3. 请求体（可能是空）
-
-- 可以使用 chrome network面板来查看请求。
-
-
 
 #### 请求行
 
@@ -376,8 +326,6 @@ const server = http.createServer(function(req, res) {
   console.log(req.url)
 });
 ```
-
-
 
 #### 请求头
 
@@ -450,14 +398,7 @@ http协议规定了服务器向浏览器返回数据时的格式。
 -	状态码 ： 用来告诉浏览器服务器处理本次请求的结果。 不同的状态码对应不同的结果。
 ```
 
-示例：
-
 ```js
-HTTP/1.1 200 OK
-HTTP/1.1 404 Not Found 
-// 状态码：
-// - 描述了请求过程中所发生的情况
-// - 每个状态码的第一位数字都用于描述状态的一般类别("成功"、"出错"等)
 // - 常见状态码及含义
 //   - 200 - 成功
 //   - 302 - 重定向
@@ -581,8 +522,6 @@ while(server.js 变化了){
 假设在index.html中还引入了 style.css 1.png 或者 .js文件，则：
 
 浏览器请求localhost:index.html之后，得到的从服务器反馈的内容，解析的过程中还发现有外部的资源，所以浏览器会再次发出第二次请求，再去请求相应的资源。
-
-一个最朴素的想法是根据不同的请求来返回不同的文件。
 
 ```javascript
 const http = require('http');
@@ -796,7 +735,6 @@ app.listen(8083, () => {
 - post
   - 通过表单提交，可以设置form的method为post
 - delete
-- ....
 
 
 
@@ -809,8 +747,6 @@ url:http://nodejs.cn/api/querystring.html
 url:http://oa.itcast.cn/seeyon/main.do?method=main
 
 url:https://mail.qq.com/cgi-bin/frame_html?sid=aLqnlljMxF54DgtW&r=d281ced83329f34caae9786fcb5d4934
-
-
 ```
 
 显然，不能，你能从服务器上获得什么，完全是由服务器决定的。
@@ -1684,10 +1620,6 @@ console.log(obj);
   - [Express 中文文档（非官方）](http://www.expressjs.com.cn/)
   - [Express GitHub仓库](https://github.com/expressjs/express)
 
-### 运行第一个express程序
-
-由于它是第三方框架，我们需要先安装它。
-
 #### 安装
 
 > 参考文档：http://expressjs.com/en/starter/installing.html
@@ -1773,7 +1705,6 @@ const app = express();
 
 // 2. 设置请求对应的处理函数
 app.use(express.static('public'))
-
 
 // 3. 监听端口号，启动 Web 服务
 app.listen(3000, () => console.log('app listening on port 3000!'))
@@ -1926,14 +1857,10 @@ npm install body-parser
 ```javascript
 // 1. 引入包
 const bodyParser = require('body-parser');
-
 // 2. 使用包
 app.use(bodyParser.urlencoded({extended:false}));
-
 app.post("/add",function(req,res){
-
     //3. 可以通过req.body来获取post传递的键值对	
-
 })
 ```
 
@@ -2595,25 +2522,6 @@ session：优点是安全，缺点需要服务器空间， 是一种最常见的
 
 ## 跨域
 
-跨域问题是我们前端开发中经常会遇到的问题，也是面试中的高频题目。通过这一节的学习，我们就能解决这类问题啦。
-
-### 问题演示
-
-![chrome跨域插件](E:/待办事项/JS每日/2-nodejs/node-material.assets/chrome跨域插件.gif)
-
-```
-/cors_server/
-/cors_server/server.js
-
-/cors_front/
-/cors_front/index.html
-/cors_front/jquery.js
-```
-
-
-
-参考代码
-
 ```javascript
 // cors_server/server.js
 // 后端服务器，提供接口
@@ -2680,22 +2588,14 @@ cors_front/index.html. 通过ajax调用接口
 
 
 
-
-
-![1563502065924](E:/待办事项/JS每日/2-nodejs/node-material.assets/1563502065924.png)
-
-
-
 ### 原因
 
 不同源的ajax请求 -------- 跨域错误。
 
-
-
 一个请求同时满足如此三个条件时，就会出现跨域问题，从而导致ajax请求失败：
 
 - 你的浏览器多管闲事了。
-  跨域问题出现的基本原因是浏览器出于安全性的考虑------同源策略：ajax请求必须是同源，封杀了你跨域请求。
+  同源策略：==不同源地址之间，默认不能相互发送AJAX请求==
 
 - 发出请求不符合同源策略要求。
 
@@ -2708,8 +2608,6 @@ cors_front/index.html. 通过ajax调用接口
 - 你的请求是xhr请求。就是常说的ajax请求。
 
 ### 实现跨域请求的方案--JSONP
-
-#### JSONP简介
 
 **JSON** with **P**adding，是一种借助于 `script` 标签发送跨域请求的技巧。
 
@@ -2938,12 +2836,9 @@ app.listen(3000, () => {
           // 留言板接口 -- 获取所有数据
           app.get('/jsonp', (req, res) => {
             var { callback } = req.query;
-          
             res.setHeader('content-type', 'application/javascript');
-          
             res.end(callback + '({a:1,b:2})');
           });
-          
           app.listen(3000,()=>{})
       </pre>
     </div>
@@ -3009,7 +2904,7 @@ app.listen(3000, () => {
 
 CORS是一个W3C标准，全称是"跨域资源共享"（Cross-origin resource sharing）。它允许浏览器向跨源服务器，发出[`XMLHttpRequest`](http://www.ruanyifeng.com/blog/2012/09/xmlhttprequest_level_2.html)请求，从而克服了AJAX只能[同源](http://www.ruanyifeng.com/blog/2016/04/same-origin-policy.html)使用的限制。CORS需要浏览器和服务器同时支持。目前，所有浏览器都支持该功能，IE浏览器不能低于IE10(ie8通过XDomainRequest能支持CORS)。
 
-[参考](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)
+[参考](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS
 
 通过在**被请求的路由中**设置header头，可以实现跨域。不过这种方式只从最新的浏览器（IE10）才支持。
 
@@ -3027,11 +2922,7 @@ app.get('/time', (req, res) => {
 - 服务端响应的时候添加一个 `Access-Control-Allow-Origin` 的响应头
 - 如果ajax请求中还附加了cookie，则还需要设置一句：`res.setHeader('Access-Control-Allow-Credentials', 'true');`
 
-
-
-自行下载使用 npm cors https://www.npmjs.com/package/cors
-
-
+自行下载使 npm cors https://www.npmjs.com/package/cors
 
 ### jsonp vs cors 对比
 
@@ -3056,5 +2947,66 @@ cors:
 - path.join() 用于进行路径信息的合并处理
 
   ```javascript
-fs.readFile(path.join(__dirname, '我们最习惯的相对路径'), 'utf', () => { //... });
+fs.readFile(path.join(__dirname, '我们最习惯的相对路径'), 'utf8', () => { //... });
   ```
+
+
+
+## 通过req.url进行不同的文件响应
+
+- req.url 可以获取到用户请求的地址：  例如： /index.html    /     /base.css    /style
+- 操作步骤：
+  - 1 判断**req.url**检测需要响应的是哪个文件
+  - 2 读取文件
+    - **fs.readFileSync**(地址, 'utf8可选');  同步的文件读取方式
+      - 返回值为读取到的数据，如果读取失败出现报错。
+  - 3 设置响应头Content-Type
+  - 4 进行数据响应
+    - **res.end(数据);**
+      - 字符串和buffer都可以进行响应。
+
+
+
+## 托管静态资源的方式
+
+> 如果页面中有很多静态资源的引入，需要进行很多的判断处理不太合理。太麻烦。
+
+- 步骤：
+
+  - 1 首页的请求处理方式与之前相同
+
+  - 2 剩余的文件进行静态资源托管设置
+
+    - 检测url是否以/public/开头即可，使用  字符串.startsWith()
+
+  - 3 检测后缀名将不同文件进行对应的处理
+
+    - path.extname(req.url);    可以取出地址中的后缀(扩展名)
+
+  - 4 设置地址读取文件
+
+    - 通过try..catch进行错误信息的捕获和处理
+
+    ```javascript
+    try {
+      // 这里面书写正常的代码，如果代码预期会出现报错，使用try...catch
+      //  - try块中的代码出现报错后，错误不会真的报错来，而是执行后面的catch块内容
+    } catch (err) {
+      // err是错误信息，可选
+      //  - 这里用来进行try块报错后的处理操作
+    } finally {
+      // 可以省略finally,不常用，反正都会执行
+    }
+    ```
+
+
+
+
+## 接口和静态资源的区别
+
+- 共同点：
+  - 都是一个url地址
+- 区别：
+  - 静态资源的地址响应的一定是一个文件(css、js..)
+  - 接口地址响应的一定是一段数据
+  - 静态资源的地址没有参数。接口地址有时是需要参数。

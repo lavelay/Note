@@ -77,11 +77,6 @@ AJAX ，全称是：**A**synchronous **J**avaScript **A**nd **X**ml 。
   - get和post请求都可以在发请求时附带一些数据。
   - get和post请求都能够从服务器上获取返回的数据。
 
-get传数据直接显示在url中
-
-post传递数据更安全
-
-- form Data 表单 (形式) 数据
 - get请求：
   - 请求参数：通过请求发送的数据被称为请求参数。
   - get的请求参数被浏览器自动的**连接到url后面**
@@ -134,19 +129,9 @@ xhr.getResponseHeader('传入某个具体的响应头名称'); // 获取某个�
 
 
 
-## onreadystatechange事件
+## onreadystatechange、onload
 
-`onload` 是 HTML5 （2014年9月）以后新增的方便获取响应的事件，一些老的浏览器(ie6,ie7,ie8)对onload是不支持的。通过代码来验证这一点:以下代码在ie6,ie7,ie8中并不能使用。
-
-```javascript
-var xhr = new XMLHttpRequest()
-// open 方法的第一个参数的作用就是设置请求的 method
-xhr.open('get', 'common/getCurrentTime')
-xhr.onload = function () {
-    alert('ok')
-}
-xhr.send()
-```
+`onload` 是 HTML5 （2014年9月）以后新增的方便获取响应的事件，ie6,ie7,ie8对onload不支持
 
 在html5之前，获取服务器返回内容的时候使用的是 `onreadystatechange`事件，这事件是在xhr对象状态变化时被触发，而一次请求过程中，`XMLHttpRequest`对象的状态会发生`多次变化`，也就意味着这个事件会被触发多次。
 
@@ -154,9 +139,8 @@ xhr.send()
 var xhr = new XMLHttpRequest()
 // open 方法的第一个参数的作用就是设置请求的 method
 xhr.open('get', 'common/getCurrentTime')
-// onreadystatechange
-xhr.onreadystatechange = function () {
-    console.log('事件被触发了')
+xhr.onload = function () {
+    alert('ok')
 }
 xhr.send()
 ```
@@ -176,29 +160,6 @@ xhr.send()
 
 
 ## get请求在IE 中的缓存问题
-
-```javascript
-<div>
-    <button id="btn">获取时间</button>
-<label for="" id="lblTimer"></label>
-</div>
-<script>
-    document.getElementById('btn').onclick = function() {
-    var xhr = new XMLHttpRequest();
-    console.log(xhr.readyState);
-    // open 方法的第一个参数的作用就是设置请求的 method
-    xhr.open('get', 'common/getCurrentTime');
-    console.log(xhr.readyState);
-    xhr.send();
-    xhr.onreadystatechange = function() {
-        // 表示从服务器端返回的数据已经全部ok了。
-        if (xhr.readyState == 4) {
-            document.getElementById('lblTimer').innerHTML = xhr.responseText;
-        }
-    };
-};
-</script>
-```
 
 出现的原因：
 
@@ -231,67 +192,6 @@ document.getElementById('btn').onclick = function() {
 
 
 
-## responseType
-
-- responseType -- 预期服务器返回数据的类型
-  - “”  -- 空，表示文本，和text一样。空为默认值
-  - text -- 文本
-  - json -- JSON格式数据
-  - document -- 文档对象
-- response -- 根据responseType的值自动处理返回结果，可以接收任何类型的结果
-
-```javascript
-var xhr = new XMLHttpRequest();
-      xhr.open('get', 'common/get?id=123&name=jake');
-      xhr.send();
-      xhr.responseType = 'json';
-      xhr.onload = function() {
-        // responseText
-        // 只有当responseType是"" 或者是"text"时才只可以使用；
-        // console.info(typeof xhr.responseText);
-        // console.info(JSON.parse(xhr.responseText));
-        console.info(typeof xhr.response);
-        console.info(xhr.response);
-      };
-```
-
-- 不需要再次对xhr.responseText进行转换
-- 不能再使用xhr.responseText，会报错。应该使用xhr.response
-
-
-
-### 不用FormData
-
-```javascript
-document.getElementById('btn').onclick = function() {
-    //收集用户信息
-    var userName = document.getElementById('userName').value;
-    var userPassword = document.getElementById('userPassword').value;
-    var userGender = '';
-    if (document.getElementById('genderMale').checked) {
-        userGender = 'male';
-    } else if (document.getElementById('genderFemale').checked) {
-        userGender = 'famale';
-    }
-    console.info(userName, userPassword, userGender);
-
-    // 通过post传值
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-    xhr.open('post', 'common/post');
-    xhr.setRequestHeader(
-        'Content-type',
-        'application/x-www-form-urlencoded'
-    );
-    xhr.send(
-        `userName=${userName}&userPassword=${userPassword}&userGender=${userGender}`
-    );
-    xhr.onload = function() {
-        console.info(xhr.response);
-    };
-};
-```
-
 ## 使用FormData
 
 ```javascript
@@ -303,10 +203,6 @@ document.getElementById('btn').onclick = function() {
     xhr.responseType = 'json';
     xhr.open('post', 'common/post');
     // 不用设置请求头 
-    // xhr.setRequestHeader(
-    //   'Content-type',
-    //   'application/x-www-form-urlencoded'
-    // );
     xhr.send(fd);
     xhr.onload = function() {
         console.info(xhr.response);
@@ -314,7 +210,7 @@ document.getElementById('btn').onclick = function() {
 };
 ```
 
-- FormData对象内部有一个键值对集合，其中的键名就是表单元素的name属性名，而值就是这个表单元素当前的值。
+- FormData对象内部有一个键值对集合，键名就是表单元素的name属性名，值就是这表单元素当前的值。
 
 ### 通过FormData进行文件上传
 
@@ -324,16 +220,12 @@ document.getElementById('btn').onclick = function() {
         type: 'post',
         url: 'http://localhost:3005/formData/upload',
         data: new FormData($('#form')[0]),
-        contentType: false,
-        processData: false,
+        contentType: false,// jquery会自动给post请求设置请求头
+        processData: false,// 不需要jquery去处理上传数据
         success: function (res) {
           console.log(res);
         }
       });
-// 1. processData:false
-// 不需要jquery去处理上传数据
-// 2. contentType:false
-// jquery会自动给post请求设置请求头，Content-type:'application/x-www-form-urlencoded'。如果提交		的数据是formdata，就不需要去设置了
 ```
 
 ### FormData对象的api
@@ -362,51 +254,9 @@ fd.values()
 //返回一个包含所有值的iterator对象。
 ```
 
-### 自定义键值对
-
-```javascript
-//   使用FormData
-document.getElementById('btn').onclick = function() {
-    //收集用户信息
-    var fd = new FormData();
-    // 数据在FormData内部是以键-值对的格式存在的.
-    // 获取：值
-    // 格式： fd.get(键名 )
-    // 向fd中追加一个键值对
-    fd.append('userName', document.getElementById('userName').value);
-    fd.append(
-        'userPassword',
-        document.getElementById('userPassword').value
-    );
-    var userGender = '';
-    if (document.getElementById('genderMale').checked) {
-        userGender = 'male';
-    } else if (document.getElementById('genderFemale').checked) {
-        userGender = 'famale';
-    }
-    fd.append('userGender', userGender);
-    //console.info(fd.get('email'));
-    // 通过post传值
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-    xhr.open('post', 'common/post');
-    // 不用设置请求头
-    // xhr.setRequestHeader(
-    //   'Content-type',
-    //   'application/x-www-form-urlencoded'
-    // );
-    xhr.send(fd);
-    xhr.onload = function() {
-        console.info(xhr.response);
-    };
-};
-```
-
 
 
 ## 上传文件进度条onprogress
-
-核心：
 
 - xhr对象中有一个子对象upload，upload对象中有一个事件 onprogress。
 - onprogress事件大约每100ms触发一次，其回调函数第一个参数是一个事件对象，这个事件对象中有两个属性 loaded 和 total
@@ -464,8 +314,6 @@ document.getElementById('btn').onclick = function() {
 
 ## ajax定义同步和异步
 
-原生的ajax中，xhr.open()方法的第三个参数就可以决定同步和异步的方式。
-
 ```javascript
 xhr.open(参数1 ，参数2，参数3)
 - 参数1 ：请求的方式.  get，post
@@ -485,42 +333,11 @@ xhr.onload = function() {
 xhr.send();// 发送。
 ```
 
-### 异步的ajax
+#### 进程：进行中的程序
 
-xhr.open()默认是异步的。通过下面的代码来理解异步。
-
-```javascript
-// 1. 先输出一行提示代码
-console.info('1  现在的时间是：', new Date().toLocaleTimeString());
-
-// 2. 创建ajax，设置，并发送请求
-var xhr = new XMLHttpRequest();
-xhr.open('get', 'common/sleep');// 第三个参数不写，默认是异步
-xhr.onload = function() {
-    console.info('2 现在的时间是：', new Date().toLocaleTimeString());
-};
-xhr.send();// 发送。
-
-// 3.再输出一行提示代码
-console.info('3 现在的时间是：', new Date().toLocaleTimeString());
-```
-
-注意：`异步ajax时，onload，可以写在send之后`
+#### 线程：CPU最小执行单元
 
 ### 同步的ajax
-
-```javascript
-xhr.open(参数1 ，参数2，参数3)
-- 参数1 ：请求的方式。 get，post
-- 参数2 ：请求的url地址。
-- 参数3 ：是否启用异步模式，默认为true，即异步， `如果设置为false，就是同步`。
-```
-
-```javascript
-xhr.open('get', 'common/getCurrentTime');       // 异步
-xhr.open('get', 'common/getCurrentTime'，true); // 异步
-xhr.open('get', 'common/getCurrentTime', false);// 同步
-```
 
 - 同步代码中，onload必须写在send之前。
 - 同步执行流程：
@@ -530,65 +347,7 @@ xhr.open('get', 'common/getCurrentTime', false);// 同步
 
 如果你设置成了同步的方式，你会在浏览器看到如下的错误信息：
 
-`[Deprecation] Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.`
-
-有几个单词：
-
-- Synchronous: 同步的
-- deprecate:反对的，不赞成
-- detrimental：有害的，不利的
-
-翻译一下就是：[deprecation]由于主线程上的同步xmlhttpRequest对最终用户的体验有不利影响，因此不推荐使用它。有关更多帮助，请查看https://xhr.spec.whatwg.org/
-
-
-
-## 处理post请求
-
-第一步：直接通过if,else进行两类的处理
-
-```javascript
-function myAjax(type,url,data) {
-    if(type == 'post'){
-        var xhr = new XMLHttpRequest();
-        xhr.open(type,url);
-        xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
-        xhr.onload = function(){console.log(xhr.responseText)}
-        xhr.send(data)
-    }
-    else if(type == 'get'){
-        var xhr = new XMLHttpRequest();
-        if(data){
-            url += "?"+data;
-        }
-        xhr.open(type,url);
-        xhr.onload = function(){console.log(xhr.responseText)}
-        xhr.send()
-    }
-}
-myAjax('get','common/get','a=1&b=2');
-myAjax('post','common/post','a=1&b=2');
-```
-
-第二步：把if,else中的相同的代码提出来 
-
-```javascript
-function myAjax(type,url,data) {
-    var xhr = new XMLHttpRequest();
-    if(type=='get' && data){
-        url += "?"+data;
-    }
-    xhr.open(type,url);
-    xhr.onload = function(){console.log(xhr.responseText)}  
-    if(type == 'post'){
-        xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
-        xhr.send(data)
-    }
-    else if(type == 'get'){
-        xhr.send()
-    }
-}
-myAjax('get','common/get','a=1&b=2');
-```
+[deprecation]由于主线程上的同步xmlhttpRequest对最终用户的体验有不利影响，因此不推荐使用它。
 
 
 
@@ -598,13 +357,13 @@ myAjax('get','common/get','a=1&b=2');
 
 - cache: 设置ie浏览器的缓存问题。默认为true，表示缓存。  cache: false 不缓存。
 
-- dataType：预期服务端返回的数据方式。如不指定，它会自动判断。
+- dataType：预期服务端返回的数据方式。是设置响应
 
 - contentType：请求体内容方式，默认 `application/x-www-form-urlencoded`
 
 - timeout：请求超时时间。
 
-- beforeSend：请求发起之前触发
+- beforeSend：在所有（open、send）请求发起之前触发执行
 
 - complete：请求完成触发（不管成功与否）
 
@@ -641,9 +400,9 @@ myAjax('get','common/get','a=1&b=2');
 ```javascript
 $.getJSON(url,[,data][,success]);
 参数：
- - url     ：字符串方式。指要请求的 URL 地址。
- - data    : js对象，或者字符串方式。 可选的。 指发请求带给服务器的信息。
- - success : function(json){} 。它是一个回调函数，当请求成功时被自动调用，它的参数是从服务器返回的JSON数据。
+ - url     ：字符串方式。指要请求的 URL 地址
+ - data    : js对象，或者字符串方式。 可选的。 指发请求带给服务器的信息
+ - success : function(json){} 是一个回调函数，当请求成功时被调用，参数是从服务器返回的JSON数据
 ```
 
 
