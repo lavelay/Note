@@ -1,4 +1,4 @@
-Node.js
+## Node.js
 
 基于ChromeV8引擎的JS运行环境
 
@@ -558,64 +558,7 @@ app.listen(8082, () => {
 
 通过使用res对象中的setHeader方法，我们可以设置content-type这个响应头。这个响应头的作用是告诉浏览器，本次响应的内容是什么格式的内容。以方便浏览器进行处理。
 
-常见的几中文件类型及content-type如下。
 
-- .html：` res.setHeader('content-type', 'text/html;charset=utf-8') `
-- .css：`res.setHeader('content-type', 'text/css;charset=utf-8')`
-- .js：`res.setHeader('content-type', 'application/javascript') `
-- .png：`res.setHeader('content-type', 'image/png')`
-
-其它类型，参考这里：https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
-
-### 批量处理请求
-
-由于我们不法事先得知一个.html文件中会引用多少个静态资源，所以，我们不能像处理某个页面一样去处理它们。我们的解决办法有两大类是：
-
-1. 把这类静态资源连同所有的.html文件全放在固定的文件夹中。在用户请求时，当判断当前的req.url是在这个文件夹下就是直接读内容，并返回。
-
-```javascript
-01-server.js
-// 创建服务器
-
-const fs = require('fs');
-
-// 1. 加载http
-const http = require('http');
-// 2. 创建server对象
-const server = http.createServer((req, res) => {
-    // 浏览器请求的是 /message.html
-    console.log(req.url);
-
-    fs.readFile('./public' + req.url, (err, data) => {
-        if (err) return console.log(err);
-        // 没有错误，将读取的结果响应给浏览器
-        res.end(data);
-    });
-
-    /* if (req.url === '/message.html') {
-        fs.readFile('./public/message.html', (err, data) => {
-            if (err) return console.log(err);
-            // 没有错误，将读取的结果响应给浏览器
-            res.end(data);
-        });
-    } else if (req.url === '/assets/bootstrap.css') {
-        fs.readFile('./public/assets/bootstrap.css', (err, data) => {
-            if (err) return console.log(err);
-            // 没有错误，将读取的结果响应给浏览器
-            res.end(data);
-        });
-    } else if (req.url === '/assets/avatar.png') {
-        fs.readFile('./public/assets/avatar.png', (err, data) => {
-            if (err) return console.log(err);
-            // 没有错误，将读取的结果响应给浏览器
-            res.end(data);
-        });
-    } */
-});
-// 3. 监听端口，开启服务
-server.listen(4000, () => console.log('开始监听 4000'));
-
-```
 
 - 2. 分析后缀名，如果是允许的，就直接返回
 
@@ -657,14 +600,11 @@ const app = http.createServer((req, res) => {
 app.listen(8082, () => {
   console.log('8082端口启动');
 });
-
 ```
 
 
 
 ## http模块-实现接口功能
-
-在前面学习ajax时，我们说接口是后端同学写好的，我们前端同学只需要调用即可。现在，我们学习了nodejs，我们就可以客串一把后端同学的角色，来试着写写接口了。
 
 ### get类型的接口-无参数
 
@@ -707,10 +647,6 @@ app.listen(8083, () => {
 
 ### 接口与静态资源的区别
 
-
-
-![1563336795597](E:/待办事项/JS每日/2-nodejs/node-material.assets/1563336795597.png)
-
 服务器上有很多的资源，每个资源都有自己的url。客户端浏览器想要访问某个资源就要向服务器发起对应的请求。
 
 资源的分类：
@@ -736,8 +672,6 @@ app.listen(8083, () => {
   - 通过表单提交，可以设置form的method为post
 - delete
 
-
-
 url的作用是确定用户要访问的资源的位置，在地址栏中输入回车之后，这个请求会到web服务器中来，然后由web服务器来决定此时返回什么数据给用户。但是，我们能够根据url来推测服务器会返回什么信息吗？
 
 ```javascript
@@ -749,51 +683,20 @@ url:http://oa.itcast.cn/seeyon/main.do?method=main
 url:https://mail.qq.com/cgi-bin/frame_html?sid=aLqnlljMxF54DgtW&r=d281ced83329f34caae9786fcb5d4934
 ```
 
-显然，不能，你能从服务器上获得什么，完全是由服务器决定的。
+
 
 ### 理解url
 
 全称：Uniform Resource Locator，统一资源定位符。
 
-作用： 定位资源(css,html,js,png, avi......)。
+作用： 定位资源(css,html,js,png, avi......)
 
 格式：`协议://主机地址[:端口]/路径?查询字符串#锚点`
 
-- 协议
-  - http
-  - https
-- 主机地址
-  - IP地址 或者 域名
 - 端口
   - http请求，默认端口80
   - https请求，默认端口443
   - MySQL默认端口3306
-- 路径
-  - 服务器文件夹上的资源。（.html/.css/.images/.js/接口）
-- 参数（查询字符串）
-  - ? 后面的部分，是键值对的形式
-- 锚点
-  - 网页内部的锚点链接
-
-例如：http://itcast.cn:80/schools/students?id=18&name=zs#photo
-
-经典用法：访问文件时传递参数。
-
-```html
-// index.html
-<a href='detail.html?id=1'>新闻1</a>
-<a href='detail.html?id=2'>新闻2</a>
-```
-
-
-
-```html
-// detail.html
-<script>
-// 1. 获取id
-// 2. 根据id值去获取这个新闻的详情 
-</script>
-```
 
 
 
@@ -900,21 +803,17 @@ server.listen(8088, function() {
 
 ### post接口
 
-假设我们自己就是一名后端程序员，现在要实现一个post类型的接口。具体要求如下：
-
 > 地址：/post
 >
 > 功能：获取用户传入的参数，并以json字符串格式返回，在返回的信息中要加上时间戳.
 >
-> 示例：
->
 > ```
-> 接口地址:localhost:8080/post
+>接口地址:localhost:8080/post
 > 参数：name=filex&age=30;
 > 返回:{name:filex,age:30,_t:1563265441778}
 > ```
 > 
->要求：通过postman软件的测试。
+> 要求：通过postman软件的测试。
 
 
 
@@ -985,136 +884,6 @@ xhr.send("name="+"imissyou".repeat(100000));
 
 
 
-## 留言板案例
-
-我们在前面学习ajax时，学习了如何去实现一个留言板，当时，我们是通过ajax调用现有的接口来实现的，现在我们采用全服务器端的思想来实现。
-
-具体实现之后的效果如下。
-
-### 文件系统
-
-```
-|--message
-|--/node_modules
-|--/package.json 
-|--/server.js    主程序
-|--/db.json      以json字符串格式保存留言信息
-|--/message.html 页面
-```
-
-
-
-### 实现一个静态web服务器
-
-1. 新建一个文件夹，比如msg
-2. 将使用到的html文件、css文件、图片文件、js文件等复制到准备好的文件夹msg中
-3. 将模拟数据db.json文件复制到msg中
-4. 在msg文件夹中，创建app.js，搭建Web服务环境
-
-### 实现留言列表
-
-- 当输入地址，回车，会向服务器发送一次GET请求
-- 服务器接收到请求，要给浏览器返回它要的数据
-
-### 实现添加留言功能
-
-1. 给表单设置action和method属性
-2. 添加接口, 用于处理action
-   1. 获取用户提交的数据
-   2. 写入到message.json中
-      1. 先读出来
-      2. 转成数组
-      3. 使用数组push，来追加
-      4. 转成字符串，写回去
-
-- 点击界面中的“添加”时，向服务器发送请求，并提交数据给服务器，注意设置表单的action和method
-- 服务器接收到请求，完成数据添加，并作出响应，告知浏览器添加成功与否
-
-
-
-参考代码
-
-```js
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
-const qs = require('querystring');
-
-const app = http.createServer((req, res) => {
-  console.log(req.url);
-  if (req.url === '/message.html') {
-    //1. 读入html文件
-    let htmlString = fs.readFileSync('./message.html');
-
-    //2.去message.json中读出留言内容，拼接htmlString中去
-
-    let msgString = fs.readFileSync('./message.json', 'utf8');
-    let msgArr = JSON.parse(msgString);
-
-    //3.接接真实留言信息
-
-    let htmlMsgStr = '';
-    msgArr.forEach(ele => {
-      let m = `
-        <li class="media">
-          <img class="mr-3" src="./assets/avatar.png" alt="张三" />
-          <div class="media-body">
-            <h4>${ele.name}</h4>
-            <p>${ele.message}</p>
-            <p>${ele.date}</p>
-          </div>
-        </li>
-        `;
-      htmlMsgStr += m;
-    });
-    // 4. 把htmlString中的{{{msg}}} 替换成msgArr表示的真实的留言信息
-    htmlString = htmlString.toString().replace('##msg##', htmlMsgStr);
-    console.log(htmlMsgStr);
-    //5. 返回
-    res.end(htmlString);
-  } else if (req.url === '/assets/bootstrap.css') {
-    let htmlString = fs.readFileSync(path.join(__dirname, req.url));
-    res.end(htmlString);
-  } else if (req.url === '/assets/avatar.png') {
-    let htmlString = fs.readFileSync(path.join(__dirname, req.url));
-    res.end(htmlString);
-  } else if (req.url === '/addmsg' && req.method === 'POST') {
-    // 收集用户提交的信息
-    let postStr = '';
-    req.on('data', p => {
-      postStr += p;
-    });
-    req.on('end', () => {
-      let obj = qs.parse(postStr);
-      console.log(obj.name);
-      console.log(obj.message);
-
-      // 把信息添加到message.json文件中
-      //1.读出message.json。转成数组
-      let msgStr = fs.readFileSync('./message.json', 'utf8');
-      let msgArr = JSON.parse(msgStr);
-      //2. 向数组添加一条数据
-      msgArr.push({
-        name: obj.name,
-        message: obj.message,
-        date: Date.now()
-      });
-      //3.把这个数组写回到message.json中
-      fs.writeFileSync('./message.json', JSON.stringify(msgArr));
-
-      //进行页面的跳转，回到message.html
-      res.end('<script>window.location.href="message.html"</script>');
-    });
-  }
-});
-
-app.listen(8080, () => {
-  console.log(8080);
-});
-```
-
-
-
 ## 自定义模块
 
 ###  基本步骤
@@ -1169,7 +938,6 @@ console.log(myMath);
 
 let rs = myMath.add(23,45);
 console.log(rs)
-
 ```
 
 
@@ -1180,28 +948,6 @@ console.log(rs)
 
 - exports
 - module.exports
-
-参考：https://nodejs.org/api/modules.html#modules_exports_shortcut
-
-它们的关系是：  exports是module.exports的别名，即：
-
-```javascript
-exports === module.exports
-```
-
-所以下面两种写法的效果是一样的：
-
->```
->//1 mymodule.js
->exports.f = function(){ }
->exports.pi = 3.1415926
->```
->
->```
->//2 mymodule.js
->module.exports.f = function(){ }
->module.exports.pi = 3.1415926
->```
 
 区别在于：
 
@@ -1215,85 +961,21 @@ exports === module.exports
 
 ## npm使用
 
-nodejs通过自带的`npm`(node package manager)工具来管理第三方模块，所以，在学习使用第三方模块时，我们先要学习npm的使用。
-
 - `npm` 全称 `Node Package Manager`(node 包管理器)，它的诞生是为了解决 Node 中第三方包共享的问题。
-- `npm` 不需要单独安装。在安装Node的时候，会连带一起安装`npm`。
-- [官网](https://www.npmjs.com/)
-
-
-
-当我们谈到npm时，我们在说两个东西：
-
-- 命令行工具。这个工具在安装node时，已经自动安装过了。
-- npm网站。这是一个第三方模块的"超市"，我们可以自由地下载，上传模块。
-
-### 包（package）与模块关系
-
-![1562665731262](E:/待办事项/JS每日/2-nodejs/node-material.assets/1562665731262.png)
-
-nodejs中一个模块就是一个单独的js文件
-
-- 包是多个模块的集合。一个模块能够解决的问题比较单一，一个包中有多个模块。
-- npm 管理的单位就是包
-
-类似于网站和网页的区别：一个网站一般会包含多个网页。
-
-### 通过npm命令行下载第三方模块（包）
-
-分成三步：
-
-- 初始化项目。如果之前已经初始化，则可以省略
-- 安装包。 npm install 包
-- 引入模块，使用。
-
-#### 第一步：初始化项目
-
-进入到项目所在的根目录下，启动小黑窗（按下shift键，点击右键，在弹出的菜单中选择 在此处打开命令行）
-
-输入如下命令：
 
 ```javascript
 npm init --yes
 // 或者是 npm init -y
-
+//如果项目根目录下已经有了package.json文件，就不需要再去运行这个命令了
 ```
-
-init命令用来在根目录下生成一个package.json文件，这个文件中记录了我们当前项目的基本信息。它是一切工作的开始。
-
-#### 第二步：安装包
-
-生成了package.json文件之后，我们就可以来安装第三方包了。在npm官网中，有上百万个包，供我们使用。
-
-![1562724829170](E:/待办事项/JS每日/2-nodejs/node-material.assets/1562724829170.png)
-
-根据我们遇到的实际问题，我们来引入相应的包来解决它们。例如，我们在开发一个项目，其中涉及一些对货币金额的计算，格式化等问题。需要一些功能：
-
-- 对货币数值进行格式化
-- 精确运算货币数值
-
-```
-1234567元  ---> ￥1,234,567
-0.1 + 0.2  ---> 0.3
-```
-
-此时，我们就可以去使用currency.js这个包。
-
-npm地址：<https://www.npmjs.com/package/currency.js> 主页：<https://currency.js.org/>
-
-
-
-##### 安装currency.js包
 
 ```
 npm install  currency.js
 ```
 
-注意：
+currency.js是包名。不要省略.js，是有效包名的一部分。（currency表示另一个包）
 
-- currency.js是包名。不要省略.js，它也是有效包名的一部分。（ 不要认为这是后缀名。如果你写currency其实表示另一个包）。
 
-#### 第三包：使用包
 
 当我们已经下载好一个包之后，就可以向使用核心模块一样去使用它。
 
@@ -1302,54 +984,17 @@ npm install  currency.js
 ```javascript
 // 1. 引入包
 const currency = require('curency.js')
-
 // 先打出来看看
 console.log(currency)
-
 // 2. 使用包
 console.info(currency(1.23, { formatWithSymbol: true }).format());
 ```
 
-### npm init 命令
 
-在某个目录下开启小黑窗，输入如下命令：
-
-```
-npm init 
-```
-
-它会启动一个交互式的程序，让你填入一些关于本项目的信息。最后会生成一个package.json文件。
-
-如果你希望直接采用默认信息，可以使用:
-
-```javascript
-npm init --yes
-// 或者是 npm init -y
-```
-
-说明：
-
-- 这个命令只需要运行一次，它的目的仅仅是生成一个package.json文件。而这个package.json文件在后期是可以手动修改的。
-- 如果项目根目录下已经有了package.json文件，就不需要再去运行这个命令了
-- 一般我们从网上clone下来的项目都会包含这个文件。
 
 #### package.json文件
 
-它整体是一个json字符串，对当前项目的整体描述。其中最外层可以看作是一个js的对象（每一个属性名都加了""，这就是一个典型的json标记）。这个文件中有非常多的内容，我们目前学习如下几个：
-
-- name
-
-  表示这个项目的名字。如是它是一个第三方包的话，它就决定了我们在require()时应该要写什么内容
-
-- version
-
-  版本号
-
-参考
-
-1.http://javascript.ruanyifeng.com/nodejs/packagejson.html
-
-2.http://caibaojian.com/npm/files/package.json.html
+它整体是一个json字符串，对当前项目的整体描述。其中最外层可以看作是一个js的对象
 
 ### node_modules文件夹
 
@@ -1366,13 +1011,7 @@ npm init --yes
 
 2. 如果没有package.json。会给一个警告信息
 
-说明：
 
-```
-- 建议先创建package.json之后，再去install
-- 在分享代码时，我们一般不需要把node_modules也给别人（就像你不需要把jquery.js给别人，因为他们可以自己去下载）。对方拿到我们的代码之后，先运行`npm install`(后面不接任何的包名)，自己去安装这些个依赖包。
-
-```
 
 ### 全局安装包和本地安装包
 
@@ -1391,9 +1030,8 @@ npm init --yes
       which npm   // 查看npm的安装目录
       npm root -g // 查看全局包的安装目录
       npm list -g --depth 0 //查看全局安装过的包
-      
       ```
-
+  
 - 局部安装（或者叫本地安装)，包并安装在当前项目的根目录下，与package.json同级目录的node_modules。就只在这个项目中可以使用。
 
   - ​	命令：`npm install 包名`
@@ -1409,11 +1047,9 @@ nrm的使用方法。
 ```javascript
 // 第一步： 全局安装 
 npm install nrm -g
-
 // 第二步：列出所有的源信息
 // （*）标注的就是当前使用的源
 nrm ls
-
 // 第三步：根据需要切换源 
 // 例如：指定使用taobao源
 nrm use taotao
@@ -1441,35 +1077,8 @@ nrm use taotao
 
 ### 开发依赖和生产依赖(了解)
 
-在本地安装包时，表示我们这个项目要用到这个包，换句话说，我们这个项目要想成功运行，要依赖于这些个包。
-
-但在，具体在项目进行的哪一阶段依赖于这些包呢？也有具体的差异。
-
-#### 理解
-
-举个生活中建房子的场景：
-
-在建房子时，我们依赖：
-
-- 辅助工具：尺子，水平仪，脚手架
-- 原材料：钢筋，水泥
-
-在住房子时，我们依赖：
-
-- 原材料：钢筋，水泥
-
-在房子进入到了使用阶段时，我们就不再需要尺子，水平仪，脚手架等这些个辅助工具了。我们买一所房子时，也不应该支付巨型脚手架的费用。  在开发前端项目的过程中也存在类似的问题：我们的开发过程和使用过程是分开的，开发项目时需要用到的包可能在使用项目时就不需要用到了。
-
-假设有这么两个包：
-
 - gulp-htmlmin。这个工具是用来把html代码进行压缩的（去掉空格，换行等），我们需要在开发时使用它，而项目一旦上线，我们就不再需要它了。，因此将它归类为"开发依赖"。
 - jquery。在开发时参与源码编写，在发布上线的生产环境中也是需要它的。不仅在开发环境编写代码时要依赖它、线上环境也要依赖它，因此将它归类为"生产依赖"。
-
-
-
-![1562728491126](E:/待办事项/JS每日/2-nodejs/node-material.assets/1562728491126.png)
-
-这个差异就表现在，我们在打包项目时，就不需要打包“开发依赖”的包，这样减少成本。
 
 
 
@@ -1545,17 +1154,14 @@ console.log(obj);
 
 ### npm 常用命令
 
-- 查看
+```bash
+npm -v  // 查看npm 版本
+which node   // 查看node的安装目录
+which npm   // 查看npm的安装目录
+npm root -g // 查看全局包的安装目录
+npm list -g --depth 0 //查看全局安装过的包
+```
 
-  ```bash
-  npm --version
-  npm -v  // 查看npm 版本
-  which node   // 查看node的安装目录
-  which npm   // 查看npm的安装目录
-  npm root -g // 查看全局包的安装目录
-  npm list -g --depth 0 //查看全局安装过的包
-  ```
-  
 - 升级 npm
 
   ```bash
@@ -1574,17 +1180,14 @@ console.log(obj);
   ```javascript
   // 安装package.json中列出的所有的包
   npm install
-  
   // 全局安装
   npm install 包名 -g
-  
   // 本地安装，没有指定版本，默认安装最新的版本
   npm install 包名
   // 一次安装多个包
   npm install 包名1 包名2 包名3
   // 安装指定版本的包
   npm install 包名@版本号
-  
   // 简写。把install简写成 i
   npm i 包名
   ```
@@ -1615,36 +1218,11 @@ console.log(obj);
 - Express 是一个基于 Node.js 平台，快速、开放、极简的 **web 开发框架**
 - Express 是一个第三方模块，有丰富的 API 支持，强大而灵活的**中间件**特性
 - Express 不对 Node.js 已有的特性进行二次抽象，只是在它之上扩展了 Web 应用所需的基本功能
-- 链接
-  - [Express 官网](http://expressjs.com/)
-  - [Express 中文文档（非官方）](http://www.expressjs.com.cn/)
-  - [Express GitHub仓库](https://github.com/expressjs/express)
-
-#### 安装
-
-> 参考文档：http://expressjs.com/en/starter/installing.html
-
-```shell
-# 在你的项目根目录下，打开小黑窗
-
-# 1. 初始化 package.json 文件
-npm init -y
-
-# 2. 本地安装 express 到项目中
-# npm install express
-npm i express
-```
-
-注意：
 
 - 项目目录名字不要取中文，也不要取express
 - 如果安装不成功
   - 换个网络环境
   - 运行下`npm cache clean -f`，再重装试试
-
-#### 使用
-
-> 参考文档：http://expressjs.com/en/starter/hello-world.html
 
 
 
@@ -1686,10 +1264,6 @@ http://localhost:3000/1.png
 http://localhost:3000/css/style.css
 http://localhost:3000/js/index.js
 ```
-
-例如，如上url分别是请求一张图片，一份样式文件，一份js代码。我们实现的web服务器需要能够直接返回这些文件的内容给客户端浏览器。
-
-
 
 在前面学习http模块时，我们已经实现了这些功能了，但是要写很多代码，现在使用express框架，只需一句代码就可以搞定了，这句代码是  `express.static('public')`
 
@@ -1838,8 +1412,6 @@ app.post('/post',function(req,res){
 
 具体来说当content-type为x-www-form-urlencoded时，表示上传的普通简单的键值对 。如果通过postman测试的话，对应的设置如下：
 
-![1563331737144](E:/待办事项/JS每日/2-nodejs/node-material.assets/1563331737144.png)
-
 
 
 一般要先下载body-parser这个包。
@@ -1850,7 +1422,7 @@ npm install body-parser
 
 在 express4中，已经预先下载安装过了（在npm install exprss 时，就已经安装了body-parse，你可以在node_modules中查看到），这样就可以直接使用了
 
-![1563331908506](E:/待办事项/JS每日/2-nodejs/node-material.assets/1563331908506.png)
+![1563331908506](E:/待办事项/JS每日/99-nodejs/node-material.assets/1563331908506.png)
 
 ##### 步骤
 
@@ -1877,10 +1449,6 @@ app.post("/add",function(req,res){
 ```html
 enctype="multipart/form-data"
 ```
-
-对应postman的操作如下：
-
-![1563331805546](E:/待办事项/JS每日/2-nodejs/node-material.assets/1563331805546.png)
 
 ##### 步骤
 
@@ -1916,12 +1484,6 @@ app.post("postfile",upload.single('cover'), function(req,res){
 ### 中间件技术
 
 在实际的工作中，我们需要对某些请求（或者某一类请求）进行特殊的处理，例如：要记录每一次请求的详细信息。需求：在调用某个接口时，打印出调用者的ip地址及调用时间。此时需要使用到中间件技术。同时对express而言，中间件是它的一个非常重要的概念，掌握中间件的思想对于理解学习express，提升编程水平都有很大的帮助。
-
-#### 生活中的中间件
-
-![1563350886257](E:/待办事项/JS每日/2-nodejs/node-material.assets/1563350886257.png)
-
-在上图中，自来水厂从获取水源到净化处理交给用户，中间经历了一系列的处理环节。
 
 - 一个流程结束之后，按顺序进入下一个流程；
 - 一个流程如果出了问题，下一个流程也会受影响。
@@ -2045,7 +1607,7 @@ app.listen(3000)
 
 #### 中间件的执行流程
 
-![1563354608948](E:/待办事项/JS每日/2-nodejs/node-material.assets/1563354608948.png)
+![1563354608948](E:/待办事项/JS每日/99-nodejs/node-material.assets/1563354608948.png)
 
 
 
@@ -2067,8 +1629,6 @@ app.use((req, res, next) => {
   }
 });
 ```
-
-
 
 
 
@@ -2231,9 +1791,7 @@ app.use('/server', serverRouter);
 - 可以通过浏览器查看某个网站的cookie
 - 如果浏览器保存了cookie，则向服务器发请求时，就会**自动带上这个cookie**。把cookie放在请求头中，发送给服务器。
 
-
-
-![1564563169563](E:/待办事项/JS每日/2-nodejs/node-material.assets/1564563169563.png)
+![1564563169563](E:/待办事项/JS每日/99-nodejs/node-material.assets/1564563169563.png)
 
 
 
@@ -2811,7 +2369,7 @@ app.listen(3000, () => {
 
 - 添加断点调试
 
-![1563504797676](E:/待办事项/JS每日/2-nodejs/node-material.assets/1563504797676.png)
+![1563504797676](E:/待办事项/JS每日/99-nodejs/node-material.assets/1563504797676.png)
 
 - 这里有一段模拟代码(面试，手写jsonp)
 
@@ -3004,9 +2562,35 @@ fs.readFile(path.join(__dirname, '我们最习惯的相对路径'), 'utf8', () =
 
 ## 接口和静态资源的区别
 
-- 共同点：
-  - 都是一个url地址
+- 都是一个url地址
+
 - 区别：
   - 静态资源的地址响应的一定是一个文件(css、js..)
   - 接口地址响应的一定是一段数据
   - 静态资源的地址没有参数。接口地址有时是需要参数。
+
+
+
+## post接口的设置方式
+
+- req.on('data', fn);  请求进行数据传输时会触发这个事件(会多次触发)
+  - fn接收一个参数是某一段请求参数的buffer格式
+  - 需要通过一个字符串进行拼接，buffer会自动转换为字符串类型
+- req.on('end', fn); 请求的数据接收完毕时触发
+  - 我们如果要使用post的请求参数，应当在end事件中进行操作
+- end中接收的请求参数为urlencoded不好操作
+  - 使用内置模块querystring的parse() ，可以将urlencoded转换为对象结构
+
+- req.method 可以获取请求方式，值是一个大写的字符串 'GET'  'POST'
+
+
+
+- package.json 当前项目的相关信息
+  - dependencies 当前项目依赖于哪些包
+- package-lock.json
+  - 无需我们查看或操作，记录了当前使用的包的版本和下载地址
+
+- npm install 包名     安装指定的包-必须有网
+  - 简写 npm i 包名
+- npm i / npm install 
+  - 当前项目下只有package.json又没有node_modules的时候使用，用于让npm下载相关的依赖
