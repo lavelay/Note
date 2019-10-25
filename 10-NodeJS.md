@@ -17,13 +17,11 @@
 2. non-blocking I/O model 非阻塞IO模型（异步）
 3. lightweight and efficient 轻量且高效
 
-npm是世界上最大的开源生态系统，npm是基于Node.js开发的
-
 
 
 ## REPL
 
-REPL(Read Eval Print Loop:交互式解释器) 表示一个电脑的环境，类似 Window 系统的终端或 Unix/Linux shell，可以在终端中输入命令，并接收系统的响应。
+REPL(Read Eval Print Loop:交互式解释器) 
 
 - **读取** - 读取用户输入，解析输入了Javascript 数据结构并存储在内存中。
 - **执行** - 执行输入的数据结构
@@ -79,14 +77,12 @@ fs.readFile('文件路径'[,选项], (err, data) => {
 
     - err: null
 
-    - data: 文件内容，如果不设置参数2,则返回二进制数据。可以使用 toString() 方法将二进制数据
-
-      转为正常字符串
+    - data: 不设置参数2,则返回二进制数据。可以使用 toString() 方法将二进制数据转为字符串
 
   - 读取失败
 
     - err: 错误对象
-    - data: undefined
+  - data: undefined
 
 
 
@@ -147,7 +143,6 @@ fs.writeFile('./a.txt', 'hello world niahi \n asfsdf', err => {
 
 ```javascript
 const fs = require('fs')
-
 fs.appendFile('./a.txt', '\n 为天地立命', err => {
   if (err) {
     console.info(err)
@@ -256,16 +251,6 @@ server.listen(8081, function() {
 
 ### 理解请求与响应
 
-在上面的代码中，我们通过http.createServer方法创建一个http服务。
-
-```javascript
-// 创建服务
-const server = http.createServer((req, res) => {
-  console.log(req.connection.remoteAddress);
-  res.end('hello world');
-});
-```
-
 其中的参数是一个函数，这个函数是一个匿名函数，这个函数充当回调函数的角色，当有http请求时，它会自动被调用。
 
 - 当某个客户端来请求这个服务器时，这个函数会自动调用，同时会自动给这两个参数赋值。第一个参数中包括本次请求的信息。
@@ -361,8 +346,6 @@ let userAgent = req.headers['user-agent'];
     console.log('你在使用window，pc端！！');
   } else if (userAgent.includes('iPad')) {
     console.log('你在使用iPad端！！');
-  } else if (userAgent.includes('iPhone')) {
-    console.log('你在使用iPhone！！');
   }
 ```
 
@@ -384,15 +367,11 @@ POST 请求有请求体，请求体就是发送给服务器的数据。
 
 http协议规定了服务器向浏览器返回数据时的格式。
 
-- 它由三个部分组成
-
 1. 响应行
 2. 响应头
 3. 响应体
 
 #### 响应行
-
-格式：  协议及版本 状态码  说明
 
 ```
 -	状态码 ： 用来告诉浏览器服务器处理本次请求的结果。 不同的状态码对应不同的结果。
@@ -409,10 +388,6 @@ http协议规定了服务器向浏览器返回数据时的格式。
 
 可以通过res.statusCode 来设置响应码。
 
-```
-res.statusCode
-```
-
 参考链接 https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Status
 
 #### 响应头
@@ -427,14 +402,6 @@ res.statusCode
 | Server           | 服务器信息       |
 | **Content-Type** | 响应体的内容类型 |
 | Content-Length   | 响应的内容大小   |
-
-可以通过如下代码来模拟
-
-格式是：
-
-`res.setHeaders('键','值');`
-
-示例
 
 ```javascript
 const server = http.createServer(function(req, res) {
@@ -460,36 +427,14 @@ res.end(响应体)
 
 ## nodemon自动重启http服务
 
-我们每次修改了代码，都需要重启http服务器:
-
-1. 进入控制台
-2. 按下ctrl+c，停止已有http服务器。
-3. 手动运行：node index.js 来重启服务器。
-
-这会很麻烦。
-
-有没有一个工具会自动检测到我们的修改并自动重新运行我们的代码呢？
-
-有，它叫nodemon。https://www.npmjs.com/package/nodemon
-
-### 安装 nodemon
-
-通过npm包管理工具来进行安装。任意打开一个小黑窗，输入如下命令
-
 ```bash
 npm install -g nodemon
 ```
 
-此操作`需要联网`，根据网络速度所耗时间不同。
-
-- npm是一个工具。用来管理node代码中要使用的第三方模块。它是随着node的安装而自动安装的：如果你安装node，则npm也已经安装过了，你可以直接使用。
-
 
 ### 使用nodemon
 
-等待安装成功之后，使用方法也非常简单：在命令中，使用nodemon来代替node。
-
-例如，
+在命令中，使用nodemon来代替node。
 
 ```bash
 node server.js  // 
@@ -497,159 +442,16 @@ node server.js  //
 nodemon server.js
 ```
 
-它的好处在于会自动监听server.js这个文件的变化，如果变化了，就会重新自动再去运行。相当于是：
-
-```bash
-while(server.js 变化了){
-  node server.js
-}
-```
-
-说明：
-
-- 它是一个第三方的包（其它开发者写的工具），我们这里是通过全局安装的方式进行。
+- 它是一个第三方的包（其它开发者写的工具），这里是通过全局安装的方式进行。
 
 
-
-## http模块-处理静态资源
-
-静态资源指的是html文件中链接的外部资源，如css、js、image文件等等。
-
-### 处理二次请求
-
-从服务器获取html文件之后，如果这个html文件中还引用了其它的外部资源（图片，样式文件等），则浏览器会重新再发请求。
-
-假设在index.html中还引入了 style.css 1.png 或者 .js文件，则：
-
-浏览器请求localhost:index.html之后，得到的从服务器反馈的内容，解析的过程中还发现有外部的资源，所以浏览器会再次发出第二次请求，再去请求相应的资源。
-
-```javascript
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
-
-//创建服务器
-const app = http.createServer((req, res) => {
-
-  if (req.url === '/index.html') {
-    let htmlString = fs.readFileSync(path.join(__dirname, 'index.html'));
-    res.end(htmlString);
-  }
-  else if (req.url === '/style.css') {
-    let cssString = fs.readFileSync(path.join(__dirname, 'style.css'));
-    res.setHeader('content-type', 'text/css');
-    res.end(cssString);
-  } else if (req.url === '/1.png') {
-    let pngString = fs.readFileSync(path.join(__dirname, '/1.png'));
-    res.end(pngString);
-  } else {
-    res.setHeader('content-type', 'text/html;charset=utf-8');
-    res.statusCode = 404;
-    res.end('<h2>可惜了, 找不到你要的资源' + req.url + '</h2>');
-  }
-}); 
-//启动服务器，监听8082端口
-app.listen(8082, () => {
-  console.log('8082端口启动');
-});
-```
-
-### 为不同的文件类型设置不同的 Content-Type
-
-通过使用res对象中的setHeader方法，我们可以设置content-type这个响应头。这个响应头的作用是告诉浏览器，本次响应的内容是什么格式的内容。以方便浏览器进行处理。
-
-
-
-- 2. 分析后缀名，如果是允许的，就直接返回
-
-```javascript
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
-const url = require('url');
-//创建服务器
-const app = http.createServer((req, res) => {
-  //实现静态web服务器的效果
-  // 对于每一个请求，如果它的req.url是.html,.css,.png 这类资源
-  // 1. 判断一个url的后缀是不是.html,css。。
-  //    获取后缀;
-  //    判断
-  // 2.我们就直接读入文件，并返回
-  console.log(req.url);
-
-  let urlObj = url.parse(req.url);
-  let extName = path.extname(urlObj.pathname);
-  if (extName === '.html' || extName === '.css' || extName === '.png' || extName === '.bmp') {
-    // 拼接绝对路径;
-    // console.log(path.join(__dirname, req.url));
-    let absolutePath = path.join(__dirname, urlObj.pathname);
-    // 如果这个文件存在，就读出并返回
-    if (fs.existsSync(absolutePath)) {
-      let str = fs.readFileSync(absolutePath);
-      res.end(str);
-    } else {
-      res.statusCode = 404;
-      res.end(urlObj.pathname + ' not found!');
-    }
-  } else {
-    res.statusCode = 404;
-    res.end(urlObj.pathname + ' not found!');
-  }
-});
-//启动服务器，监听8082端口
-app.listen(8082, () => {
-  console.log('8082端口启动');
-});
-```
-
-
-
-## http模块-实现接口功能
 
 ### get类型的接口-无参数
-
-现在假设我们自己就是一名后端程序员，现在要实现一个get类型的接口。具体要求如下：
-
-地址：/gettime
-
-功能：以json字符串格式返回服务器的时间戳。
-
-示例：
-
-```
-输入:localhost:8080/gettime;
-返回:{_t:1563265441778}
-```
-
-要使用postman软件进行测试。
-
-参考代码：
-
-```javascript
-const http = require('http');
-const app = http.createServer((req, res) => {
-  if (pathname === '/gettime') {
-    let obj = {_t : Date.now()}
-    res.end(JSON.stringify(obj));//  把对象转成字符串之后再返回
-  } else {
-    res.end('error');
-  }
-});
-app.listen(8083, () => {
-  console.log(8083);
-});
-```
-
-说明：
 
 - req.method 可以判断请求的类型
 - res.end()的参数只能是字符串，而不能是对象
 
 ### 接口与静态资源的区别
-
-服务器上有很多的资源，每个资源都有自己的url。客户端浏览器想要访问某个资源就要向服务器发起对应的请求。
-
-资源的分类：
 
 - 静态资源。
   - 它们一般表现为一个一个的文件。例如index.html, style.css, index.js。
@@ -657,31 +459,6 @@ app.listen(8083, () => {
 - 动态资源：接口
   - 它们不是以某个具体的文件存在的，而是服务器上的一段代码，访问接口时，服务器会执行这段代码，然后把代码的执行结果返回给客户端浏览器。
 
-目前学习过的发送请求有两种途径：
-
-- 在地址栏中直接访问这个url
-- 通过某个a标签进行进行跳转
-- 通过表单进行提交
-- 通过ajax技术访问这个url。
-
-发送请求有很多类型：
-
-- get
-  - 在地址栏中直接访问这个url就是get方式
-- post
-  - 通过表单提交，可以设置form的method为post
-- delete
-
-url的作用是确定用户要访问的资源的位置，在地址栏中输入回车之后，这个请求会到web服务器中来，然后由web服务器来决定此时返回什么数据给用户。但是，我们能够根据url来推测服务器会返回什么信息吗？
-
-```javascript
-url:http://nodejs.cn/api/querystring.html
-请求一个页面，名是querystring.html
-
-url:http://oa.itcast.cn/seeyon/main.do?method=main
-
-url:https://mail.qq.com/cgi-bin/frame_html?sid=aLqnlljMxF54DgtW&r=d281ced83329f34caae9786fcb5d4934
-```
 
 
 
@@ -693,20 +470,13 @@ url:https://mail.qq.com/cgi-bin/frame_html?sid=aLqnlljMxF54DgtW&r=d281ced83329f3
 
 格式：`协议://主机地址[:端口]/路径?查询字符串#锚点`
 
-- 端口
-  - http请求，默认端口80
-  - https请求，默认端口443
-  - MySQL默认端口3306
+- http请求，默认端口80
+- https请求，默认端口443
+- MySQL默认端口3306
 
 
 
 ### nodejs中的url模块
-
-作用:url模块用来对url（例如：http://itcast.cn:80/schools/students?id=18&name=zs#photo）进行解析，进而得到各种信息。
-
-手册地址：http://nodejs.cn/api/url.html
-
-步骤：
 
 - 引入
 
@@ -723,16 +493,15 @@ url:https://mail.qq.com/cgi-bin/frame_html?sid=aLqnlljMxF54DgtW&r=d281ced83329f3
   > urlobj.query: 获取用户输入的url中的查询字符串( 'id=18&name=zs' )
   > urlobj.path: '/schools/students?id=18&name=zs',
   > urlobj.href: '/schools/students?id=18&name=zs' 
-  > 
   > ```
 
-上面urlobj.query只是获得了传递的全部参数，我们一般还需从地址栏中分析传递的数据。即从 `http://itcast.cn:80/schools/students?id=18&name=zs#phot`中分析出id和name的值来。这个操作是如何实现的呢？
+上面urlobj.query只是获得了传递的全部参数，我们一般还需从地址栏中分析传递的数据。即从 `http://itcast.cn:80/schools/students?id=18&name=zs#phot`中分析出id和name的值来。
 
 
 
 ### nodejs中的querystring模块
 
-用来对url中的查询字符串这部分进行处理。nodejs中提供了querystring这个核心模块来帮助我们处理这个需求。
+用来对url中的查询字符串这部分进行处理
 
 地址：https://nodejs.org/api/querystring.html#querystring_querystring_parse_str_sep_eq_options
 
@@ -742,61 +511,6 @@ url:https://mail.qq.com/cgi-bin/frame_html?sid=aLqnlljMxF54DgtW&r=d281ced83329f3
 const qs= require('querystring');
 let obj = qs.parse('id=18&name=zs');
 console.log(obj)
-```
-
-
-
-### get类型的接口-带参数
-
-现在假设我们自己就是一名后端程序员，现在要实现一个get类型的接口。具体要求如下：
-
-> 地址：localhost:8080/get
->
-> 功能：获取用户传入的参数，并以json字符串格式返回，在返回的信息中要加上时间戳.
->
-> 示例：
->
-> ```
-> 1.不加参数
-> 输入:localhost:8080/get;
-> 返回:{_t:1563265441778}
-> 2.带参数
-> 输入:localhost:8080/get?name=filex&age=30;
-> 返回:{name:filex,age:30,_t:1563265441778}
-> ```
-> 
->要求：能通过postman软件的测试。
-
-
-
-分析：get请求的参数附加在url中，我们可以使用url模块来取出用户url中的参数部分，再使用querystring模块取出具体的参数值。
-
-
-
-这里我们直接使用两个核心模块`url`和`querystring`来实现上述的需求。
-
-```javascript
-const http = require('http');
-const queryString = require('querystring');
-const url = require('url');
-
-const server = http.createServer(function(req, res) {
-  var { pathname, query } = url.parse(req.url);
-  var obj = queryString.parse(query);
-
-  console.log(p, url.parse(req.url));
-  if (pathname === '/get' && req.method === 'GET') {
-    res.setHeader('content-type', 'application/json');
-    obj.d: Date.now() };
-    res.end(JSON.stringify(str));
-  } else {
-    res.setHeader('content-type', 'text/html;charset=utf-8');
-    res.end('大家好');
-  }
-});
-server.listen(8088, function() {
-  console.log('success', 8088);
-});
 ```
 
 
@@ -813,9 +527,6 @@ server.listen(8088, function() {
 > 返回:{name:filex,age:30,_t:1563265441778}
 > ```
 > 
-> 要求：通过postman软件的测试。
-
-
 
 post类型与get类型的接口区别较大，主要在两个方面：
 
@@ -830,71 +541,9 @@ post类型与get类型的接口区别较大，主要在两个方面：
 
 对于获取post参数就相对复杂一些，主要是用到request对象的两个事件data,end。
 
-基本流程是：
-
-1. 在req对象上添加两个事件，用来收集参数
-
-   1. req.on("data",function(chunk){ })
-
-      每次收到一部分数据就会触发一次这个事件，回调函数也会相应的执行一次。其中的chunk是一个形参（你也可以换个参数名），它是一个buffer。
-
-   2. req.on("end",function(){})
-
-2. 解析参数
-
-   1. queryString
-
-```javascript
-const http = require('http');
-const url = require('url');
-const queryString = require('querystring');
-const server = http.createServer(function(req, res) {
-  var { pathname } = url.parse(req.url);
-  if (pathname === '/post' && req.method === 'POST') {
-    let data = '';
-    req.on('data', chunk => {
-      data += chunk;
-    });
-    req.on('end', () => {
-      res.setHeader('content-type', 'application/json');
-      var str = { ...queryString.parse(data), d: Date.now() };
-      res.end(JSON.stringify(str));
-    });
-  } else {
-    res.setHeader('content-type', 'text/html;charset=utf-8');
-    res.end('大家好');
-  }
-});
-
-server.listen(8088, function() {
-  console.log('success', 8088);
-});
-```
-
-在发post请求时，传递的数据会在请求体中，它也是字符串格式，并且是一点一点上传到web服务器的（是积小成多，而不是一蹴而就）每上传一部分就会触发data事件，而最后全部上传完成之后，会触发end事件。
-
-下面是一个示例代码，用来模拟使用post请求发送大量的数据，以观察req.on('data', chunk => {})多次触发的现象。
-
-```javascript
-var xhr =new XMLHttpRequest();
-xhr.open('post','http://localhost:8080/post');
-xhr.setRequestHeader('content-type','application/x-www-form-urlencoded');
-xhr.send("name="+"imissyou".repeat(100000));
-```
-
 
 
 ## 自定义模块
-
-###  基本步骤
-
-1.定义模块
-
-新建一个js文件，用模块名给它命名。例如，你的模块叫myModule，则这个js文件最好叫myModule.js
-
-2.导出模块
-
-在myModule.js内部，我们定义一些函数，变量，当然，它们会根据我们的业务要求做一些不同的工作。最后根据情况导出这些函数，变量。
 
 ```javascript
 //myModule.js
@@ -908,8 +557,6 @@ module.exports = {
   add
 };
 ```
-
-注意：
 
 - module.exports 是固定写法，一般放在文件的最末尾，也只用一次。
 - module.exports表示当前模块要暴露给其它模块的功能。你当然不必须要所有在模块中定义的函数都暴露出来。
@@ -944,8 +591,6 @@ console.log(rs)
 
 ### 导出模块的两种方式
 
-在自定义模块过程中，有两种导出模块的内容的方式：
-
 - exports
 - module.exports
 
@@ -977,21 +622,6 @@ currency.js是包名。不要省略.js，是有效包名的一部分。（curren
 
 
 
-当我们已经下载好一个包之后，就可以向使用核心模块一样去使用它。
-
-格式是：`const 常量名 = require('包名')`
-
-```javascript
-// 1. 引入包
-const currency = require('curency.js')
-// 先打出来看看
-console.log(currency)
-// 2. 使用包
-console.info(currency(1.23, { formatWithSymbol: true }).format());
-```
-
-
-
 #### package.json文件
 
 它整体是一个json字符串，对当前项目的整体描述。其中最外层可以看作是一个js的对象
@@ -1017,16 +647,12 @@ console.info(currency(1.23, { formatWithSymbol: true }).format());
 
 我们通过`npm install` 命令来安装包，简单说就是把包从npm的官网上下载到我们自己的电脑中。具体这个包下载到哪里了，还是有一点讲究的。
 
-分成两类：
-
 - 全局安装: 包被安装到了系统目录（一般在系统盘的node_modules中），本机都可以使用使用。
 
   - 命令：`npm install -g 包名`
 
-  - 辅助提示：
-
     - ```
-      which node   // 查看node的安装目录
+    which node   // 查看node的安装目录
       which npm   // 查看npm的安装目录
       npm root -g // 查看全局包的安装目录
       npm list -g --depth 0 //查看全局安装过的包
@@ -1037,12 +663,6 @@ console.info(currency(1.23, { formatWithSymbol: true }).format());
   - ​	命令：`npm install 包名`
 
 #### 全局安装nrm包
-
-因为下载包时，默认是从npm官网（国外的网站）下载，速度可能会比较慢。在npm有一个工具可以来手动设置从哪里去下载包。这个工具就是nrm。这个工具是帮助我们切换安装包的来源的，不应该只限于某个具体的项目，所以我们采用全局安装的方式来安装它。
-
-nrm包的地址：<https://www.npmjs.com/package/nrm>
-
-nrm的使用方法。
 
 ```javascript
 // 第一步： 全局安装 
@@ -1059,16 +679,9 @@ nrm use taotao
 
 #### 全局包与本地包的区别
 
-- 全局安装的包一般可提供直接执行的命令。我们通过对一些工具类的包采用这种方式安装，如：
-
-  gulp, nodemon, live-server,nrm等。
+- 全局安装的包一般可提供直接执行的命令
 
 - 本地安装的包是与具体的项目有关的， 我们需要在开发过程中使用这些具体的功能。
-
-
-
-
-一个经验法则：
 
 - 要用到该包的命令执行任务的就需要全局安装
 - 要通过require引入使用的就需要本地安装
@@ -1079,8 +692,6 @@ nrm use taotao
 
 - gulp-htmlmin。这个工具是用来把html代码进行压缩的（去掉空格，换行等），我们需要在开发时使用它，而项目一旦上线，我们就不再需要它了。，因此将它归类为"开发依赖"。
 - jquery。在开发时参与源码编写，在发布上线的生产环境中也是需要它的。不仅在开发环境编写代码时要依赖它、线上环境也要依赖它，因此将它归类为"生产依赖"。
-
-
 
 #### 操作
 
@@ -1108,13 +719,6 @@ npm install 包名 --save
 
 
 ### require的加载机制
-
-在我们使用一个模块时，我们会使用require命令来加载这个模块。以加载一个自定义模块为例，require(文件名)的效果是：
-
-1. 执行这个文件中的代码
-2. 把这个文件中的module.exports对象中的内容返回出来。
-
-以如下代码为例：
 
 ```
 // moudule1.js
@@ -1246,8 +850,6 @@ app.get('/', (req, res) => {
 app.listen(3000, () => console.log('app listening on port 3000!'))
 ```
 
-说明：
-
 - app.get('/')相当于添加个事件监听：当用户以get方式求"/"时，它后面的回调函数会执行，其回调函数中的req,res与前面所学http模块保持一致。
 - res.send()是exprss提供的方法，用于结束本次请求。类似的还有res.json(),res.sendFile() 。
 
@@ -1358,8 +960,6 @@ app.post('/', function (req, res) {
 
 
 
-### 写get接口
-
 #### get无参数
 
 ```javascript
@@ -1403,7 +1003,6 @@ const app = express();
 app.post('/post',function(req,res){
 	res.send({name:"abc"})
 })
-
 ```
 
 #### 普通键值对参数
@@ -1483,7 +1082,7 @@ app.post("postfile",upload.single('cover'), function(req,res){
 
 ### 中间件技术
 
-在实际的工作中，我们需要对某些请求（或者某一类请求）进行特殊的处理，例如：要记录每一次请求的详细信息。需求：在调用某个接口时，打印出调用者的ip地址及调用时间。此时需要使用到中间件技术。同时对express而言，中间件是它的一个非常重要的概念，掌握中间件的思想对于理解学习express，提升编程水平都有很大的帮助。
+我们需要对某些请求（或者某一类请求）进行特殊的处理，此时需要使用到中间件技术。
 
 - 一个流程结束之后，按顺序进入下一个流程；
 - 一个流程如果出了问题，下一个流程也会受影响。
@@ -1733,33 +1332,6 @@ app.use('/server', serverRouter);
 ```
 
 
-
-## 会话技术
-
-有很多的网站都有登录的功能：
-
-```
-|--login.html (登录页)
-|--index.html(主页)
-|--setting.html(设置页)
-```
-
-实际开发，我们必须解决页面之间的数据共享问题：例如用户从login.html页面登陆之后，再去访问index.html或者setting.html页面时，应该还是能够获取用户的登陆信息。 
-
-由于 http是无状态的，就是无记忆的，对于HTTP协议而言，无状态同样指每次request请求之前是相互独立的，当前请求并不会记录它的上一次请求信息。每次请求都是独立的，没有关联的，所以服务器和客户端都不知道是否是登录过的。
-
->无状态的理发店：理发店剪头发，店长不记忆是否是老客户，每人每次25元。这就是无记忆的。
->
->有状态的理发店：理发店剪头发，店长给你办理会员，下次你再来就记得你。这就是有记忆的。
->
->店长能够知道你是谁，有两种记录会员的信息：
->
->- 第一次理发之后，给你一张会员片，下次再来的话，带上会员卡。（ cookie ：把信息保存在浏览器端）
->- 第一次理发之后，把你的电话号码留下来，然后在**本子**上做记录。下次理发时，报出电话号码，他去查本子上的信息。（session：把信息保存在服务器上）
->
->理发店：服务器
->
->顾客：浏览器
 
 ### 什么是会话控制
 
@@ -2355,8 +1927,6 @@ app.listen(3000, () => {
 
 
 
-
-
 #### jquery封装的jsonp原理分析
 
 第一步：产生一个随机函数名；并创建这个函数(jQuery34109553463653123275_1565234364495)；
@@ -2374,15 +1944,7 @@ app.listen(3000, () => {
 - 这里有一段模拟代码(面试，手写jsonp)
 
 ```php+HTML
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>html页面</title>
-  </head>
-  <body>
+ <body>
     <div class="container">
       <h1>jsonp</h1>
       <div>需要后端接口的配合：http://localhost:3005/jsonp</div>
@@ -2390,7 +1952,6 @@ app.listen(3000, () => {
         //--后端测试代码如下
           const express = require('express');
           const app = express()
-          
           // 留言板接口 -- 获取所有数据
           app.get('/jsonp', (req, res) => {
             var { callback } = req.query;
@@ -2510,64 +2071,30 @@ fs.readFile(path.join(__dirname, '我们最习惯的相对路径'), 'utf8', () =
 
 
 
-## 通过req.url进行不同的文件响应
-
-- req.url 可以获取到用户请求的地址：  例如： /index.html    /     /base.css    /style
-- 操作步骤：
-  - 1 判断**req.url**检测需要响应的是哪个文件
-  - 2 读取文件
-    - **fs.readFileSync**(地址, 'utf8可选');  同步的文件读取方式
-      - 返回值为读取到的数据，如果读取失败出现报错。
-  - 3 设置响应头Content-Type
-  - 4 进行数据响应
-    - **res.end(数据);**
-      - 字符串和buffer都可以进行响应。
-
-
-
 ## 托管静态资源的方式
 
-> 如果页面中有很多静态资源的引入，需要进行很多的判断处理不太合理。太麻烦。
+- 1 首页的请求处理方式与之前相同
 
-- 步骤：
+- 2 剩余的文件进行静态资源托管设置
 
-  - 1 首页的请求处理方式与之前相同
+  - 检测url是否以/public/开头即可，使用  字符串.startsWith()
 
-  - 2 剩余的文件进行静态资源托管设置
+- 3 检测后缀名将不同文件进行对应的处理
 
-    - 检测url是否以/public/开头即可，使用  字符串.startsWith()
+  - path.extname(req.url);    可以取出地址中的后缀(扩展名)
 
-  - 3 检测后缀名将不同文件进行对应的处理
+- 4 设置地址读取文件
 
-    - path.extname(req.url);    可以取出地址中的后缀(扩展名)
-
-  - 4 设置地址读取文件
-
-    - 通过try..catch进行错误信息的捕获和处理
-
-    ```javascript
-    try {
-      // 这里面书写正常的代码，如果代码预期会出现报错，使用try...catch
-      //  - try块中的代码出现报错后，错误不会真的报错来，而是执行后面的catch块内容
-    } catch (err) {
-      // err是错误信息，可选
-      //  - 这里用来进行try块报错后的处理操作
-    } finally {
-      // 可以省略finally,不常用，反正都会执行
-    }
-    ```
-
-
-
-
-## 接口和静态资源的区别
-
-- 都是一个url地址
-
-- 区别：
-  - 静态资源的地址响应的一定是一个文件(css、js..)
-  - 接口地址响应的一定是一段数据
-  - 静态资源的地址没有参数。接口地址有时是需要参数。
+  ```javascript
+try {
+    //  - try块中的代码出现报错后，错误不会真的报错来，而是执行后面的catch块内容
+  } catch (err) {
+    // err是错误信息，可选
+    //  - 这里用来进行try块报错后的处理操作
+  } finally {
+    // 可以省略finally,不常用，反正都会执行
+  }
+  ```
 
 
 
@@ -2594,3 +2121,124 @@ fs.readFile(path.join(__dirname, '我们最习惯的相对路径'), 'utf8', () =
   - 简写 npm i 包名
 - npm i / npm install 
   - 当前项目下只有package.json又没有node_modules的时候使用，用于让npm下载相关的依赖
+
+
+
+## npm进行本地项目安装和全局安装
+
+- 基本的npm安装包的方式为：  npm install 包名
+  - 相当于局部变量：只能在当前环境下使用
+- 全局安装的方式为：  npm install -g 包名
+  - 相当于全局变量：可以在任意位置使用
+
+
+
+## nrm    node的资源地址管理器
+
+- nrm的安装方式：（全局安装）
+  - npm install -g nrm 
+- nrm的常用命令：
+  - nrm --version 查看版本（用来确认是否安装成功）
+  - nrm ls 查看所有的资源名称和地址
+    - npm有自己的服务器，国内访问较慢，可以使用国内的一些镜像服务端，例如taobao（推荐）
+      - 镜像服务端：例如taobao这个资源服务器会每隔一段时间从npm官方进行数据的同步
+  - nrm use 资源的名称    - 将npm的资源操作切换到某一个地址上
+
+
+
+### npm start的启动方式
+
+- npm init后会生成package.json文件
+  - 在"scripts"属性中设置一个新属性“start”：“node 文件名”  或  "start": "nodemon 文件名"
+- 在项目中打开终端，输入 npm start 即可启动项目中的webserver
+  - 好处：无需我们查看项目结构找到webserver的文件了，直接通过npm start启动即可
+
+
+
+## git工具的文件忽略功能
+
+- 在项目的根目录下设置一个文件  .gitignore 
+  - 内部可以设置不需要被git进行管理的一些内容(目录或文件)
+    - git add . 相关操作都不会操作这些文件，可以避免都发送到github保存了
+  - 示例：
+    - 书写    node_modules   表示这个目录不需要被git管理
+    - 书写    *.txt   表示所有txt文件都不需要git管理
+
+
+
+## 静态资源托管的方式
+
+- 默认根目录访问时的托管
+
+  - app.use(express.static(path.join(__dirname, '书写一个目录名即可')))
+
+  ```javascript
+  app.use(express.static(path.join(__dirname, './admin_public/')));
+  ```
+
+- 自定义地址的托管
+
+  - app.use('用来设置访问时的url' ,express.static(path.join(__dirname, '书写一个目录名即可')))
+
+  ```javascript
+  app.use('/admin', express.static(path.join(__dirname, './admin_public/')));
+  ```
+
+## 设置get请求的接口的方式：
+
+- 基本格式为：
+  - app.get(请求地址, 回调函数)
+    - 回调函数内部接收req和res与node中是一样的
+    - req.query可以直接接收get请求参数的对象结构
+    - 响应方式：
+      - res.send()  通用功能
+        - 发送中文不会乱码，因为express设置了默认响应头为  text/html;charset=utf-8
+        - 发送对象会自动转换为JSON格式的字符串，会设置响应头为 application/json;charset=utf-8
+
+
+
+## post接口的设置
+
+- express中没有直接进行post请求参数的处理操作
+- 需要使用与express相关的包进行post请求参数的处理操作
+  - 使用的包名为  body-parser , 下载express时已经自动下载完毕了，可以直接进行引入操作
+
+- 使用小结：
+  - 引入方式
+    - const bodyParser = require('body-parser');
+  - 让app使用bodyParser的功能进行req.body的设置
+    - **app.use(bodyParser.urlencoded({extended: false}));**
+      - false表示使用内置模块querystring进行处理，true为默认值使用第三方模块qs处理
+    - 可以在app.post()的回调函数中直接使用req.body进行请求体的操作
+
+## 中间件
+
+- express中的中间件使用方式
+
+  - 统一的中间件设置方式（所有请求都经过这个中间件的处理）
+
+    ```javascript	
+    app.use((req, res, next) => {
+      // req和res与之前的所有req和res是一样的
+      // next() 调用时，可以让请求继续触发后续的操作(中间件、请求处理)
+      //	- 如果没有调用next，请求就不会继续向后执行
+      //		- app.use(express.static(...)); 内部没有设置next，后续的请求处理就没有意义了
+    });
+    ```
+
+  - 指定接口地址进行中间件设置
+
+    ```js
+    app.use('/common/post指定的接口名', (req, res, next) => {
+      // 只有这个指定的接口会经过这个中间件的处理
+      //	- app.use('地址', express.static(...));
+    });
+    ```
+
+  - 自定义的内部处理
+
+    - 可以自己在app.use的回调函数中进行条件判断
+      - 通过条件的执行中间件功能
+      - 不通过的直接设置next()
+
+- 自己设置中间件模拟body-parser的操作
