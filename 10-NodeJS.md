@@ -88,11 +88,6 @@ fs.readFile('文件路径'[,选项], (err, data) => {
 
 #### 同步格式
 
-与异步格式不同在于：
-
-- api的名字后面有Sync
-- 不是通过回调函数来获取值，而是像一个普通的函数调用一样，直接获取返回值
-
 ```javascript
 const fs = require("fs")
 let rs = fs.readFileSync('文件路径',"utf8");
@@ -102,8 +97,6 @@ console.log(rs)
 
 
 #### 覆盖写入 writeFile
-
-功能：向指定文件中写入字符串（覆盖写入）， 如果没有该文件则尝试创建该文件。它把把文件中的内容全部删除，再填入新的内容。
 
 格式：`fs.writeFile(var1, var2, var3, var4);`
 
@@ -155,8 +148,6 @@ fs.appendFile('./a.txt', '\n 为天地立命', err => {
 
 ### 路径问题
 
-解决方法，就是在操作文件时，使用**绝对路径**来定位文件。
-
 #### \__dirname __filename 获取绝对路径
 
 - __dirname：获取当前被执行的文件的文件夹所处的绝对路径
@@ -165,10 +156,6 @@ fs.appendFile('./a.txt', '\n 为天地立命', err => {
 
 
 ### path模块
-
-http://nodejs.cn/api/path.html#path_path
-
-它是一个核心模块，用来处理路径问题：拼接，分析，取后缀名。
 
 - path.basename（路径）获取
 - path.join()
@@ -230,15 +217,6 @@ server.listen(8081, function() {
 });
 ```
 
-2. 运行代码, `node http.js`
-3. 在浏览器地址栏中输入：localhost:8081 观察效果。
-
-1. 把localhost改成本机ip地址，让同一局域网的同学访问。
-
-3. 更改res.end()的内容，`重启`后，再次观察。
-
-   - 获取ip，返回给浏览器
-
 
 
 ==IP地址用来定位计算机==
@@ -251,7 +229,7 @@ server.listen(8081, function() {
 
 ### 理解请求与响应
 
-其中的参数是一个函数，这个函数是一个匿名函数，这个函数充当回调函数的角色，当有http请求时，它会自动被调用。
+其中的参数是一个函数，这个函数是一个匿名函数，这个函数充当回调函数，有http请求时，会自动被调用
 
 - 当某个客户端来请求这个服务器时，这个函数会自动调用，同时会自动给这两个参数赋值。第一个参数中包括本次请求的信息。
 
@@ -262,15 +240,11 @@ server.listen(8081, function() {
 
 - 第二个参数用来设置本服务器对这次请求的处理。
 
-  - 这个参数一般命名是res，它是一个对象，其中有很多方法和属性。
-
   - res.end() 
 
-    - 把把本次的处理结果返回给客户端浏览器
-    - 如果不写这一句，则客户端浏览器永远收不到响应。
-
+    - 把本次的处理结果返回给客户端浏览器
   - res.setHeader()  设置响应头，比如设置响应体的编码
-
+  
     `res.setHeader('content-type', 'text/html;charset=utf-8');`
 
   - res.statusCode 设置状态码
@@ -287,29 +261,18 @@ server.listen(8081, function() {
 
 ### 请求报文
 
-- 它由三个部分组成
-
 1. 请求行
 2. 请求头
 3. 请求体（可能是空）
 
 #### 请求行
 
-格式： `请求方法  请求路径 协议及版本`
+格式： `请求方法 请求路径 协议及版本`
 
 ```
 GET / HTTP/1.1
 GET /index.html HTTP/1.1
 GET /common/get?id=123&name=jake HTTP/1.1
-```
-
-在http模块中，我们可以通过req.method来获取本次请求的方法。请求路径会在保存在req.url属性中。
-
-```js
-const server = http.createServer(function(req, res) {
-  console.log(req.method);
-  console.log(req.url)
-});
 ```
 
 #### 请求头
@@ -349,9 +312,7 @@ let userAgent = req.headers['user-agent'];
   }
 ```
 
-上面的代码对信息的分析比较粗略：只是根据是否包含了某些关键字来区分操作系统，更详细的分析可以参考：[zepto.js中对于用户设备的检测](https://github.com/madrobby/zepto/blob/master/src/detect.js#files)
-
-
+上面的代码对信息的分析比较粗略：只是根据是否包含了某些关键字来区分操作系统，更详细的分析可以参考：[zepto.js中对于用户设备的检测]https://github.com/madrobby/zepto/blob/master/src/detect.js#files
 
 #### 请求体
 
@@ -364,8 +325,6 @@ POST 请求有请求体，请求体就是发送给服务器的数据。
 
 
 ### 响应报文
-
-http协议规定了服务器向浏览器返回数据时的格式。
 
 1. 响应行
 2. 响应头
@@ -436,12 +395,6 @@ npm install -g nodemon
 
 在命令中，使用nodemon来代替node。
 
-```bash
-node server.js  // 
-// 改成 nodemon server.js
-nodemon server.js
-```
-
 - 它是一个第三方的包（其它开发者写的工具），这里是通过全局安装的方式进行。
 
 
@@ -465,8 +418,6 @@ nodemon server.js
 ### 理解url
 
 全称：Uniform Resource Locator，统一资源定位符。
-
-作用： 定位资源(css,html,js,png, avi......)
 
 格式：`协议://主机地址[:端口]/路径?查询字符串#锚点`
 
@@ -528,17 +479,6 @@ console.log(obj)
 > ```
 > 
 
-post类型与get类型的接口区别较大，主要在两个方面：
-
-1. 类型不同
-
-   对于类型不同还比较好判断，我们可以通过 req.method 来获取
-
-2. 传参不同
-
-   - get请求参数在请求行中（附加在url后面）
-   - post请求参数在`请求体`中
-
 对于获取post参数就相对复杂一些，主要是用到request对象的两个事件data,end。
 
 
@@ -557,37 +497,6 @@ module.exports = {
   add
 };
 ```
-
-- module.exports 是固定写法，一般放在文件的最末尾，也只用一次。
-- module.exports表示当前模块要暴露给其它模块的功能。你当然不必须要所有在模块中定义的函数都暴露出来。
-
-3.引入模块
-
-在你需要使用模块的文件中，使用require语句引入你定义好的模块，注使用相对路径。假设我们当前的文件是index.js，而我们希望在index.js文件中使用myModule.js中的add方法。
-
-```javascript
-// index.js
-const myMath = require('./myMath');
-```
-
-上面的require()就是用来引入模块的。这里要注意使用自定义模块时，使用相对路径，而使用核心模块时，不需要写路径。
-
-4.使用模块
-
-当一个模块被成功引入之后，就可以按使用核心模块的过程一样去使用它们了。
-
-```javascript
-// index.js
-const myMath = require('./myMath');
-
-// 在使用之前请先打印出来看看。
-console.log(myMath);
-
-let rs = myMath.add(23,45);
-console.log(rs)
-```
-
-
 
 ### 导出模块的两种方式
 
@@ -622,30 +531,7 @@ currency.js是包名。不要省略.js，是有效包名的一部分。（curren
 
 
 
-#### package.json文件
-
-它整体是一个json字符串，对当前项目的整体描述。其中最外层可以看作是一个js的对象
-
-### node_modules文件夹
-
-这个文件夹中保存着我们从npm中下载来的第三方包。在使用npm install 命令时，会修改这个文件夹中的内容。具体如下来说，当键入`npm install XXX`之后（这里假设这个XXX包是存在的，也没有出现任何的网络错误）：
-
-1. 如果有package.json
-
-   (1) 修改package.json文件。根据开发依赖和生产依赖的不同，决定把这句记录在加在devDependencies或者是dependencies列表中。
-
-   (2) 修改node_modules文件夹
-
-   1. 如果有node_modules文件夹，则直接在下面新建名为XXX的文件夹，并从npm中下来这个包
-   2. 如果没有node_modules，则先创建这个文件夹，再去下载相应的包
-
-2. 如果没有package.json。会给一个警告信息
-
-
-
 ### 全局安装包和本地安装包
-
-我们通过`npm install` 命令来安装包，简单说就是把包从npm的官网上下载到我们自己的电脑中。具体这个包下载到哪里了，还是有一点讲究的。
 
 - 全局安装: 包被安装到了系统目录（一般在系统盘的node_modules中），本机都可以使用使用。
 
@@ -720,36 +606,13 @@ npm install 包名 --save
 
 ### require的加载机制
 
-```
-// moudule1.js
-var a = 1;
-var b = 2;
-console.log(a+b);
-var c = a+b;
-module.exports = {
-	data: c
-}
-```
-
-在index.js中使用模块
-
-```
-// index.js
-const obj = require('./moudule1.js');
-console.log(obj);
-
-这里的obj对象就是moudule1.js中的module.exports对象
-```
-
-
-
 - `require` 优先加载**缓存**中的模块
 - 如果是**相对路径**，则根据路径加载**自定义模块**，并缓存
   - `require('./main')`  省略扩展名的情况
   - 先加载 `main.js`，如果没有再加载 `main.json`，如果没有再加载 `main.node`(c/c++编写的模块)
 - 如果不是相对路径，则加载核心模块，并缓存
 - 如果不是自定义模块，也不是核心模块，则加载**第三方模块**
-  - node 会去本级 node_modules 目录中找`
+  - node 会去本级 node_modules 目录中找
   - 如果在 node_modules 目录中找到 `moment` 目录，则加载该模块并缓存
   - 如果过程都找不到，node 则取上一级目录下找 `node_modules` 目录，规则同上
   - 如果一直找到代码文件的文件系统的根路径还找不到，则报错
@@ -823,21 +686,13 @@ npm list -g --depth 0 //查看全局安装过的包
 - Express 是一个第三方模块，有丰富的 API 支持，强大而灵活的**中间件**特性
 - Express 不对 Node.js 已有的特性进行二次抽象，只是在它之上扩展了 Web 应用所需的基本功能
 
-- 项目目录名字不要取中文，也不要取express
-- 如果安装不成功
-  - 换个网络环境
-  - 运行下`npm cache clean -f`，再重装试试
+- 如果安装不成功、运行下`npm cache clean -f`，再重装试试
 
 
-
-在项目根目录下新建一个js文件，例如app.js，其中输入代码如下：
 
 ```javascript
-// 0. 加载 Express
 const express = require('express')
-
 // 1. 调用 express() 得到一个 app
-//    类似于 http.createServer()
 const app = express()
 
 // 2. 设置请求对应的处理函数
@@ -845,7 +700,6 @@ const app = express()
 app.get('/', (req, res) => {
   res.send('hello world')
 })
-
 // 3. 监听端口号，启动 Web 服务
 app.listen(3000, () => console.log('app listening on port 3000!'))
 ```
@@ -859,36 +713,17 @@ app.listen(3000, () => console.log('app listening on port 3000!'))
 
 参考文档：http://expressjs.com/en/starter/static-files.html
 
-让用户直接访问静态资源是一个web服务器最基本的功能。
-
-```javascript
-http://localhost:3000/1.png
-http://localhost:3000/css/style.css
-http://localhost:3000/js/index.js
-```
-
-在前面学习http模块时，我们已经实现了这些功能了，但是要写很多代码，现在使用express框架，只需一句代码就可以搞定了，这句代码是  `express.static('public')`
-
 #### 忽略前缀
 
 ```javascript
-// 0. 加载 Express
 const express = require('express')
 
-// 1. 调用 express() 得到一个 app
-//    类似于 http.createServer()
 const app = express();
-
 // 2. 设置请求对应的处理函数
 app.use(express.static('public'))
-
 // 3. 监听端口号，启动 Web 服务
 app.listen(3000, () => console.log('app listening on port 3000!'))
 ```
-
-此时，所有放在public下的内容可以直接访问，注意，此时在url中并不需要出现public这级目录
-
-- 在public下新建index.html。可以直接访问到。
 
 #### 限制前缀
 
@@ -1011,18 +846,6 @@ app.post('/post',function(req,res){
 
 具体来说当content-type为x-www-form-urlencoded时，表示上传的普通简单的键值对 。如果通过postman测试的话，对应的设置如下：
 
-
-
-一般要先下载body-parser这个包。
-
-```javascript
-npm install body-parser
-```
-
-在 express4中，已经预先下载安装过了（在npm install exprss 时，就已经安装了body-parse，你可以在node_modules中查看到），这样就可以直接使用了
-
-![1563331908506](E:/待办事项/JS每日/99-nodejs/node-material.assets/1563331908506.png)
-
 ##### 步骤
 
 ```javascript
@@ -1034,8 +857,6 @@ app.post("/add",function(req,res){
     //3. 可以通过req.body来获取post传递的键值对	
 })
 ```
-
-注意：
 
 - app.use(....)之后，在res.body中就会多出一个属性res.body。
 
@@ -1049,15 +870,9 @@ app.post("/add",function(req,res){
 enctype="multipart/form-data"
 ```
 
-##### 步骤
-
-1.安装
-
 ```javascript
 npm install multer
 ```
-
-2.使用
 
 ```javascript
 // 1. 引入包
@@ -1065,16 +880,12 @@ const multer = require('multer');
 // 2. 配置
 const upload = multer({dest:'uploads/'}) // 上传的文件会保存在这个目录下
 uploads表示一个目录名，你也可以设置成其它的
-
 // 3. 使用
 // 这个路由使用第二个参数 .upload.single表示单文件上传， 'cover' 表示要上传的文件在本次上次数据中的键名。类似于<input type="file" name='cover'/>
-
 app.post("postfile",upload.single('cover'), function(req,res){
 
 })
 ```
-
-说明：
 
 - 如果当前目录下没有uploads，它会自动创建uploads这个文件夹
 
@@ -1082,15 +893,11 @@ app.post("postfile",upload.single('cover'), function(req,res){
 
 ### 中间件技术
 
-我们需要对某些请求（或者某一类请求）进行特殊的处理，此时需要使用到中间件技术。
-
 - 一个流程结束之后，按顺序进入下一个流程；
 - 一个流程如果出了问题，下一个流程也会受影响。
 - 我们可以很方便地插入某一个特殊的处理环节，而不需要对原有环节造成影响。这样做的目的既提高了生产效率也保证了可维护性。
 
 我们可以称其中的每一个处理环节就是一个中间件。
-
-
 
 #### express中间件
 
@@ -1099,32 +906,13 @@ app.post("postfile",upload.single('cover'), function(req,res){
 - 中间件是 express 的最大特色，也是最重要的一个设计。`Express是一个自身功能极简，完全是路由和中间件构成一个web开发框架：从本质上来说，一个Express应用就是在调用各种中间件。`
 - 一个 express 应用，就是由许许多多的中间件来完成的
 
-分类：
-
 - 应用级中间件。 [Application-level middleware](http://www.expressjs.com.cn/guide/using-middleware.html#middleware.application)
 - 路由级中间件。[Router-level middleware](http://www.expressjs.com.cn/guide/using-middleware.html#middleware.router)
 - 错误处理中间件。[Error-handling middleware](http://www.expressjs.com.cn/guide/using-middleware.html#middleware.error-handling)
 - 内置中间件。[Built-in middleware](http://www.expressjs.com.cn/guide/using-middleware.html#middleware.built-in)
 - 第三方中间件。[Third-party middleware](http://www.expressjs.com.cn/guide/using-middleware.html#middleware.third-party)
 
-#### 格式及基本示例
 
-##### 格式
-
-```js
-// 具名函数格式：
-const handler1 = (req, res, next) => {
-  console.log(Date.now());
-  next();
-}
-app.use(handler1);
-
-// 匿名函数格式：
-app.use((req, res, next) => {
-  console.log(Date.now());
-  next();
-});
-```
 
 - 中间件本质就是一个函数，它被当作 `app.use(中间件函数)` 的参数来使用
 - 中间件函数中有三个基本参数， req、res、next
@@ -1137,18 +925,15 @@ app.use((req, res, next) => {
 ```javascript
 var express = require('express')
 var app = express()
-
 var myLogger = function (req, res, next) {
   console.log('LOGGED')
   next()
 }
 // 注册中间件
 app.use(myLogger)
-
 app.get('/', function (req, res) {
   res.send('Hello World!')
 })
-
 app.listen(3000)	
 ```
 
@@ -1161,14 +946,12 @@ app.use((req, res, next) => {
   console.log("第1个中间件");
   next();
 });
-
 app.use((req, res, next) => {
   console.log("第2个中间件");
   res.setHeader('content-type', 'text/html;charset=utf8');
   res.a = 1;
   next();
 });
-
 app.use((req, res, next) => {
   console.log("第3个中间件");
   res.b = 2;
@@ -1185,7 +968,6 @@ app.use((req, res, next) => {
 ```javascript
 var express = require('express')
 var app = express()
-
 app.use(function (req, res, next) {
   console.log('应用级中间件，能匹配所有请求')
   next()
@@ -1194,39 +976,10 @@ app.use('/api1',function (req, res, next) {
   console.log('只匹配/api1请求')
   next()
 })
-
 app.get('/api1', function (req, res) {
   res.send('Hello World!')
 })
-
 app.listen(3000)
-```
-
-
-
-#### 中间件的执行流程
-
-![1563354608948](E:/待办事项/JS每日/99-nodejs/node-material.assets/1563354608948.png)
-
-
-
-#### 中间件的应用
-
-模拟body-parser
-
-```javascript
-app.use((req, res, next) => {
-  if (req.method === 'POST') {
-    let bodyStr = '';
-    req.on('data', chunck => {
-      bodyStr += chunck;
-    });
-    req.on('end', () => {
-      req.body = qs.parse(bodyStr);
-      next();
-    });
-  }
-});
 ```
 
 
@@ -1239,26 +992,21 @@ app.use((req, res, next) => {
 
 ```javascript
 const express = require('express');
-
 const app = express();
 // 两种用户的操作，对应不同的接口
 app.get('/getfrontdetail', (req, res) => {
   res.send('获取游客详情');
 });
-
 app.get('/getfrontinfo', (req, res) => {
   res.send('获取游客信息');
 });
-
 // 两种用户的操作，对应不同的接口
 app.get('/getadmincate', (req, res) => {
   res.send('管理员获文章类别信息');
 });
-
 app.get('/getadmininfo', (req, res) => {
   res.send('获取管理员信息');
 });
-
 app.listen(3000, () => {
   console.log(3000);
 });
@@ -1346,24 +1094,12 @@ app.use('/server', serverRouter);
 
 
 
-### cookie（饼干，甜点）
-
-#### 查看cookie
-
-在浏览器中查看
-
-- 在application--> cookie中查看。
-
-在发送请求时的请求头中查看
-
 #### 理解cookie
 
 - cookie是将数据持久化（保存）存储到客户端（浏览器）的一种技术
 - cookie是**键值对格式的字符串**
 - 可以通过浏览器查看某个网站的cookie
 - 如果浏览器保存了cookie，则向服务器发请求时，就会**自动带上这个cookie**。把cookie放在请求头中，发送给服务器。
-
-![1564563169563](E:/待办事项/JS每日/99-nodejs/node-material.assets/1564563169563.png)
 
 
 
@@ -1433,9 +1169,7 @@ Set-Cookie: <cookie-name>=<cookie-value>; Domain=<domain-value>; Secure; HttpOnl
 
 #### 设置有效期 
 
-expires字段来用设置这个cookie在哪个时间内是有效的。值得注意的是，时间格式是UTC时间格式（ 不是中国时间）。
-
-具体的语法是：
+expires字段来用设置这个cookie在哪个时间内是有效的。值得注意的是，时间格式是UTC时间格式
 
 `"cooke-name=cookie-value;expires=UTC时间"`
 
@@ -1446,8 +1180,6 @@ res.setHeader('set-cookie', ['id=1;expires=' + new Date(Date.now() + 1000 * 5).t
 ```
 
 表示id=1这个cookies在5秒之后失效。
-
-
 
 如果使用express带的setCookie，则可以
 
@@ -1509,17 +1241,9 @@ app.get('/quit', (req, res) => {
 
 ### session
 
-#### 原理
+服务器使用session把用户的信息临时保存在了服务器上，用户离开网站后session会被销毁。这种用户信息存储方式相对cookie来说更安全
 
-session 从字面上讲，就是会话。这个就类似于你和一个人交谈，你怎么知道当前和你交谈的是张三而不是李四呢？对方肯定有某种特征（长相等）表明他就是张三。
-
-session 也是类似的道理，服务器要知道当前发请求给自己的是谁。为了做这种区分，服务器就要给每个客户端分配不同的“身份标识”，然后客户端每次向服务器发请求的时候，都带上这个“身份标识”，服务器就知道这个请求来自于谁了。至于客户端怎么保存这个“身份标识”，可以有很多种方式，对于浏览器客户端，默认采用 cookie 的方式来保存这个身份标记。
-
-服务器使用session把用户的信息临时保存在了服务器上，用户离开网站后session会被销毁。这种用户信息存储方式相对cookie来说更安全，可是session有一个缺陷：如果web服务器做了负载均衡，那么下一个操作请求到了另一台服务器的时候session会丢失。或者服务器重启了session数据也会丢失。
-
-#### 安装包
-
-在express框架下， 我们可以通过安装  `express-session` 包来实现session的功能。
+session有一个缺陷：如果web服务器做了负载均衡，那么下一个操作请求到了另一台服务器的时候session会丢失。或者服务器重启了session数据也会丢失。
 
 #### 设置
 
@@ -1651,72 +1375,6 @@ session：优点是安全，缺点需要服务器空间， 是一种最常见的
 
 
 ## 跨域
-
-```javascript
-// cors_server/server.js
-// 后端服务器，提供接口
-const express = require('express');
-
-const app = express();
-
-app.use(express.static('public'));
-app.get('/getname', (req, res) => {
-  res.json(['张三', '明月']);
-});
-
-app.listen(3000, () => {
-  console.log(3000);
-});
-```
-
-
-
-cors_front/index.html
-
-通过ajax调用接口
-
-```html
-cors_front/index.html. 通过ajax调用接口
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>index.html</title>
-    <style>
-      .container {
-        width: 800px;
-        padding: 2em;
-        margin: 40px auto;
-        border: 1px solid #ccc;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>标题</h1>
-      <button id="btn">请求/getname接口</button>
-      <div></div>
-    </div>
-    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
-
-    <script>
-      $('#btn').on('click', function() {
-        $.ajax({
-          url: 'http://localhost:3000/getname',
-          type: 'get',
-          success: function(result) {
-            console.log(result);
-          }
-        });
-      });
-    </script>
-  </body>
-</html>
-```
-
-
 
 ### 原因
 
@@ -1939,8 +1597,6 @@ app.listen(3000, () => {
 
 - 添加断点调试
 
-![1563504797676](E:/待办事项/JS每日/99-nodejs/node-material.assets/1563504797676.png)
-
 - 这里有一段模拟代码(面试，手写jsonp)
 
 ```php+HTML
@@ -2112,40 +1768,6 @@ try {
 
 
 
-- package.json 当前项目的相关信息
-  - dependencies 当前项目依赖于哪些包
-- package-lock.json
-  - 无需我们查看或操作，记录了当前使用的包的版本和下载地址
-
-- npm install 包名     安装指定的包-必须有网
-  - 简写 npm i 包名
-- npm i / npm install 
-  - 当前项目下只有package.json又没有node_modules的时候使用，用于让npm下载相关的依赖
-
-
-
-## npm进行本地项目安装和全局安装
-
-- 基本的npm安装包的方式为：  npm install 包名
-  - 相当于局部变量：只能在当前环境下使用
-- 全局安装的方式为：  npm install -g 包名
-  - 相当于全局变量：可以在任意位置使用
-
-
-
-## nrm    node的资源地址管理器
-
-- nrm的安装方式：（全局安装）
-  - npm install -g nrm 
-- nrm的常用命令：
-  - nrm --version 查看版本（用来确认是否安装成功）
-  - nrm ls 查看所有的资源名称和地址
-    - npm有自己的服务器，国内访问较慢，可以使用国内的一些镜像服务端，例如taobao（推荐）
-      - 镜像服务端：例如taobao这个资源服务器会每隔一段时间从npm官方进行数据的同步
-  - nrm use 资源的名称    - 将npm的资源操作切换到某一个地址上
-
-
-
 ### npm start的启动方式
 
 - npm init后会生成package.json文件
@@ -2159,8 +1781,6 @@ try {
 
 - 在项目的根目录下设置一个文件  .gitignore 
   - 内部可以设置不需要被git进行管理的一些内容(目录或文件)
-    - git add . 相关操作都不会操作这些文件，可以避免都发送到github保存了
-  - 示例：
     - 书写    node_modules   表示这个目录不需要被git管理
     - 书写    *.txt   表示所有txt文件都不需要git管理
 
@@ -2168,77 +1788,134 @@ try {
 
 ## 静态资源托管的方式
 
-- 默认根目录访问时的托管
-
-  - app.use(express.static(path.join(__dirname, '书写一个目录名即可')))
-
-  ```javascript
-  app.use(express.static(path.join(__dirname, './admin_public/')));
-  ```
+```javascript
+app.use(express.static(path.join(__dirname, './admin_public/')));
+```
 
 - 自定义地址的托管
 
-  - app.use('用来设置访问时的url' ,express.static(path.join(__dirname, '书写一个目录名即可')))
-
   ```javascript
-  app.use('/admin', express.static(path.join(__dirname, './admin_public/')));
+app.use('/admin', express.static(path.join(__dirname, './admin_public/')));
   ```
 
 ## 设置get请求的接口的方式：
 
-- 基本格式为：
-  - app.get(请求地址, 回调函数)
-    - 回调函数内部接收req和res与node中是一样的
-    - req.query可以直接接收get请求参数的对象结构
-    - 响应方式：
-      - res.send()  通用功能
-        - 发送中文不会乱码，因为express设置了默认响应头为  text/html;charset=utf-8
-        - 发送对象会自动转换为JSON格式的字符串，会设置响应头为 application/json;charset=utf-8
+- req.query可以直接接收get请求参数的对象结构
+- res.send()  通用功能
+  - 发送中文不会乱码，因为express设置了默认响应头为  text/html;charset=utf-8
+  - 发送对象会自动转换为JSON格式的字符串，会设置响应头为 application/json;charset=utf-8
 
 
 
 ## post接口的设置
 
-- express中没有直接进行post请求参数的处理操作
-- 需要使用与express相关的包进行post请求参数的处理操作
-  - 使用的包名为  body-parser , 下载express时已经自动下载完毕了，可以直接进行引入操作
+- 使用的包名为  body-parser 
 
-- 使用小结：
-  - 引入方式
-    - const bodyParser = require('body-parser');
-  - 让app使用bodyParser的功能进行req.body的设置
-    - **app.use(bodyParser.urlencoded({extended: false}));**
-      - false表示使用内置模块querystring进行处理，true为默认值使用第三方模块qs处理
-    - 可以在app.post()的回调函数中直接使用req.body进行请求体的操作
+- 让app使用bodyParser的功能进行req.body的设置
+  - **app.use(bodyParser.urlencoded({extended: false}));**
+    - false表示使用内置模块querystring进行处理，true为默认值使用第三方模块qs处理
+  - 可以在app.post()的回调函数中直接使用req.body进行请求体的操作
 
-## 中间件
 
-- express中的中间件使用方式
 
-  - 统一的中间件设置方式（所有请求都经过这个中间件的处理）
+## 文件上传的处理
 
-    ```javascript	
-    app.use((req, res, next) => {
-      // req和res与之前的所有req和res是一样的
-      // next() 调用时，可以让请求继续触发后续的操作(中间件、请求处理)
-      //	- 如果没有调用next，请求就不会继续向后执行
-      //		- app.use(express.static(...)); 内部没有设置next，后续的请求处理就没有意义了
-    });
-    ```
+- 使用了multer中间件
 
-  - 指定接口地址进行中间件设置
+  - 安装：npm i multer
+  - multer({ dest: '地址' });  // 简略处理方式
+  
+- 使用string-random包
 
-    ```js
-    app.use('/common/post指定的接口名', (req, res, next) => {
-      // 只有这个指定的接口会经过这个中间件的处理
-      //	- app.use('地址', express.static(...));
-    });
-    ```
+  - 下载并引入
+    - const sr = require('string-random')
+  - 使用方式：  
+    - sr()  或  sr(随机字符串长度)
 
-  - 自定义的内部处理
+## 路由
 
-    - 可以自己在app.use的回调函数中进行条件判断
-      - 通过条件的执行中间件功能
-      - 不通过的直接设置next()
+> 编程中的路由指的是  对 ‘客户端到服务端的请求’ 进行处理的一种方式
+>
+> - 例如：客户端通过 /common/post 发送请求，服务端对 /common/post进行处理，这就是设置了一个路由操作。（其实就是设置了一个接口，一个接口就可以称为是一个路由）
 
-- 自己设置中间件模拟body-parser的操作
+- 基本的路由设置方式：
+
+  - app.get(地址，回调);
+  - app.post(地址，回调)
+
+- express中提供了路由的管理工具
+
+  - 如果在server.js中设置n个路由(接口)，功能都混在一起，不方便处理
+
+  - 使用方式：
+
+    - 将某部分路由功能放到一个单独的模块中保存
+
+      - 通过let router = express.Router()创建一个路由管理器实例
+      - router的使用方式与app相同
+      - 通过 module.exports = router 方式进行导出/暴露
+  
+    - 从server.js中进行模块的引入
+
+      - 通过app.use()以中间件方式使用路由模块的功能
+
+        ```js
+let uesrRouter = require('./router/userRouter.js');
+        app.use('/user', userRouter);
+      ```
+        
+        - 注意：userRouter模块内部设置具体路由时，就不要再写 /user的部分了
+
+## cookie和session
+
+> http是一种**无状态**的协议：
+>
+> - 每次客户端请求服务端时，都是'初次见面'
+
+## cookie
+
+- cookie在登录中的设置方式：
+  - 问题：服务端每次接受用户的请求时，用于http无状态，所以无法确定用户的身份
+  - 为了解决这个无状态的问题，会在登录成功时，**服务端给用户下发cookie的数据(小票)**
+  - **cookie的数据是保存在客户端的**
+  - 等以后用户再请求服务端时，带着小票一起发送过去(自动)，服务端检测小票的信息即可判断这个用户使用访问过
+
+  
+  
+
+## session
+
+> session不是一个新技术，实际上就是cookie的一种使用方式
+
+- session实现方式：
+  - 因为cookie是保存在客户端的，用户可以随意修改或伪造
+  - 服务端不再将数据直接下发到客户端保存了，而是将**数据保存在服务端**
+  - **下发的是保存数据区域的标识(手牌)**
+  - 用户下次请求时带着标识到服务端，开箱子读取数据进行操作即可
+- 好处：确保数据无法被用户操作，安全
+
+
+
+
+## 跨域
+
+> 同源策略是浏览器自带的一种安全机制。
+>
+> - 本质上就是浏览器不允许我们使用ajax进行非同源地址的访问
+
+- 同源地址：
+  - 指的是三个部分相同的地址
+    - 协议
+    - 域名
+    - 端口
+  
+  - 这时就需要我们能够突破浏览器的同源策略限制，这种操作称为 跨域
+
+
+
+#### serve工具快速开启服务端
+
+- 安装：
+  - npm install -g serve
+- 使用：
+  - 任意文件目录下，打开黑框执行  serve 命令即可，并根据提示访问

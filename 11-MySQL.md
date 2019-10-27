@@ -1,14 +1,8 @@
 # MySQL数据库
 
-## 数据库简介
-
 ### 什么是数据库
 
-数据的仓库 ---- 数据库。我们访问的网页的信息都是数据，例如：html文件，图片，视频，订单，用户名，密码等等。
-
-这些数据都需要有专门的地方来保存和管理。在我们没有学习数据库技术之前，我们使用的数据都是以文件系统的方式保存的，但是它们并不能满足我们的实际需求，例如：纯文件的格式不方便我们统计信息。我们需要一个专门的软件来管理我们的数据, 这就是数据库。
-
-数据库可以大致分成两大阵营
+数据都需要有专门的地方来保存和管理。一个专门的软件来管理我们的数据, 这就是数据库。
 
 - 关系型数据库，代表产品：
   - **MySQL**
@@ -22,10 +16,6 @@
   - neo4j 图形数据库
   - Elasticsearch 搜索引擎存储
 
-参考：数据库使用排名 <https://db-engines.com/en/ranking>
-
-
-
 ### 理解关系型数据库
 
 在关系型数据库中，存在三级关系：
@@ -34,16 +24,8 @@
 - 数据表
 - 字段
 
-数据表的结构和excel一模一样：
-
-![1553604226020](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1553604226020.png)
-
-
-
 - 每一列都是一类数据 --- `字段`
 - 每一行代表一条数据 --- `记录`
-
- 
 
 | 数据库       | excel文件                |
 | ------------ | ------------------------ |
@@ -53,18 +35,10 @@
 
 
 
-
-
 ### MySQL简介
-
-![1562659793142](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1562659793142.png)
-
-MySQL是一个关系型数据库管理系统，由瑞典MySQL AB 公司开发，目前属于 Oracle 旗下产品 。MySQL所使用的 SQL 语言是用于访问[数据库](https://baike.baidu.com/item/数据库/103728)的最常用标准化语言。
 
 - 体积小、速度快、总体拥有成本低，一般中小型网站的开发都选择 MySQL 作为网站数据库。
 - 搭配 [PHP](https://baike.baidu.com/item/PHP) 和 [Apache](https://baike.baidu.com/item/Apache) 可组成良好的开发环境。
-
-
 
 ### 安装MySQL
 
@@ -90,7 +64,7 @@ mysql数据库安装完成之后（用集成环境wampserver代替单独的mysql
 
 - 命令行窗口
 
-  ![mysql-console](E:/待办事项/JS每日/3-MySQL/MySQL.assets/mysql-console.gif)
+  ![mysql-console](MySQL.assets\mysql-console.gif)
 
 
 
@@ -105,51 +79,39 @@ mysql数据库安装完成之后（用集成环境wampserver代替单独的mysql
 
 ### 新建数据库
 
-![1566217626323](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1566217626323.png)
-
-
+![1566217626323](MySQL.assets/1566217626323.png)
 
 在弹出的窗口中填写数据库名即可。
 
-![1566217681176](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1566217681176.png)
+![1566217681176](MySQL.assets/1566217681176.png)
 
 ### 新建数据表
 
-
-
-![1566217854988](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1566217854988.png)
-
-
-
-
+![1566217854988](MySQL.assets/1566217854988.png)
 
 得到的效果如下：
 
-![1566218476941](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1566218476941.png)
+![1566218476941](MySQL.assets/1566218476941.png)
 
 
 
 ### 添加字段
 
-![1566218596477](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1566218596477.png)
+![1566218596477](MySQL.assets/1566218596477.png)
 
 得到如下：
 
-![1566218674687](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1566218674687.png)
+![1566218674687](MySQL.assets/1566218674687.png)
 
 ### 添加数据
 
-![1566346995067](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1566346995067.png)
+![1566346995067](MySQL.assets/1566346995067.png)
 
 ## 在phpmyadmin中操作数据库
 
-
-
 ### 新增数据库
 
-![1563518206393](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1563518206393.png)
-
-
+![1563518206393](MySQL.assets/1563518206393.png)
 
 
 
@@ -161,19 +123,19 @@ mysql数据库安装完成之后（用集成环境wampserver代替单独的mysql
   - varchar:可变长字符串
   - int：整型
 
-![1563518277712](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1563518277712.png)
+![1563518277712](MySQL.assets/1563518277712.png)
 
-![1563518433071](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1563518433071.png)
+![1563518433071](E:/Note/MySQL.assets/1563518433071.png)
 
 ### 添加数据
 
-![1563518540064](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1563518540064.png)
+![1563518540064](MySQL.assets/1563518540064.png)
 
 ### 查看数据
 
 ### 执行sql
 
-![1563518795794](E:/待办事项/JS每日/3-MySQL/MySQL.assets/1563518795794.png)
+![1563518795794](MySQL.assets/1563518795794.png)
 
 ## SQL语句
 
@@ -275,7 +237,6 @@ update stu set age=35,height=160 where id = 1
 
 -- 如果修改的时候，不加条件，则会修改全部的数据
 update stu set weight = 60
-
 ```
 
 
@@ -297,8 +258,6 @@ SELECT id,name,age FROM stu
 SELECT * FROM stu
 # 带条件的查询
 SELECT * FROM 表名 WHERE 条件1 and 条件2
-
-
  ```
 
 
@@ -311,7 +270,7 @@ select  field1, field2... from 表名  查询表中的所有数据
 
   where 可以使用条件来筛选查询出的结果
 
-![2img](E:/待办事项/JS每日/3-MySQL/06-MySQL.assets/01.jpg) 
+<img src="MySQL.assets\01.jpg"  /> 
 
  ```sql
 -- 查询所有的学生
@@ -335,7 +294,6 @@ select * from stu where age>50 and sex='男'
 -- 查询年龄在30~60之间的同学，包括30和60
 select * from stu where age>=30 and age<=60
 select * from stu where age between 30 and 60
-
  ```
 
 
@@ -351,7 +309,6 @@ select * from stu where age between 30 and 60
 ```sql
 select * from stu where id = 2
 # 相等判断，写一个等号
-
 ```
 
 
@@ -366,7 +323,6 @@ select * from stu where id = 2
 
 ```sql
 select id,name,age from stu where age >= 25
-
 ```
 
 
@@ -383,7 +339,6 @@ select id,name,age from stu where age >= 25
 select * from stu where age >= 23 and age <= 28
 
 select * from stu where age between 23 and 28
-
 ```
 
 
@@ -400,8 +355,6 @@ select * from stu where age between 23 and 28
 a%b :  ab  abb  asdfb
 a_b: acb  atb 
 a_b%:  acb  a&baaad
-
-
 ```
 
 like: 在执行模糊查询时，必须使用like来作为匹配条件
@@ -416,7 +369,6 @@ select * from stu where name like '王__'
 
 -- 查询名字中带有王的人
 select * from stu where name like '%王%'
-
 ```
 
 
@@ -443,8 +395,6 @@ select * from stu order by height asc, id desc
 
 -- 查询所有的男同学，并按年龄降序排列
 select * from stu where sex='男' order by age desc
-
-
 ```
 
 注意：如果SQL语句中，有where和order by，where一定要放到order by之前
@@ -474,7 +424,6 @@ limit 用来限制查询结果的起始点和长度
 -- 查询年龄最大的三个男同学
 -- select * from stu where sex='男' order by age desc limit 0,3
 select * from stu where sex='男' order by age desc limit 3
-
 ```
 
 注意：where、order by、limit如果一起使用，是有顺序的，where在最前面、其次是order by、limit要放到最后==。
@@ -491,7 +440,6 @@ select * from stu where sex='男' order by age desc limit 3
 
 ```mysql
 select * from 表1 , 表2 where  两个表的关系
-
 ```
 
 创建两个表:类别表和文章表：
@@ -504,7 +452,6 @@ CREATE TABLE IF NOT EXISTS `categroy` (
   `slug` varchar(10) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='文章类型表' AUTO_INCREMENT=1;
-
 ```
 
 
@@ -519,7 +466,6 @@ CREATE TABLE IF NOT EXISTS `article` (
   `dt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='文章表' AUTO_INCREMENT=1;
-
 ```
 
 这两个表的关系是 category.id = article.cateid
@@ -530,21 +476,15 @@ insert into article (cateid,title,content) value(1,"我要拿什么爱你","我�
 insert into categroy (name,slug) value ('科学','kexue');
 //选出数据
  select article.id,title,content,name,dt from article,categroy where article.cateid=categroy.id;
-
 ```
 
 
 
 ## node使用mysql模块
 
-###  mysql模块的作用
-
-mysql模块是一个第三方模块，专门用来操作MySQL数据库。 可以执行增删改查(curd)操作。
-
 ```shell
 # 安装
 npm i mysql
-
 ```
 
 ### mysql模块基本用法
@@ -601,7 +541,6 @@ conn.end();
  *    fields: 本次SQL执行涉及到的字段信息
  */
 //当执行查询的SQL语句时，返回值一定是一个数组；数组内部是对象；
-
 ```
 
 
@@ -642,7 +581,6 @@ conn.query(sql, [30, '男'], (err, result) => {
 
 // 5. 关闭连接
 conn.end();
-
 ```
 
 如果SQL中有多个占位符，则传递数组
@@ -653,7 +591,6 @@ conn.query(sql, [20, '男'], (err, result) => {
     if (err) throw err;
     console.log(result);
 }); 
-
 ```
 
 
@@ -684,7 +621,6 @@ let sql = `
 select id,name from stu;
 select * from category
 `;
-
 conn.query(sql, (err, result) => {
     if (err) throw err;
     // console.log(result); // 得到一个数组套数组的形式
@@ -694,7 +630,6 @@ conn.query(sql, (err, result) => {
 
 // 5. 关闭连接
 conn.end();
-
 ```
 
 ###  添加
@@ -718,7 +653,6 @@ const conn = mysql.createConnection({
     database: 'qishiliu'
 });
 conn.connect();
-
 // 1. insert into stu (字段,...) values (?, ?)
 // let sql = 'insert into stu (name, age, sex) values (?, ?, ?)';
 // conn.query(sql, ['张三疯', 99, '男'], (err, result) => {
@@ -732,7 +666,6 @@ conn.connect();
 //         console.log('添加失败');
 //     }
 // });
-
 // 2. insert into stu set 字段=值, 字段=值....
 // 如果SQL语句中，有 “字段=值, 字段=值....” ，可以使用一个 ? 来表示
 // 需要为这一个 ? 传递js对象
@@ -742,7 +675,6 @@ let values = {
     age: 20,
     height: 166
 };
-
 conn.query(sql, values, (err, result) => {
     if (result.affectedRows > 0) {
         console.log('添加成功，新数据的id为：' + result.insertId);
@@ -752,7 +684,6 @@ conn.query(sql, values, (err, result) => {
 });
 
 conn.end();
-
 ```
 
 ### 修改
@@ -769,7 +700,6 @@ const conn = mysql.createConnection({
     database: 'qishiliu'
 });
 conn.connect();
-
 // 更新
 // update stu set 字段=值,字段=值 where id=11
 let sql = 'update stu set ? where id=?';
@@ -778,7 +708,6 @@ let values = {
     age: 79,
     height: 166
 };
-
 conn.query(sql, [values, 15], (err, result) => {
     if (err) throw err;
     if (result.affectedRows > 0) {
@@ -787,14 +716,8 @@ conn.query(sql, [values, 15], (err, result) => {
         console.log('修改失败');
     }
 });
-
 conn.end();
-
 ```
-
-
-
-
 
 ### 删除
 
@@ -810,10 +733,8 @@ const conn = mysql.createConnection({
     database: 'qishiliu'
 });
 conn.connect();
-
 // 删除
 let sql = 'delete from stu where id=?';
-
 conn.query(sql, 16, (err, result) => {
     if (err) throw err;
     if (result.affectedRows > 0) {
@@ -822,9 +743,7 @@ conn.query(sql, 16, (err, result) => {
         console.log('删除失败');
     }
 });
-
 conn.end();
-
 ```
 
 
@@ -853,7 +772,6 @@ conn.end();
 create 表名(
 字段名 类型（长度） 是否可为空 其它修饰
 )
-
 ```
 
 示例：
@@ -867,7 +785,6 @@ CREATE TABLE IF NOT EXISTS `student` (
   `sgender` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='学生表' AUTO_INCREMENT=1;
-
 ```
 
 ### 显示数据表
