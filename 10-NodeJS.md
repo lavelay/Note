@@ -1862,9 +1862,11 @@ app.use('/admin', express.static(path.join(__dirname, './admin_public/')));
         ```js
 let uesrRouter = require('./router/userRouter.js');
         app.use('/user', userRouter);
+        ```
       ```
         
         - 注意：userRouter模块内部设置具体路由时，就不要再写 /user的部分了
+      ```
 
 ## cookie和session
 
@@ -1919,3 +1921,33 @@ let uesrRouter = require('./router/userRouter.js');
   - npm install -g serve
 - 使用：
   - 任意文件目录下，打开黑框执行  serve 命令即可，并根据提示访问
+
+# JSONP跨域方式
+
+- 是一种传统的跨域解决方案
+  - JSONP不是规范中提出了跨域方式，而是开发者通过实践得到的一种解决方法
+    - 随着规范的不断完善，推出了CORS的跨域解决方案
+- 使用场景：
+  - CORS公司内部进行使用
+  - JSONP会在我们请求第三方接口时常用
+- 什么是JSONP
+  - 因为浏览器的同源策略限制了ajax的请求，JSONP就不采用ajax进行请求操作了
+
+- 设置方式：
+  - 原生的设置方式：
+    - 客户端的处理方式
+      - 设置script标签，将src设置为接口地址
+      - 通过callback参数传递客户端的处理函数名称
+      - 在这个请求发送前设置好对应的处理函数即可
+    - 服务端的处理方式：
+      - 服务端接收处理函数名称
+      - 响应函数调用形式的字符串，并传入数据即可
+  - jQuery的设置方式：
+    - 在jQuery的ajax方法中设置一个dataType属性，值为'jsonp'
+  - axios不支持JSONP
+- JSONP的名称解释(不用记)
+  - json with padding 常用的数据格式为JSON，所以JSONP中通常也传递的是JSON，所以起名叫JSONP
+
+- JSONP的特点：
+  - 没有兼容性问题
+  - 只能发送get请求

@@ -1,4 +1,4 @@
-# MySQL数据库
+## MySQL数据库
 
 ### 什么是数据库
 
@@ -818,3 +818,166 @@ CREATE TABLE IF NOT EXISTS `student` (
 ### phpstudy中文乱码
 
 ![1566377317686](MySQL.assets/1566377317686.png)
+
+# 数据库
+
+> 数据库是用来存储数据的一个工具(软件)
+
+## 安装以及使用
+
+- 双击安装phpStudy软件
+- 运行软件，点击启动按钮，直到左侧的mySQL左侧圆点变为**绿色**即可
+- 点击右侧的 ‘MySQL管理器’  -> MySQL-front -> 会弹出可视化的mysql管理工具
+  - 默认的数据库的用户名和密码都是 root
+  - mysql数据库的默认端口为3306
+- 具体操作方式：
+  - 从左侧列表中的localhost位置右键，选择新建  数据库
+    - 输入一个数据库名称
+  - 右键新建的数据库名，选择新建表格
+    - 输入一个表名
+    - 右侧出现3个选项
+      - 对象浏览器：用来设置表头信息(字段名)
+        - id是默认存在的，不会重复，自动递增，无需操作
+        - 字段值的类型
+          - varchar 相当于js中的字符串类型
+          - int 相当于js中的number
+      - 数据浏览器：用来设置数据信息(字段值)
+
+## sql语句
+
+> sql语句是用来进行数据库操作的一种语言
+>
+> - 基础功能有4个
+>   - 增加
+>   - 删除
+>   - 修改
+>   - 查询
+
+### select语句和其他子句的使用
+
+```sql
+  1 注释写法
+  -- 这里是注释的内容
+
+  2 sql语句的使用
+
+  2.1 select语句 - 用来进行数据的查询操作（获取数据库中的数据）
+  -- select 字段名 from 表名
+  select * from user 获取user表中的所有数据
+  select id from user 获取某个字段的数据
+  select id,username,userage from user 获取多个字段的数据
+
+  -- where子句的使用
+  select * from user where id=1   指定条件
+  select * from user where id in (1,2)  指定某个字段的多个情况
+  select * from user where id>1 and userage=22  指定多个条件
+  select * from user where id>1 or userage=18  多个条件满足某个
+
+  -- order by子句的使用
+  select * from user order by 字段名  根据指定字段排序，默认升序
+  select * from user order by userage
+
+  select * from user order by 字段名 desc 根据指定字段排序，降序
+  select * from user order by userage desc
+
+  -- limit 限制
+  select * from user limit 2 只要最前面2条
+
+  select * from user limit 0,3 后面的第一个值就像slice的参数一样，索引值， 第二个是个数
+
+  - 分页数据的读取方式： 如果每页获取3条 （了解）
+  select * from user limit 0,3  第一页
+  select * from user limit 3,3  第二页
+  select * from user limit 6,3  第三页
+  select * from user limit 9,3  第四页
+  select * from user limit (page-1) * 3, 3 第page页
+
+```
+
+### 非查询sql语句（增删改操作）
+
+- insert into语句
+
+```sql
+ 2.2 insert into 用来进行数据的新增操作(下面的多种操作方式，随意掌握一个即可)
+  insert into 表名 (字段名) values(数据...)
+
+  insert into user (userage,username) values(17, 'jack')  指定字段设置值时，必须与名称顺序对应
+
+  insert into user values(null,'吴悠',13) 不指定字段，设置值时必须按照表格顺序设置，不填的写null
+
+  下面是同时设置多条的书写方式：
+  insert into user values(null,'吴悠1',12),(null,'吴悠2',11),(null,'吴悠3',10)
+  insert into user (userage,username) values(127, 'jack1'),(137, 'jack2'),(147, 'jack3')
+
+  insert into user set username='rose2', userage=19
+```
+
+### delete和update 操作
+
+```sql
+  2.3 delete 用来进行数据删除
+  delete from user; 删除user表中所有数据，不要轻易尝试
+
+  通常delete都与where子句结合使用 (之前使用的where操作与这里是一样的)
+  delete from user where id=12 指定条件删除数据
+  delete from user where id in (2,5,14)
+
+
+  2.4 update 更新数据（修改）
+  update 表名 set 字段名=值;  更新指定表中的所有数据，不要轻易尝试
+
+  通常update都与where结合使用
+  update user set username='abc' where id=3
+  update user set username='xyz',userage=36 where id in (3,4)
+```
+
+### 小结
+
+- select操作是会返回一些**数据内容**的
+- 其他三个操作时不会返回数据内容的，而是通过查看**受影响的行数**判断是否成功
+
+
+
+## 通过nodejs操作数据库的方式
+
+- 使用一个mysql的包进行数据库操作
+
+  - 安装的这个mysql包，是让nodejs方便的操作mysql数据库使用的
+
+- 安装和引入
+
+  - 安装方式：   npm install mysql
+
+- 基本使用方式：
+
+  - 引入： const mysql = require('mysql');
+
+  - 创建连接对象：
+
+    ```sql
+    const con = mysql.createConnection({
+      host: 'localhost', // 主机地址，主机名
+      user: 'root', 		// 用户名
+      password: 'root', // 密码
+      port: '3306', 		// 端口号
+      database: 'demo' // 数据库名
+    });
+    ```
+
+  - con.query()
+
+    -  参数1必选，sql语句
+    -  参数2可选：占位符的数据（可以选择性记忆）
+    -  参数3必选：回调函数
+       -  参数1 err错误信息
+       -  参数2 result 
+          -  如果是select操作，result是获取到的数据，数组格式
+          -  如果是非查询操作，result是操作结果的对象形式的信息
+             -  affectedRows 代表受影响的行数，应当进行检测
+
+- 数据库对比json文件的好处
+
+  - json文件可以随便操作，数据库有用户名和密码，更安全一些
+  - json文件需要自己书写js代码进行数据操作，数据库有sql语句，操作更方便简洁
+

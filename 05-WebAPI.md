@@ -280,6 +280,8 @@ clearInterval(timeoutID);  //停止定时器
 - 自执行函数中的this指向window
 - 构造函数中this指向构造函数实例化的那个对象
 - call、apply、bind时，this指向方法的第一个参数
+- 事件函数里的this指的是事件源
+- 箭头函数中没this，继承的是父执行上下文的this
 
 
 

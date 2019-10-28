@@ -1,4 +1,4 @@
-# 异步：promise
+## 异步：promise
 
 ## 基本介绍
 
@@ -421,5 +421,133 @@ async function dosomethin(){
     let rs = await readFile();
     // if(rs)
 } 
+```
+
+# 异步操作管理
+
+> 为什么要进行异步操作的管理
+>
+> - 异步操作都会有回调函数
+> - 回调一层一层嵌套的写法用一个特殊的称呼：回调地狱 
+>   - 会出现各种的嵌套操作
+
+```javascript
+const fs = require('fs');
+
+// 需求：按顺序依次读取3个json文件，并输出内容
+// 1 第一次读取
+fs.readFile('./1.json', 'utf-8', (err, data) => {
+  if (err) { throw err; }
+  console.log(data); // 输出文件内容
+  // 2 第二个文件读取
+  fs.readFile('./2.json', 'utf-8', (err, data) => {
+    if (err) { throw err; }
+    console.log(data); // 输出文件内容
+    // 3 第三个文件读取
+    fs.readFile('./3.json', 'utf-8', (err, data) => {
+      if (err) { throw err; }
+      console.log(data); // 输出文件内容
+    });
+  });
+});
+```
+
+
+
+## promise
+
+> 目的：通过promise的处理，让异步操作书写的像同步代码一样，不需要书写多层的嵌套结构
+
+- 使用方式
+  - new Promise()
+    - 参数为回调函数
+      - 参数1是用来触发then()的函数
+      - 参数2是用来触发catch()的函数
+  - promise实例对象有3个方法
+    - then()  catch() finally()
+- 解决上面的示例问题
+  - 好处：可以让多次异步操作不需要书写为嵌套结构
+  - 书写形式为链式写法（同步写法）
+
+```javascript
+// 将读取文件功能进行封装
+function readFile(path) {
+  // 将当前读取文件的promise对象返回
+  return new Promise((ok, err) => {
+    // 在promise中进行异步操作设置
+    fs.readFile(path, 'utf-8', (error, data) => {
+      // 如果有错误产生，触发catch
+      if (error) {
+        // 调用err()
+        err('读取文件错误');
+      } else {
+        // 成功时调用ok()触发then()
+        ok(data);
+      }
+    })
+  });
+}
+
+// 进行多次异步的文件读取操作
+//  - 当给then()设置的返回值是promise对象，这个对象会成为then的返回值
+readFile('./1.json')
+  .then((data) => {
+    // 第一次文件读取
+    console.log(data);  // 第一次输出
+
+    // 希望读取第二次文件
+    return readFile('./21.json')
+  })
+  .then((data) => {
+    console.log(data); // 第二次输出
+
+    // 希望读取第三次文件
+    return readFile('./3.json');
+  })
+  .then((data) => {
+    console.log(data);  // 第三次输出
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+```
+
+
+
+## async await
+
+> ES6认为promise的.then() .catch()还是有些麻烦，又推出了一种新的写法，用来简化
+
+```javascript
+// 使用async和await时，只需要设置ok的调用即可
+function readFile(path) {
+  return new Promise((ok, err) => {
+    fs.readFile(path, 'utf-8', (error, data) => {
+      // 无论成功还是失败都触发ok
+      if (error) {
+        ok(null); // 失败时传入一些错误信息
+      } else {
+        ok(data); // 成功时传入数据
+      }
+    })
+  });
+}
+
+
+// --- 下面的是常用的写法:
+// 1 后续我们设置一个async函数
+async function myFun() {
+  // 2 调用可以返回promise对象的函数readFile()
+  //  - 调用前设置await
+  let data1 = await readFile('./1.json');
+  // console.log(data1); // 可以根据data1的结果进行ifelse判断
+
+  let data2 = await readFile('./2.json');
+  console.log(data2);
+
+  let data3 = await readFile('./3.json');
+  console.log(data3);
+}
+myFun();
 ```
 
