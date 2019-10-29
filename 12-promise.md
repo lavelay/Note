@@ -1,25 +1,3 @@
-## 异步：promise
-
-## 基本介绍
-
-promise是实现异步操作的另一种方式。
-
-```js
-// nodejs文件读写
-// - 如果希望按顺序读取3个文件，并依次输出文件内容，可以书写以下代码。
-fs.readFile('文件1路径'，'utf8', (err,data)=>{
-	fs.readFile('文件2路径'，'utf8', (err,data)=>{
-		fs.readFile('文件3路径'，'utf8', (err,data)=>{
-			// 进行内容输出..
-		});
-	});
-});
-```
-
-如果不学promise也是可以写异步代码，但是嵌套结构多，写出来不好看。
-
-所以开发者都在用promise对异步代码进行改进。
-
 ## Promise构造函数
 
 Promise是一个构造器(俗称构造函数)，用来创建Promise类型的对象 。就像Array是一个构造器，用来创建数组类型对象。
@@ -232,8 +210,6 @@ p.then((res)=>{
 });
 ```
 
-
-
 示例代码2：
 
 ```js
@@ -256,35 +232,6 @@ p.then((res)=>{
 ### 返回值
 
 then()方法的返回值也是一个promise对象，但是，它的返回值是一个新的promise对象（与调用then方法的并不是同一个对象），所以它支持链式写法。
-
-即：
-
-```js
-var p1 = new Promise(()=>{});
-var p2 = p1.then(); // p2也是一个promise对象。
-
-console.log(p1 === p2); // false
-```
-
-
-
-```javascript
-var p1 = new Promise( (resolve,reject) => { 
-    // 做一些事情，
-    // 根据情况，去执行resolved或者是rejected。 
-    reject();
-})
-f_ok = function(){ console.info("当前的promise 的状态是ok的 ")};
-f_err = function(){ console.info("当前的promise的状态是error的")};
-
-var p2 = p1.then(f_ok,f_err);
-console.info(p2 instance of Promise); // true
-console.info(p1 === p2);              // false
-console.info("p1",p1);
-console.info("p2",p2);
-```
-
-如上代码可以说明p1.then()的结果是一个与p1不同的promise对象。换句话说，then()会封装一个全新的promise对象p2。
 
 那既然 p2也是一个promise对象，那么，p2的状态（promiseStatus）和值(promiseValue)分别是什么？
 
@@ -423,35 +370,6 @@ async function dosomethin(){
 } 
 ```
 
-# 异步操作管理
-
-> 为什么要进行异步操作的管理
->
-> - 异步操作都会有回调函数
-> - 回调一层一层嵌套的写法用一个特殊的称呼：回调地狱 
->   - 会出现各种的嵌套操作
-
-```javascript
-const fs = require('fs');
-
-// 需求：按顺序依次读取3个json文件，并输出内容
-// 1 第一次读取
-fs.readFile('./1.json', 'utf-8', (err, data) => {
-  if (err) { throw err; }
-  console.log(data); // 输出文件内容
-  // 2 第二个文件读取
-  fs.readFile('./2.json', 'utf-8', (err, data) => {
-    if (err) { throw err; }
-    console.log(data); // 输出文件内容
-    // 3 第三个文件读取
-    fs.readFile('./3.json', 'utf-8', (err, data) => {
-      if (err) { throw err; }
-      console.log(data); // 输出文件内容
-    });
-  });
-});
-```
-
 
 
 ## promise
@@ -532,8 +450,6 @@ function readFile(path) {
     })
   });
 }
-
-
 // --- 下面的是常用的写法:
 // 1 后续我们设置一个async函数
 async function myFun() {

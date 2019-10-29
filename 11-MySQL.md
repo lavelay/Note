@@ -58,60 +58,39 @@
 
 我们以phpstudy为例，去安装。值得提醒的是，当我们安装完MySQL后，我们的计算机又变成服务器了，不过不是Web服务器，而是MySQL数据库服务器了。
 
-### 使用mysql数据库
-
-mysql数据库安装完成之后（用集成环境wampserver代替单独的mysql），我们就可以去使用它了，你可以有如下两种方法去使用：
-
-- 命令行窗口
-
-  ![mysql-console](MySQL.assets\mysql-console.gif)
-
-
-
-- 图形化界面
-- phpmyadmin
-  - navicat
-  - sqlyot
-
 
 
 ## mysql-front中操作数据库
 
 ### 新建数据库
 
-![1566217626323](MySQL.assets/1566217626323.png)
+![1566217626323](Image/MySQL.assets/1566217626323.png)
 
 在弹出的窗口中填写数据库名即可。
 
-![1566217681176](MySQL.assets/1566217681176.png)
+![1566217681176](Image/MySQL.assets/1566217681176.png)
 
 ### 新建数据表
 
-![1566217854988](MySQL.assets/1566217854988.png)
+![1566217854988](Image/MySQL.assets/1566217854988.png)
 
 得到的效果如下：
 
-![1566218476941](MySQL.assets/1566218476941.png)
+![1566218476941](Image/MySQL.assets/1566218476941.png)
 
 
 
 ### 添加字段
 
-![1566218596477](MySQL.assets/1566218596477.png)
+![1566218596477](Image/MySQL.assets/1566218596477.png)
 
 得到如下：
 
-![1566218674687](MySQL.assets/1566218674687.png)
+![1566218674687](Image/MySQL.assets/1566218674687.png)
 
 ### 添加数据
 
-![1566346995067](MySQL.assets/1566346995067.png)
-
-## 在phpmyadmin中操作数据库
-
-### 新增数据库
-
-![1563518206393](MySQL.assets/1563518206393.png)
+![1566346995067](Image/MySQL.assets/1566346995067.png)
 
 
 
@@ -123,23 +102,21 @@ mysql数据库安装完成之后（用集成环境wampserver代替单独的mysql
   - varchar:可变长字符串
   - int：整型
 
-![1563518277712](MySQL.assets/1563518277712.png)
+![1563518277712](Image/MySQL.assets/1563518277712.png)
 
-![1563518433071](E:/Note/MySQL.assets/1563518433071.png)
+![1563518433071](Image/MySQL.assets/1563518433071.png)
 
 ### 添加数据
 
-![1563518540064](MySQL.assets/1563518540064.png)
+![1563518540064](Image/MySQL.assets/1563518540064.png)
 
 ### 查看数据
 
 ### 执行sql
 
-![1563518795794](MySQL.assets/1563518795794.png)
+![1563518795794](Image/MySQL.assets/1563518795794.png)
 
 ## SQL语句
-
-
 
 
 
@@ -149,18 +126,12 @@ mysql数据库安装完成之后（用集成环境wampserver代替单独的mysql
 
 - 数据库脚本文件的扩展名。
 
-
-
-常用的sql语句有四类，分别对应对数据库的：
+常用的sql语句有四类，curd：
 
 - 增(create）
 - 改(update)
 - 查(read)
 - 删(delete)
-
-
-
->  "只会curd"
 
 
 
@@ -203,7 +174,6 @@ insert into stu (sex, weight, name) values ('男', 60, '庞凯')
 ```sql
 -- 删除id为14的同学
 delete from stu where id=14
-
 -- 删除的时候，不加条件，将删除stu表中的全部记录
 delete from stu
 ```
@@ -223,8 +193,6 @@ update 表名 set 字段1=值1, 字段2=值2,...  where 修改条件
 	- 要修改的值使用键值对来表示 
 	- 多个字段用,分隔
 	- 不指定条件，将修改当前表中全部的记录
-
-
 
 示例：
 
@@ -270,60 +238,25 @@ select  field1, field2... from 表名  查询表中的所有数据
 
   where 可以使用条件来筛选查询出的结果
 
-<img src="MySQL.assets\01.jpg"  /> 
+<img src="Image/MySQL.assets\01.jpg"  /> 
 
  ```sql
 -- 查询所有的学生
 select * from stu
-
 -- 查询所有学生的id，name，height
 select id,name,height from stu
-
 -- 带条件的查询
 select * from stu where 条件
-
 -- 查询所有的男同学
 select * from stu where sex='男'
-
 -- 查询年龄大于50的同学
 select * from stu where age > 50
-
 -- 查询年龄大于50岁的男同学
 select * from stu where age>50 and sex='男'
-
 -- 查询年龄在30~60之间的同学，包括30和60
 select * from stu where age>=30 and age<=60
 select * from stu where age between 30 and 60
  ```
-
-
-
-案例3: 查询学号为2的学生的所有信息
-
-表： stu
-
-字段： 所有字段  *
-
-筛选条件：  id=2
-
-```sql
-select * from stu where id = 2
-# 相等判断，写一个等号
-```
-
-
-
-案例4: 查询年龄大于等于25的学生的学号、姓名、年龄
-
-表： stu
-
-字段： id,name,age
-
-筛选条件： age>=25
-
-```sql
-select id,name,age from stu where age >= 25
-```
 
 
 
@@ -337,7 +270,6 @@ select id,name,age from stu where age >= 25
 
 ```sql
 select * from stu where age >= 23 and age <= 28
-
 select * from stu where age between 23 and 28
 ```
 
@@ -363,10 +295,8 @@ like: 在执行模糊查询时，必须使用like来作为匹配条件
 -- 模糊查询
 -- 查询姓王的同学
 select * from stu where name like '王%'
-
 -- 查询姓王的同学，要求完整的姓名必须是三个字
 select * from stu where name like '王__'
-
 -- 查询名字中带有王的人
 select * from stu where name like '%王%'
 ```
@@ -386,13 +316,10 @@ order by 可以对查询结果按某个字段进行升序或者降序排列
 -- 查询所有的学生，按年龄升序排列
 select * from stu order by age asc
 select * from stu order by age
-
 -- 查询所有的学生，按年龄降序排列
 select * from stu order by age desc
-
 -- 查询所有的学生，先按身高升序排列，如果身高相同再按id降序排列
 select * from stu order by height asc, id desc
-
 -- 查询所有的男同学，并按年龄降序排列
 select * from stu where sex='男' order by age desc
 ```
@@ -414,13 +341,10 @@ limit 用来限制查询结果的起始点和长度
 ```sql
 -- 查询前3个同学
 -- select * from stu limit 0, 3
-
 -- 查询第3到第5名同学
 -- select * from stu limit 2,3
-
 -- 查询年龄最大的三个同学
 -- select * from stu order by age desc limit 0,3
-
 -- 查询年龄最大的三个男同学
 -- select * from stu where sex='男' order by age desc limit 0,3
 select * from stu where sex='男' order by age desc limit 3
@@ -486,12 +410,6 @@ insert into categroy (name,slug) value ('科学','kexue');
 # 安装
 npm i mysql
 ```
-
-### mysql模块基本用法
-
-参考：https://www.npmjs.com/package/mysql#introduction
-
-#### 步骤
 
 在Node中使用MySQL模块一共需要5个步骤：
 
@@ -682,7 +600,6 @@ conn.query(sql, values, (err, result) => {
         console.log('添加失败');
     }
 });
-
 conn.end();
 ```
 
@@ -747,10 +664,6 @@ conn.end();
 ```
 
 
-
-## 附：mysql命令行
-
-启动mysql命令行工具，就使用sql来操作数据库啦。
 
 ### 显示所有数据库
 
@@ -817,41 +730,11 @@ CREATE TABLE IF NOT EXISTS `student` (
 
 ### phpstudy中文乱码
 
-![1566377317686](MySQL.assets/1566377317686.png)
+![1566377317686](Image/MySQL.assets/1566377317686.png)
 
 # 数据库
 
 > 数据库是用来存储数据的一个工具(软件)
-
-## 安装以及使用
-
-- 双击安装phpStudy软件
-- 运行软件，点击启动按钮，直到左侧的mySQL左侧圆点变为**绿色**即可
-- 点击右侧的 ‘MySQL管理器’  -> MySQL-front -> 会弹出可视化的mysql管理工具
-  - 默认的数据库的用户名和密码都是 root
-  - mysql数据库的默认端口为3306
-- 具体操作方式：
-  - 从左侧列表中的localhost位置右键，选择新建  数据库
-    - 输入一个数据库名称
-  - 右键新建的数据库名，选择新建表格
-    - 输入一个表名
-    - 右侧出现3个选项
-      - 对象浏览器：用来设置表头信息(字段名)
-        - id是默认存在的，不会重复，自动递增，无需操作
-        - 字段值的类型
-          - varchar 相当于js中的字符串类型
-          - int 相当于js中的number
-      - 数据浏览器：用来设置数据信息(字段值)
-
-## sql语句
-
-> sql语句是用来进行数据库操作的一种语言
->
-> - 基础功能有4个
->   - 增加
->   - 删除
->   - 修改
->   - 查询
 
 ### select语句和其他子句的使用
 
