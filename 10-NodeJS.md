@@ -1541,14 +1541,24 @@ jquery中的ajax已经封装好了的jsonp方式。你可以直接使用，具�
 前端页面
 
 ```javascript
-$.ajax({
-   type: 'GET',
-   url: 'http://localhost:4000/getTime', 
-   success: function (result) {
-      console.log(result);
-   },
-   dataType: 'jsonp' // 必须要指定dataType为jsonp
-});
+       $(document).ready(function(){
+        $.ajax({
+            type : "get",
+            async: false,//是否同步
+            url : "请求地址",
+            dataType: "jsonp",
+            jsonp:"callback", //请求的参数名
+            jsonpCallback: "jsonpCallback",//要执行的回调函数
+            success : function(data) {
+                console.log(data)
+            }
+        });
+    });
+//jsonp优点:
+     //完美解决在测试或者开发中获取不同域下的数据,用户传递一个callback参数给服务端，然后服务端返回数据时会将这个callback。参数作为函数名来包裹住JSON数据，这样客户端就可以随意定制自己的函数来自动处理返回数据了。
+//jsonp缺点：
+     //1.jsonp只支持get请求而不支持post请求,也即是说如果想传给后台一个json格式的数据,此时问题就来了,浏览器会报一个http状态码 415错误,告诉你请求格式不正确
+     //2.安全问题
 ```
 
 
@@ -1904,13 +1914,8 @@ let uesrRouter = require('./router/userRouter.js');
 >
 > - 本质上就是浏览器不允许我们使用ajax进行非同源地址的访问
 
-- 同源地址：
-  - 指的是三个部分相同的地址
-    - 协议
-    - 域名
-    - 端口
-  
-  - 这时就需要我们能够突破浏览器的同源策略限制，这种操作称为 跨域
+- 浏览器从一个域名的网页去请求另一个域名的资源时，域名、端口、协议任一不同，都是跨域
+- 这时就需要我们能够突破浏览器的同源策略限制，这种操作称为 跨域
 
 
 
@@ -1921,7 +1926,7 @@ let uesrRouter = require('./router/userRouter.js');
 - 使用：
   - 任意文件目录下，打开黑框执行  serve 命令即可，并根据提示访问
 
-# JSONP跨域方式
+### JSONP跨域方式
 
 - 使用场景：
   - CORS公司内部进行使用
