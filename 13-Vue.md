@@ -409,19 +409,7 @@ data成员变化了，页面上用到的地方就重新渲染，达成简易双�
 ```js
 filters: { // 私有局部过滤器，只能在 当前 VM 对象所控制的 View 区域进行使用
     dataFormat(input, pattern = "") { // 在参数列表中 通过 pattern="" 来指定形参默认值，防止报错
-      var dt = new Date(input);
-      // 获取年月日
-      var y = dt.getFullYear();
-      var m = (dt.getMonth() + 1).toString().padStart(2, '0');
-      var d = dt.getDate().toString().padStart(2, '0');
-      if (pattern.toLowerCase() === 'yyyy-mm-dd') {
-        return `${y}-${m}-${d}`;
-      } else {
-        // 获取时分秒
-        var hh = dt.getHours().toString().padStart(2, '0');
-        var mm = dt.getMinutes().toString().padStart(2, '0');
-        var ss = dt.getSeconds().toString().padStart(2, '0');
-        return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+   
       }
     }
   }
@@ -435,23 +423,7 @@ filters: { // 私有局部过滤器，只能在 当前 VM 对象所控制的 Vie
 // 定义一个全局过滤器
 
 Vue.filter('dataFormat', function (input, pattern = '') {
-  var dt = new Date(input);
-
-  // 获取年月日
-  var y = dt.getFullYear();
-  var m = (dt.getMonth() + 1).toString().padStart(2, '0');
-  var d = dt.getDate().toString().padStart(2, '0');
-  // 如果 传递进来的字符串类型，转为小写之后，等于 yyyy-mm-dd，那么就返回 年-月-日
-  // 否则，就返回  年-月-日 时：分：秒
-  if (pattern.toLowerCase() === 'yyyy-mm-dd') {
-    return `${y}-${m}-${d}`;
-  } else {
-    // 获取时分秒
-    var hh = dt.getHours().toString().padStart(2, '0');
-    var mm = dt.getMinutes().toString().padStart(2, '0');
-    var ss = dt.getSeconds().toString().padStart(2, '0');
-    return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
-  }
+  
 });
 ```
 
@@ -475,6 +447,14 @@ Vue.config.keyCodes.f2 = 113;
 <input type="text" v-model="name" @keyup.f2="add">
 ```
 
+3. **ESC键** 被触碰就把已经输入的给做清除操作，取消添加
+
+```html
+<input type="text" v-model="newbrand" @keyup.esc="newbrand=''" />
+```
+
+
+
 ## [自定义指令](https://cn.vuejs.org/v2/guide/custom-directive.html)
 
 1. 自定义全局和局部的 自定义指令：
@@ -486,17 +466,17 @@ Vue.config.keyCodes.f2 = 113;
         el.focus();
       }
     });
-    // 自定义局部指令 v-color 和 v-font-weight，为绑定的元素设置指定的字体颜色 和 字体粗细：
-      directives: {
-        color: { // 为元素设置指定的字体颜色
-          bind(el, binding) {
-            el.style.color = binding.value;
-          }
-        },
-        'font-weight': function (el, binding2) { // 自定义指令的简写形式，等同于定义了 bind 和 update 两个钩子函数
-          el.style.fontWeight = binding2.value;
-        }
-      }
+// 自定义局部指令 v-color 和 v-font-weight，为绑定的元素设置指定的字体颜色 和 字体粗细：
+     directives: {
+       color: { // 为元素设置指定的字体颜色
+         bind(el, binding) {
+           el.style.color = binding.value;
+         }
+       },
+      'font-weight': function (el, binding2) { // 自定义指令的简写形式，等同于定义了 bind 和 update 两个钩子函数
+         el.style.fontWeight = binding2.value;
+       }
+     }
 
 // 1. 声明全局指令
 Vue.directive(指令名称,{ 配置对象成员 })
@@ -519,59 +499,12 @@ inserted(m){m代表使用该指令的html标签dom对象，可以通过m进行�
 
 
 
-Vue实例代码：
-
-```js
-  var vm = new Vue({
-    el:'#app',
-    data:{
-      newbrand:'', // 被添加的新品牌
-      xu:12, // 记录最大的id值
-      ……
-      
-    },
-    methods:{
-      // 添加新品牌
-      add(){
-        // 判断有新品牌才执行添加动作
-        if(this.newbrand.trim().length!==0){
-          // 新品牌信息需要添加到brandsList成员中去
-          // 通过"对象"维护新品牌数据
-          var obj = {
-            id:++this.xu,
-            name: this.newbrand,
-            ctime: new Date()
-          }
-          // 把obj放到brandsList数组中去(靠前放)
-          this.brandsList.unshift(obj)
-          // 把添加好的品牌清除掉
-          this.newbrand = ''
-        }
-      }
-    }
-  }
-```
-
-`注意`：
-
-​	添加新品牌的**xu序号**，是临时设置的，真实项目中不用维护，数据库会自动生成
-
-
-
 ## vscod设置代码片段
 
 vscode编辑器：设置--->User snippets---->html.json，配置如下内容
 
 ```json
-{
-	"Print to console": {
-		"prefix": "log",
-		"body": [
-			"console.log()",
-		],
-		"description": "Log output to console"
-	},
-	"Print to Vue&html base code": {
+"Print to Vue&html base code": {
 		"prefix": "vh",
 		"body": [
 			"<!DOCTYPE html>",
@@ -640,100 +573,6 @@ vscode编辑器：设置--->User snippets---->html.json，配置如下内容
 
 
 
-### 品牌管理-筛选
-
-v-for做遍历，目标可以是data成员，也可以是methods方法
-
-```html
-<标签 v-for="(item,k) in data成员" :key="item.id">
-<标签 v-for="(item,k) in methods方法()" :key="item.id">
-<标签 v-for="(item,k) in 复杂表达式" :key="item.id">
-```
-
-> 模板容器可以通过“复杂表达式”体现要使用的数据，不仅v-for可以使用
-
-`步骤`：
-
-1. 给关键字输入框设置v-model="keywords"
-
-2. 在data中声明keywords成员
-
-3. 在methods方法中声明guolv()方法，实现数据筛选
-
-4. 模板中包括v-for，把brandsList都替换为guolv()方法
-
-
-
-
-`模板代码`：
-
-```html
-<tr>
-  <td>
-    <input type="text" v-model="newbrand" />
-    <button @click="add">添加</button>
-  </td>
-  <td><input type="text" placeholder="请输入关键字" v-model="keywords"></td>
-</tr>
-<table v-if="guolv().length>0">
-  ……
-  <tr v-for="(item,k) in guolv()" :key="item.id">
-    ……
-  </tr>
-</table>
-
-```
-
-`Vue实例的methods方法`：
-
-```js
-// 筛选品牌
-guolv(){
-  // filter()实现集合的筛选过滤
-  // 1. 遍历目标
-  // 2. item 遍历出来的成员值
-  // 3. 回调函数要求return返回布尔值
-  //     true:收集当前项目
-  //     false:排除当前项目
-  // 4. 会把过滤筛选的结果给返回，但是需要return
-  return this.brandsList.filter(item=>{
-    // 判断item.name是否包含keywords
-    // 大串.includes(小串)  布尔值ture/false
-    // 大串.includes('')  始终返回true
-    return item.name.includes(this.keywords)
-  })
-}
-```
-
-> 注意：
->
-> 1. filter(箭头函数)里边设置箭头函数参数，会使得内部this与外部保持一样的指引(new Vue())
-> 2. filter回调函数内部必须设置return，返回判断结果
-> 3. guolv()方法必须通过return返回整体筛选结果
-
-
-
-```html
-<tr>
-  <td>
-    <input type="text" v-model="newbrand" />
-    <button @click="add">添加</button>
-  </td>
-  <td><input type="text" placeholder="请输入关键字" v-model="keywords"></td>
-</tr>
-<table v-if="brandList.filter(item=>{ return item.name.includes(this.keywords) }).length>0">
-  ……
-  <tr v-for="(item,k) in brandList.filter(item=>{ return item.name.includes(this.keywords) })" 
-      :key="item.id">
-    ……
-  </tr>
-</table>
-```
-
-> 即把methods方法的逻辑表达式直接设置到模板里边运行
-
-
-
 ## computed计算属性应用
 
 ```js
@@ -763,8 +602,6 @@ new Vue({
 
 3. 每个计算属性都需要通过return关键字返回处理结果
 
-
-
 `与methods方法的区别`：
 
 computed计算属性本身有“**缓存**”，在关联的data没有变化的情况下，后续会使用缓存结果，节省资源
@@ -773,124 +610,7 @@ methods方法没有缓存，每次访问 方法体 都需要加载执行，耗�
 
 
 
-`案例1`：
-
-通过computed计算属性**获取**并**应用**筛选的品牌数据
-
-步骤：
-
-1. 创建计算属性
-
-   在Vue实例内部创建计算属性(与el、data、methods并列位置处)
-
-   ```js
-   // 声明计算属性
-   computed:{
-     // 创建一个名称为result的计算属性
-     result(){
-       // 可以正常使用this关键字
-       return this.brandList.filter(item=>{
-         return item.name.includes(this.keywords)
-       })
-     }
-   },
-   
-   ```
-
-2. 应用计算属性
-
-   ```html
-   <table v-if="result.length>0">
-     <tr>
-       <td></td>
-       <td>序号</td>
-       <td>名称</td>
-       <td>创建时间</td>
-       <td>操作</td>
-     </tr>
-     <tr v-for="(item,k) in result" :key="item.id">
-       <td><input type="checkbox"></td>
-       <td>{{ item.id }}</td>
-       <td>{{ item.name }}</td>
-       <td>{{ item.ctime | timeFormat('北京') }}</td>
-       <td><button @click="del(k)">删除</button></td>
-     </tr>
-   </table>
-   
-   ```
-
-   > 之前走guolv()方法，现在走result计算属性了
-
-
-
-### 品牌应用
-
-1. **回车键** 被触碰就添加新品牌
-
-2. **ESC键** 被触碰就把已经输入的新品牌给做清除操作，取消添加
-
-```html
-<input type="text" v-model="newbrand" @keyup.enter="add" @keyup.esc="newbrand=''" />
-```
-
-
-
-### 获得焦点-私有
-
-```js
-// 自定义指令
-directives:{
-  // 名字没有v-前缀，使用的时候有
-  dian:{
-    // 配置成员方法
-    // inserted是众多成员之一
-    // inserted：代表页面上各种指令被解析渲染完毕后的“时机”
-    // 参数m：应该该指令的元素节点对象
-    //        m.style.color="red"
-    //        m.focus()
-    //        m.style.width='500px'
-    inserted:function(m){
-      m.style.color='red'
-      m.focus()
-    }
-  }
-}
-```
-
-应用指令：
-
-```html
-<input type="text" v-dian v-model="newbrand" @keyup.enter="add" @keyup.esc="newbrand=''" />
-```
-
-​	无论是全局指令 还是 私有指令，声明的时候都不用设置v-前缀，使用的时候再添加上即可
-
-
-
-### 获得焦点-全局
-
-```js
-Vue.directive('dian2',{
-  inserted(m){
-    // m：代表使用指令的html对象(dom对象)
-    // console.dir(m)
-    // 使得m对象获得焦点
-    m.focus()
-  }
-})
-```
-
-应用：
-
-```html
-<input type="text" v-dian2 v-model="newbrand" @keyup.enter="add" @keyup.esc="newbrand=''" />
-```
-
-
-
 ### template
-
-在Vue实例内部可以声明template，其内容可以覆盖掉原生的div容器的
 
 ```html
 <div id="app">{{ city }}</div>
@@ -929,8 +649,6 @@ var vm = new Vue().$mount('#app')  // 连贯调用
 
 ### render成员
 
-如果定义了render成员，那么其提供的内容会渲染到页面中，并且会**覆盖**原容器，包括template
-
 优先级关系：render >>>>> template >>>>>>默认容器
 
 ```html
@@ -943,23 +661,9 @@ var vm = new Vue().$mount('#app')  // 连贯调用
         city:'北京'
       },
       template:'<p>天津</p>',
-      // render：设置内容去覆盖渲染容器并显示
-      // render:function(create){
-      //   // return是固定用法
-      //   // return create(标签,内容区域信息)
-      //   return create('span','广州')  // <span>广州</span>
-      // },
-      // render:function(h){
-      //   return h('span','广州')  // <span>广州</span>
-      // },
-      // render:h=>{
-      //   return h('span','广州')  // <span>广州</span>
-      // },
       render:h=> h('span','广州')  // <span>广州</span>
- 
   });
 </script>
-
 ```
 
 > 上述代码会看到 span广州 内容，相反 p天津 和 div北京 都被覆盖了
@@ -977,25 +681,562 @@ s:string字符串 与  第3个参数对一个
 console.log('%c%s','color:red', '你好')
 ```
 
+
+
+## [Vue.js devtools - 翻墙安装方式 - 推荐](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=zh-CN)
+
+
+
+## 生命周期
+
+生命周期是指vue实例(或者组件)从诞生到消亡所经历的各个阶段的总和
+
+生命周期分为3个阶段，分别是[创建]()、[运行]()、[销毁]()
+
+### 创建阶段分析
+
+创建阶段一共有4个方法，它们与 el、data都是并列关系的
+
 ```js
-    console.group('java班级')
-    console.log('王一')
-    console.log('王二')
-    console.group('前端班级')
-    console.log('张一')
-    console.log('张二')
-    console.log(
-      '%c%s',
-      'color:red;font-size:25px;background-color:lightblue;border:2px solid green;',
-      '张三'
-    )
+new Vue({
+  beforeCreate(){   },
+  created(){  },
+  
+  beforeMount(){   },
+	mounted(){  },
+})
+```
+
+> beforeCreate：此时Vue对象刚创建好，没有任何成员，data、methods等都没有呢，只有this
+>
+> created：此时vue对象已经长大一点，内部已经完成了data、methods等成员的设置，也是data初始化的最好时机
+>
+> beforeMount：此时vue实例已经把div容器给获得到了，但是内部的vue指令等信息还没有被编译处理
+>
+> mounted：此时，vue获取到的div容器内部的原生指令已经被编译处理好了，并且也完成了容器的渲染工作，此时模板中已经看不到vue原始指令了
+
+
+
+created: 一般用于页面"首屏"数据的获取操作(获取好的数据可以直接赋予给data使用，此方法已经把data做好了，其可以做到**第1 时间**就把数据赋予给data)
+
+mounted: 一般用于初始页面dom元素操作使用
+
+​	创建阶段各个方法不设置则以，设置后就会**自动**执行，并且会**顺序**只执行**一次**
+
+### 运行和销毁阶段分析
+
+`运行阶段`：
+
+```js
+new Vue({
+	beforeUpdate(){ 可以感知到数据变化之前页面上关于该数据的样子 }
+	updated(){ 可以感知到数据变化之后页面上该数据的样子 }
+})
+```
+
+> 运行阶段方法**不会**自动执行，当data成员数据发生变化，就执行了，并且数据变化多次，方法也会**重复**执行多次
+
+`销毁阶段`：
+
+```js
+new Vue({
+	beforeDestroy(){ 实例销毁之前 }
+	destroyed(){ 实例销毁之后 }
+})
+```
+
+> 当vue实例被销毁后，就要执行以上两个方法，vm.$destroy()
+
+1. **运行阶段**各个方法与创建阶段不同，本身**不会**自动执行，需要数据变化的条件触发才会执行
+2. **销毁阶段**各个方法也不会自动执行，需要Vue实例对象调用$destroy()方法
+
+
+
+### VirtualDOM
+
+`什么是VirtualDOM`：
+
+div容器 在 Vue实例中存在的状态，就是  VirtualDOM(虚拟dom内容)，具体是内存信息的体现
+
+在Vue实例运行期间，该VirtualDOM始终存在
+
+`VirtualDOM作用`：
+
+1. 编译解析div容器，并渲染给浏览器
+2. 响应式体现
+
+
+
+
+## axios
+
+```js
+axios.get('请求地址', {params:{name:value,name:value。。。。}})
+axios.post('请求地址', {name:value,name:value。。。。})
+```
+
+`注意`：
+
+get()方法如果传递参数需要额外设置params，post()方法则不用
+
+
+
+### 品牌管理-搭建服务器端项目
+
+项目运行中：
+
+- 客户端负责数据的**展示**
+- 服务器端负责数据的**提供**
+- axios是<font color=red>搬运工</font>，负责在 客户端 和 服务器端 传输数据
+
+
+
+为了使得学习效果更好，现在统一设置`后端项目`
+
+`步骤`：
+
+1. 把后端的全部代码文件解压到桌面指定目录
+
+   ![1561016785365](Image/img(online)/1561016785365.png)
+
+2. 启动mysql
+
+   ![1554629441784](Image/img(online)/2-1554629441784.png)
+
+3. 创建数据库相关
+
+   新建数据库：
+
+   ![1561016897179](Image/img(online)/1561016897179.png)
+
+   给数据库导入数据：
+
+   ![1561016973984](Image/img(online)/1561016973984.png)
+
+   ![1561016949657](Image/img(online)/1561016949657.png)
+
+   数据导入成功：
+
+   ![1561017013901](Image/img(online)/1561017013901.png)
+
+4. 给项目配置数据库信息
+
+   在src/app.js文件中根据实际情况配置 数据库用户名、密码、数据库名称
+
+   ![1561017218181](Image/img(online)/1561017218181.png)
+
+5. 给项目安装全部依赖包
+
+   在**server**目录下运行 npm install
+
+   ```
+   npm install
+   ```
+
+   ![1561017337257](Image/img(online)/1561017337257.png)
+
+   
+
+6. 运行项目
+
+   在**server/src**目录下运行 node app.js
+
+   ```
+   node app.js
+   ```
+
+   ![1561017520017](Image/img(online)/1561017520017.png)
+
+
+
+
+### 品牌管理-获取数据
+
+`步骤`：
+
+1. 把brandsList假数据给注释掉
+
+2. 引入axios.min.js文件(在Vue.js之后)
+
+   ```html
+   <script src="./axios.min.js"></script>
+   ```
+
+3. 创建methods方法  getBrandsList,通过axios发请求，获得数据
+
+   ```js
+   // 获得品牌列表数据
+   getBrandsList(){
+     // 通过axios获得数据
+     // axios.get(地址, 参数)
+     let pro = axios.get('http://127.0.0.1:3006/api/getprodlist')
+     // console.log(pro) // Promise对象
+     pro
+       .then(result=>{
+         // console.log(result)
+         // result: config  【data】  headers request status  statusText
+         if(result.data.status===0){
+           this.brandsList = result.data.message
+         }
+       })
+       .catch(err=>{
+         return console.log('发生错误'+err)
+       })
+   },
+   ```
+
+   
+
+4. 在created中调用  getBrandsList()方法
+
+   ```js
+       // 生命周期方法
+       created(){
+         this.getBrandsList()
+       },
+   ```
+
+
+`注意`：
+
+1. 获取数据的getBrandsList方法需要在created生命周期方法中被调用，好处是
+
+   1. 页面加载完成就**自动**触发执行获取数据
+      2. 获取回来的数据可以在 “**第一时间**” 给相关data赋值使用
+
+2. axios调用任何方法返回结果都是Promise对象
+
+3. axios调用各种方法返回结果一般有如下信息特点：
+
+   config  【data】  headers request status  statusText
+
+   除了data是与业务有关系的，其他的都是axios的相关辅助信息
+
+
+
+## Promise
+
+[Promise浅谈](https://www.jb51.net/article/134310.htm)
+
+`什么是`：
+
+ Promise，它是一个对象，是用来处理**异步**操作的，可以让我们写异步调用的时候写起来更加优雅，更加美观便于阅读。
+
+`Promise的三种状态`：
+
+1. pending（进行中
+
+2. resolved（完成）
+
+3. rejected（失败） 
+
+异步：在同一个时间中，可以发送**多个**进行执行
+
+同步：在同一个时间点，只有**一个**进程在执行
+
+`作用`：
+
+1. 解决了异步调用彼此嵌套的**回调地狱**问题
+2. 解决了多个异步过程**顺序执行**问题
+
+
+
+### 演示使用
+
+`语法`：
+
+```js
+// 1. 创建Promise对象
+var p = new Promise(function(resole,reject){
+  if(异步操作成功){
+  	resole(res)
+  }else{
+    reject(cuo)
+  }
+})
+// 2. 对Promise对象结果进行处理
+p
+  .then(
+  	function(data){
+    	// data与res一致，代表成功输出结果
+  	}
+	)
+  .catch(
+  	function(err){
+      // err 与 cuo一致，代表失败输出结果
+    }
+	)
 ```
 
 
 
-[Vue.js devtools - 翻墙安装方式 - 推荐](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=zh-CN)
+```js
+// 引入文件操作模块fs
+const fs = require('fs')
+
+// 1) 读取3个文件(异步读取)
+// fs.readFile('./files/01.txt','utf8',(err,data)=>{
+//   if(err){return console.log('文件读取错误'+err)}
+//   console.log(data)
+// })
+// fs.readFile('./files/02.txt','utf8',(err,data)=>{
+//   if(err){return console.log('文件读取错误'+err)}
+//   console.log(data)
+// })
+// fs.readFile('./files/03.txt','utf8',(err,data)=>{
+//   if(err){return console.log('文件读取错误'+err)}
+//   console.log(data)
+// })
+
+// 2) 安装先后顺序关系读取3个文件内容回来
+//    该方法深层嵌套，形成"回调地狱"，会造成代码维护困难，不好维护
+// fs.readFile('./files/01.txt','utf8',(err,data)=>{
+//   if(err){return console.log('文件读取错误'+err)}
+//   console.log(data)
+//   fs.readFile('./files/02.txt','utf8',(err,data)=>{
+//     if(err){return console.log('文件读取错误'+err)}
+//     console.log(data)
+//     fs.readFile('./files/03.txt','utf8',(err,data)=>{
+//       if(err){return console.log('文件读取错误'+err)}
+//       console.log(data)
+//     })
+//   })
+// })
+
+// Promise要解决回调地狱、异步请求顺序执行问题
+// 3) Promise介入(没有解决顺序问题)
+// function getContent(filename){
+//   var p = new Promise(function(){
+//     // 异步执行过程
+//     fs.readFile(filename,'utf8',(err,data)=>{
+//       if(err){return console.log('文件读取错误'+err)}
+//       console.log(data)
+//     })
+//   })
+// }
+// getContent('./files/01.txt')
+// getContent('./files/02.txt')
+// getContent('./files/03.txt')
+
+// 4) 丰富Promise
+//    在Promise内部不要体现业务内容(例如console.log())
+//    业务内容需要通过 resolve 和 reject 回调函数提取出来
+function getContent(filename){
+  // resolve:异步调用成功回调函数
+  // reject:异步调用失败回调函数
+  // resolve和reject介入后需要把Promise对象做return返回
+  return new Promise(function(resolve, reject){
+    // 异步执行过程
+    fs.readFile(filename,'utf8',(err,data)=>{
+      if(err){return reject('文件读取错误'+err)}
+      resolve(data)
+    })
+  })
+}
+
+// B. 保证 多个异步调用顺序执行，没有地狱问题
+// p1.then().then(), then方法执行完毕会返回一个"空的Promise对象"，因此可以形成连贯调用，没有意义
+// p1.then(result=>{xxx; return Promise对象}).then()， then方法内部返回一个实体对象，这个对象作为then方法整体的返回结果体现，因此后续连贯调用then比较有意义
+getContent('./files/01.txt')
+  .then(result=>{
+    console.log(result)
+    return getContent('./files/02.txt')
+  })
+  .then(result=>{
+    console.log(result)
+    return getContent('./files/03.txt')
+  })
+  .then(result=>{
+    console.log(result)
+  })
+  .catch(cuowu=>{
+    // 统一处理错误
+    console.log(cuowu)
+  })
+
+// // A. 以下还没有实现多个异步调用顺序执行问题
+// var p1 = getContent('./files/01.txt')
+// var p2 = getContent('./files/02.txt')
+// var p3 = getContent('./files/03.txt')
+// // console.log(p1) // Promise { <pending> }
+// // f1和f2分别代表异步调用执行成功或失败的接收函数
+// // p1.then(f1).catch(f2)
+// // p1.then(f1,f2)
+// // result是形参，实参是resolve的data
+// // cuowu是形参，实参是reject函数的实参部分
+// p1
+//   .then(result=>{console.log(result)})
+//   .catch(cuowu=>{console.log(cuowu)})
+// p2
+//   .then(result=>{console.log(result)})
+//   .catch(cuowu=>{console.log(cuowu)})
+// p3
+//   .then(result=>{console.log(result)})
+//   .catch(cuowu=>{console.log(cuowu)})
+```
+
+`记住`：
+
+​	以后遇到Promise对象，就直接调用then、catch方法即可
 
 
+
+## axios结合Promise
+
+### 品牌管理-Promise提取数据显示
+
+`核心代码`：
+
+```js
+// 获得品牌列表数据
+getBrandsList(){
+  var pro = this.$http.get('http://127.0.0.1:3006/api/getprodlist')
+
+  pro
+    .then(rst=>{
+      if(rst.data.status===0){
+        // 把获得好的品牌列表  赋予  给 brandList使用
+        this.brandsList = rst.data.message  
+      }
+    })
+    .catch(function(err){
+      return alert('获取数据失败'+err)
+    })
+},
+```
+
+`注意`：
+
+​	由于响应式的原因，只要brandsList成员的数据有更新，页面就立即显示
+
+
+
+### 品牌管理-删除
+
+`步骤`：
+
+1. 给删除事件传递被删除**品牌的id**数据
+2. 升级改造del方法，通过axios实现持久删除(删除后需要更新数据，就是再重新调用getBrandsList()方法即可)
+
+
+
+`核心代码`：
+
+```html
+<td><button @click="del( item.id )">删除</button></td>
+```
+
+```js
+// 删除品牌
+del(id) {
+  if (window.confirm("确认要删除么？")) {
+    let pro = axios.get(`http://127.0.0.1:3006/api/delproduct/${id}`)
+    pro
+      .then(result=>{
+        // console.log(result)
+        if(result.data.status===0){
+          // 页面刷新
+          this.getBrandsList()
+        }
+      })
+      .catch(err=>{
+        return console.log('删除发生错误'+err)
+      })
+  }
+},
+```
+
+
+
+### 品牌管理-添加
+
+`目标`：
+
+​	Promise+axios实现品牌数据添加功能
+
+
+
+post请求语法：
+
+```js
+axios.post(请求地址, {name:value,name:value。。。。})
+```
+
+
+
+`核心代码`：
+
+```js
+// 添加新品牌
+add(evt) {
+  // 如果有新品牌数据再添加
+  if (this.newbrand.trim().length > 0) {
+    // axios实现数据添加
+    let pro = axios.post('http://127.0.0.1:3006/api/addproduct',{name:this.newbrand})
+    pro
+      .then(result=>{
+        // console.log(result)  // config  【data】  request headers status statusText
+        if(result.data.status===0){
+          // 刷新页面
+          this.getBrandsList()
+          alert(result.data.message)
+        }
+      })
+      .catch(err=>{
+        return console.log('添加品牌错误'+err)
+      })
+    // 清除已经添加的品牌
+    this.newbrand = "";
+  }
+}
+```
+
+
+
+`注意`：
+
+​	相关操作完成后，如果要表达信息，可以与后端协商，接收后端给返回的信息，提高前端开发速度
+
+例如：alert(result.data.message)
+
+
+
+
+
+### 品牌管理-配置公共根地址
+
+`目标`：
+
+​	能够给axios配置公共请求地址
+
+
+
+给axios把各个请求都需要使用的相同的根地址做统一配置，使得相同代码只维护一份，提升开发速度
+
+
+
+`语法`：
+
+```js
+axios.defaults.baseURL = 公共根地址
+```
+
+```js
+var axios2 = axios.create({
+  baseURL = 公共根地址
+})
+axios2做使用即可
+```
+
+axios的使用：
+
+```js
+axios({
+  url:'地址',
+  method:'get/post/put',
+  baseURL:公共根地址
+})
+```
 
 
 ## [vue实例的生命周期](https://cn.vuejs.org/v2/guide/instance.html#实例生命周期)
