@@ -1,4 +1,4 @@
-## vue-介绍
+vue-介绍
 
 Vue.js (view)是一套构建用户界面的前端<font color=red>框架</font>技术
 
@@ -683,13 +683,13 @@ console.log('%c%s','color:red', '你好')
 
 
 
-## [Vue.js devtools - 翻墙安装方式 - 推荐](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=zh-CN)
-
-
-
 ## 生命周期
 
-生命周期是指vue实例(或者组件)从诞生到消亡所经历的各个阶段的总和
+从Vue实例创建、运行、到销毁期间，总是伴随着各种各样的事件，这些事件，统称为生命周期！
+
+[生命周期钩子](https://cn.vuejs.org/v2/api/#选项-生命周期钩子)：就是生命周期事件的别名而已；
+
+生命周期钩子 = 生命周期函数 = 生命周期事件
 
 生命周期分为3个阶段，分别是[创建]()、[运行]()、[销毁]()
 
@@ -849,78 +849,9 @@ get()方法如果传递参数需要额外设置params，post()方法则不用
 
 
 
-
-### 品牌管理-获取数据
-
-`步骤`：
-
-1. 把brandsList假数据给注释掉
-
-2. 引入axios.min.js文件(在Vue.js之后)
-
-   ```html
-   <script src="./axios.min.js"></script>
-   ```
-
-3. 创建methods方法  getBrandsList,通过axios发请求，获得数据
-
-   ```js
-   // 获得品牌列表数据
-   getBrandsList(){
-     // 通过axios获得数据
-     // axios.get(地址, 参数)
-     let pro = axios.get('http://127.0.0.1:3006/api/getprodlist')
-     // console.log(pro) // Promise对象
-     pro
-       .then(result=>{
-         // console.log(result)
-         // result: config  【data】  headers request status  statusText
-         if(result.data.status===0){
-           this.brandsList = result.data.message
-         }
-       })
-       .catch(err=>{
-         return console.log('发生错误'+err)
-       })
-   },
-   ```
-
-   
-
-4. 在created中调用  getBrandsList()方法
-
-   ```js
-       // 生命周期方法
-       created(){
-         this.getBrandsList()
-       },
-   ```
-
-
-`注意`：
-
-1. 获取数据的getBrandsList方法需要在created生命周期方法中被调用，好处是
-
-   1. 页面加载完成就**自动**触发执行获取数据
-      2. 获取回来的数据可以在 “**第一时间**” 给相关data赋值使用
-
-2. axios调用任何方法返回结果都是Promise对象
-
-3. axios调用各种方法返回结果一般有如下信息特点：
-
-   config  【data】  headers request status  statusText
-
-   除了data是与业务有关系的，其他的都是axios的相关辅助信息
-
-
-
 ## Promise
 
-[Promise浅谈](https://www.jb51.net/article/134310.htm)
-
-`什么是`：
-
- Promise，它是一个对象，是用来处理**异步**操作的，可以让我们写异步调用的时候写起来更加优雅，更加美观便于阅读。
+它是一个对象，是用来处理**异步**操作的，可以让我们写异步调用的时候写起来更加优雅，更加美观便于阅读。
 
 `Promise的三种状态`：
 
@@ -941,327 +872,1059 @@ get()方法如果传递参数需要额外设置params，post()方法则不用
 
 
 
-### 演示使用
+## xios-拦截器-interceptors
 
-`语法`：
+axios在客户端与服务端之间传递数据时候是有**时间消耗**的
+
+网络好、服务器比较空闲，axios的执行速度快
+
+网络不好、服务器比较繁忙，axios的执行速度慢(这时用户需要多等待)
+
+axios无论执行速度快还是慢，用户都需要等待，如果在axios执行时页面给予一定的**提示**，那么用户体验就比较好，这时候[拦截器]()就可以应用上
+
+
+
+![](Image/img(online)/2-4-444.png)
+
+`什么是`：
+
+​	拦截器是axios向服务器端发送**请求**和**响应**回来所经历的两道关口
+
+
+
+axios本身有两种拦截器：[请求拦截]()、[响应拦截]()
+
+- 请求拦截器：
+
+​	axios每次<font color=red>开始</font>请求的时候先执行此处逻辑，在这个地方可以给axios做出发前的配置，也可以做出发前的检查工作，检查ok的情况下就开始向服务器端发请求
+
+- 响应拦截器：
+
+​	axios<font color=red>完成</font>与服务器端交互回到客户端后就执行此处逻辑，在这个地方可以做一些后续收尾事宜，例如判断axios请求是否成功，或相关数据过滤操作
+
+
+
+拦截器关键字：interceptors
+
+
+
+`请求拦截器代码`：
 
 ```js
-// 1. 创建Promise对象
-var p = new Promise(function(resole,reject){
-  if(异步操作成功){
-  	resole(res)
-  }else{
-    reject(cuo)
-  }
-})
-// 2. 对Promise对象结果进行处理
-p
-  .then(
-  	function(data){
-    	// data与res一致，代表成功输出结果
-  	}
-	)
-  .catch(
-  	function(err){
-      // err 与 cuo一致，代表失败输出结果
-    }
-	)
+// 请求拦截器
+axios.interceptors.request.use(function (config) {
+  // 放置业务逻辑代码
+  return config;
+}, function (error) {
+  // axios发生错误的处理
+  return Promise.reject(error);
+});
 ```
 
 
 
-```js
-// 引入文件操作模块fs
-const fs = require('fs')
-
-// 1) 读取3个文件(异步读取)
-// fs.readFile('./files/01.txt','utf8',(err,data)=>{
-//   if(err){return console.log('文件读取错误'+err)}
-//   console.log(data)
-// })
-// fs.readFile('./files/02.txt','utf8',(err,data)=>{
-//   if(err){return console.log('文件读取错误'+err)}
-//   console.log(data)
-// })
-// fs.readFile('./files/03.txt','utf8',(err,data)=>{
-//   if(err){return console.log('文件读取错误'+err)}
-//   console.log(data)
-// })
-
-// 2) 安装先后顺序关系读取3个文件内容回来
-//    该方法深层嵌套，形成"回调地狱"，会造成代码维护困难，不好维护
-// fs.readFile('./files/01.txt','utf8',(err,data)=>{
-//   if(err){return console.log('文件读取错误'+err)}
-//   console.log(data)
-//   fs.readFile('./files/02.txt','utf8',(err,data)=>{
-//     if(err){return console.log('文件读取错误'+err)}
-//     console.log(data)
-//     fs.readFile('./files/03.txt','utf8',(err,data)=>{
-//       if(err){return console.log('文件读取错误'+err)}
-//       console.log(data)
-//     })
-//   })
-// })
-
-// Promise要解决回调地狱、异步请求顺序执行问题
-// 3) Promise介入(没有解决顺序问题)
-// function getContent(filename){
-//   var p = new Promise(function(){
-//     // 异步执行过程
-//     fs.readFile(filename,'utf8',(err,data)=>{
-//       if(err){return console.log('文件读取错误'+err)}
-//       console.log(data)
-//     })
-//   })
-// }
-// getContent('./files/01.txt')
-// getContent('./files/02.txt')
-// getContent('./files/03.txt')
-
-// 4) 丰富Promise
-//    在Promise内部不要体现业务内容(例如console.log())
-//    业务内容需要通过 resolve 和 reject 回调函数提取出来
-function getContent(filename){
-  // resolve:异步调用成功回调函数
-  // reject:异步调用失败回调函数
-  // resolve和reject介入后需要把Promise对象做return返回
-  return new Promise(function(resolve, reject){
-    // 异步执行过程
-    fs.readFile(filename,'utf8',(err,data)=>{
-      if(err){return reject('文件读取错误'+err)}
-      resolve(data)
-    })
-  })
-}
-
-// B. 保证 多个异步调用顺序执行，没有地狱问题
-// p1.then().then(), then方法执行完毕会返回一个"空的Promise对象"，因此可以形成连贯调用，没有意义
-// p1.then(result=>{xxx; return Promise对象}).then()， then方法内部返回一个实体对象，这个对象作为then方法整体的返回结果体现，因此后续连贯调用then比较有意义
-getContent('./files/01.txt')
-  .then(result=>{
-    console.log(result)
-    return getContent('./files/02.txt')
-  })
-  .then(result=>{
-    console.log(result)
-    return getContent('./files/03.txt')
-  })
-  .then(result=>{
-    console.log(result)
-  })
-  .catch(cuowu=>{
-    // 统一处理错误
-    console.log(cuowu)
-  })
-
-// // A. 以下还没有实现多个异步调用顺序执行问题
-// var p1 = getContent('./files/01.txt')
-// var p2 = getContent('./files/02.txt')
-// var p3 = getContent('./files/03.txt')
-// // console.log(p1) // Promise { <pending> }
-// // f1和f2分别代表异步调用执行成功或失败的接收函数
-// // p1.then(f1).catch(f2)
-// // p1.then(f1,f2)
-// // result是形参，实参是resolve的data
-// // cuowu是形参，实参是reject函数的实参部分
-// p1
-//   .then(result=>{console.log(result)})
-//   .catch(cuowu=>{console.log(cuowu)})
-// p2
-//   .then(result=>{console.log(result)})
-//   .catch(cuowu=>{console.log(cuowu)})
-// p3
-//   .then(result=>{console.log(result)})
-//   .catch(cuowu=>{console.log(cuowu)})
-```
-
-`记住`：
-
-​	以后遇到Promise对象，就直接调用then、catch方法即可
-
-
-
-## axios结合Promise
-
-### 品牌管理-Promise提取数据显示
-
-`核心代码`：
+`响应拦截器代码`：
 
 ```js
-// 获得品牌列表数据
-getBrandsList(){
-  var pro = this.$http.get('http://127.0.0.1:3006/api/getprodlist')
-
-  pro
-    .then(rst=>{
-      if(rst.data.status===0){
-        // 把获得好的品牌列表  赋予  给 brandList使用
-        this.brandsList = rst.data.message  
-      }
-    })
-    .catch(function(err){
-      return alert('获取数据失败'+err)
-    })
-},
+// 响应拦截器
+axios.interceptors.response.use(function (response) {
+  // 放置业务逻辑代码
+  // response是服务器端返回来的数据信息，与Promise获得数据一致
+  return response;
+}, function (error) {
+  // axios请求服务器端发生错误的处理
+  return Promise.reject(error);
+});
 ```
 
-`注意`：
-
-​	由于响应式的原因，只要brandsList成员的数据有更新，页面就立即显示
+> 把以上拦截器代码设置好，那么axios"所有"的请求就都会执行了
 
 
 
-### 品牌管理-删除
+### 加载等待案例效果
 
 `步骤`：
 
-1. 给删除事件传递被删除**品牌的id**数据
-2. 升级改造del方法，通过axios实现持久删除(删除后需要更新数据，就是再重新调用getBrandsList()方法即可)
+1. 通过img标签显示加载图片，同时设置v-show="showflag" 控制是否显示
+2. 在data中声明showflag:false 信息，控制图片显示
+3. 在created生命周期函数中配置  请求、响应 拦截器
 
 
 
-`核心代码`：
+`代码`：
 
 ```html
-<td><button @click="del( item.id )">删除</button></td>
+<div class="showhead">
+    <h2>品牌案例管理</h2>
+    <img src="./loading.gif" alt="" v-show="showflag" >  
+</div>
 ```
 
+Vue实例相关代码：
+
 ```js
-// 删除品牌
-del(id) {
-  if (window.confirm("确认要删除么？")) {
-    let pro = axios.get(`http://127.0.0.1:3006/api/delproduct/${id}`)
-    pro
-      .then(result=>{
-        // console.log(result)
-        if(result.data.status===0){
-          // 页面刷新
-          this.getBrandsList()
-        }
-      })
-      .catch(err=>{
-        return console.log('删除发生错误'+err)
-      })
-  }
+data:{
+  showflag:false, // 控制等待图片是否显示
+  ……
 },
-```
+// 生命周期
+created() {
+  // 请求拦截器
+  axios.interceptors.request.use(
+    config => {
+      // Do something before request is sent
+      // 加载图片显示
+      this.showflag = true;
+      return config;
+    },
+    error => {
+      // Do something with request error
+      return Promise.reject(error);
+    }
+  );
 
-
-
-### 品牌管理-添加
-
-`目标`：
-
-​	Promise+axios实现品牌数据添加功能
-
-
-
-post请求语法：
-
-```js
-axios.post(请求地址, {name:value,name:value。。。。})
-```
-
-
-
-`核心代码`：
-
-```js
-// 添加新品牌
-add(evt) {
-  // 如果有新品牌数据再添加
-  if (this.newbrand.trim().length > 0) {
-    // axios实现数据添加
-    let pro = axios.post('http://127.0.0.1:3006/api/addproduct',{name:this.newbrand})
-    pro
-      .then(result=>{
-        // console.log(result)  // config  【data】  request headers status statusText
-        if(result.data.status===0){
-          // 刷新页面
-          this.getBrandsList()
-          alert(result.data.message)
-        }
-      })
-      .catch(err=>{
-        return console.log('添加品牌错误'+err)
-      })
-    // 清除已经添加的品牌
-    this.newbrand = "";
-  }
-}
+  // 响应拦截器
+  axios.interceptors.response.use(
+    response=> {
+      // Do something with response data
+      // 加载图片隐藏
+      this.showflag = false;
+      return response;
+    },
+    error=> {
+      // Do something with response error
+      return Promise.reject(error);
+    }
+  );
+	// 要在拦截器之后请求如下方法
+  this.getBrandsList(); // 获得品牌列表数据
+},
 ```
 
 
 
 `注意`：
 
-​	相关操作完成后，如果要表达信息，可以与后端协商，接收后端给返回的信息，提高前端开发速度
-
-例如：alert(result.data.message)
-
-
+1. 各个拦截器的第一个函数参数需要设置为 “**箭头函数**” ，使得内部this与外部保持一致，都是Vue实例
+2. 各个拦截器需要设置在created中，因为需要**第1时间**就操控data成员showflag，再者可以使得各个拦截器被“自动”执行
+3. 注意保持一个created
 
 
 
-### 品牌管理-配置公共根地址
+### 细节说明
 
 `目标`：
 
-​	能够给axios配置公共请求地址
-
-
-
-给axios把各个请求都需要使用的相同的根地址做统一配置，使得相同代码只维护一份，提升开发速度
-
-
-
-`语法`：
+​	知道config参数 和 Promise.reject(error) 分别代表的意思
 
 ```js
-axios.defaults.baseURL = 公共根地址
+// 请求拦截器
+axios.interceptors.request.use(function (config) {
+  // 放置业务逻辑代码
+  return config;
+}, function (error) {
+  // axios发生错误的处理
+  return Promise.reject(error);
+});
+
+// 响应拦截器
+
+axios.interceptors.response.use(function (response) {
+    // Do something with response data
+    return response;
+  }, function (error) {
+    // Do something with response error
+    return Promise.reject(error);
+  });
 ```
 
+1. config参数
+
+   config是一个对象 与  axios.defaults 相当(不等于)
+
+   config可以给axios配置例如baseURL的信息的
+
+2. response参数
+
+   服务器端给返回的具体数据信息，可以接收使用，axios应用的具体信息是该response的体现
+
+3. Promise.reject()
+
+   Promise.reject(data)  是 **语法糖**的用法，本质与下述一致，即返回一个Promise对象
+
+   ```js
+   Promise.reject(data)
+   上下效果一致
+   new Promise(function(resolve,reject){
+     reject(data)
+   })
+   
+   Promise.resolve(data)
+   上下效果一致
+   new Promise(function(resolve){
+     resolve(data)
+   })
+   ```
+
+   
+
+## vue-组件(重要)
+
+`什么是`：
+
+​	组件是拥有一定功能许多html标签的集合体
+
+`好处`：
+
+答：模板中为了实现一个效果(例如分页)，需要绘制**20**个html标签，现在使用组件了，相同的功能就只绘制**一个**组件标签就达成了，明显提升开发速度
+
+
+
+### 私有组件语法
+
+`目标`：
+
+​	知道私有组件的语法规则
+
+
+
+`声明私有组件语法`：
+
 ```js
-var axios2 = axios.create({
-  baseURL = 公共根地址
+new Vue({
+  components:{
+    '组件的名称': { 配置对象成员 }, 
+    '组件的名称': { 配置对象成员 }...
+  },
 })
-axios2做使用即可
 ```
 
-axios的使用：
+例如：
 
 ```js
-axios({
-  url:'地址',
-  method:'get/post/put',
-  baseURL:公共根地址
-})
+components:{
+  'my-page',{
+    template:`
+      <ul>
+        <li>上一页</li>
+        <li>[1]</li>
+        <li>2</li>
+        <li>[3]</li>
+        <li>下一页</li>
+      </ul>
+      `,
+  }
+}
+```
+
+`注意`：
+
+1. template是组件的成员之一，还有其它成员
+2. template设置的各个html标签需要有<font color=red>唯一的根元素</font>节点，上例为ul
+
+3. 组件名称建议是 xx-yy 的格式
+
+
+
+`使用组件语法`：
+
+```html
+<组件名称></组件名称>
+```
+
+> 组件形式上 就是html标签
+
+
+
+`案例应用代码`：
+
+制作一个分页组件并使用
+
+```html
+<div id="app">
+  <!--使用组件-->
+  <com-page></com-page>
+</div>
+
+<script src="./vue.js"></script>
+
+<script>
+  var vm = new Vue({
+    // 声明私有组件
+    components:{
+      // 组件名称:{配置对象成员}
+      'com-page':{
+        // template: 设置组件拥有的html标签内容
+        template:`
+          <ul>
+            <li><a href="#">1</a></li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+          </ul>
+        `
+      }
+    },
+    el:'#app',
+    data:{
+    },
+    methods:{
+    }
+   });
+</script>
 ```
 
 
-## [vue实例的生命周期](https://cn.vuejs.org/v2/guide/instance.html#实例生命周期)
 
-+ 什么是生命周期：从Vue实例创建、运行、到销毁期间，总是伴随着各种各样的事件，这些事件，统称为生命周期！
-+ [生命周期钩子](https://cn.vuejs.org/v2/api/#选项-生命周期钩子)：就是生命周期事件的别名而已；
-+ 生命周期钩子 = 生命周期函数 = 生命周期事件
-+ 主要的生命周期函数分类：
+### 相关成员
 
- - 创建期间的生命周期函数：
+可以认为**组件**是特殊的**Vue实例**，拥有着与Vue实例大致相同的**成员**
 
-   + beforeCreate：实例刚在内存中被创建出来，此时，还没有初始化好 data 和 methods 属性
-   + created：实例已经在内存中创建OK，此时 data 和 methods 已经创建OK，此时还没有开始 编译模板
-   + beforeMount：此时已经完成了模板的编译，但是还没有挂载到页面中
-   + mounted：此时，已经将编译好的模板，挂载到了页面指定的容器中显示
+例如  **data**、**methods**、**filters**、**directives**、**created**等等成员在组件内部都可以设置
 
- - 运行期间的生命周期函数：
 
-  + beforeUpdate：状态更新之前执行此函数， 此时 data 中的状态值是最新的，但是界面上显示的 数据还是旧的，因为此时还没有开始重新渲染DOM节点
-  + updated：实例更新完毕之后调用此函数，此时 data 中的状态值 和 界面上显示的数据，都已经完成了更新，界面已经被重新渲染好了！
 
- - 销毁期间的生命周期函数：
+`注意`：
 
-  + beforeDestroy：实例销毁之前调用。在这一步，实例仍然完全可用。
-  + destroyed：Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。
+​	组件data成员 与 Vue实例的 不一样，需要通过 function/return 设置，通过return返回一个{}对象供使用
+
+
+
+`案例应用`：
+
+给分页组件设置 单击事件、data成员、created生命周期  方法并执行
+
+```js
+// 声明私有组件
+components:{
+  // 组件名称:{配置对象成员}
+  'com-page':{
+    // template: 设置组件拥有的html标签内容
+    template:`
+      <ul>
+        <li><a href="#">{{ prev }}</a></li>
+        <li><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li @click="xia()"><a href="#">{{ next }}</a></li>
+      </ul>
+    `,
+    data(){
+      return {
+        prev:'上一页',
+        next:'下一页'
+      }
+    },
+    methods:{
+      xia(){
+        console.log('进入下一页')
+      }
+    },
+    created(){
+      console.log('created 已经执行了')
+    }
+  }
+},
+```
+
+
+
+### function声明data
+
+组件中声明的data成员，值需要是一个function，内部通过return返回{}对象供使用，这个特性必须遵守
+
+
+
+`为什么组件的data必须是一个function`：
+
+答：组件根据业务需要，可以被使用多次，function会使得每次组件使用的时候都**亲自执行**并给当前应用分配一个**独立的数据对象**，这样多个组件的data数据是独立的，互相没有关联、牵扯，互相不会覆盖
+
+​      相反，如果直接通过{}对象 给data赋值，多次使用组件会造成大家的data都是共享的，就是一份数据，一个组件修改data后，其他组件都受到影响，这与业务逻辑是相违背的
+
+
+
+`组件与Vue实例异同`：
+
+1. 组件中的 data 必须是一个 **function** 并 return 一个 字面量对象
+   (Vue 实例的 data 可以是 字面量对象，也可以是 function/return形式，前者推荐使用)
+2. 组件中直接通过 template 属性来指定组件的UI结构
+   Vue 实例中，一般通过 el 属性来指定渲染的容器，当然也可以使用template
+3. 组件和Vue实例拥有类似的成员，都有自己的生命周期函数，过滤器，methods、data等成员
+
+
+
+
+
+### 全局组件语法
+
+`目标`：
+
+​	了解全局组件创建的语法
+
+
+
+`全局组件语法`：
+
+```
+Vue.component(名称,{配置对象成员})
+
+new Vue()
+```
+
+
+
+`注意`：
+
+​	全局组件需要在new Vue之前设置
+
+
+
+### 小结
+
+1. 组件是拥有一定功能多个html标签的**集合体**
+2. 组件根据定义类型分为 **全局**/**私有** 组件
+3. 组件是特殊的Vue实例，与Vue实例拥有着基本相同的成员(methods/created/data/template等)
+4. template都必须有一个**根元素节点**
+5. data的值需要是function/return形式
+
+
+
+## yarn方式安装依赖包
+
+`与npm区别`：
+
+yarn安装更快，会同时安装多个，而npm按照队列一个一个顺序去安装，必须等到当前的package安装完毕后才能去安装下一个
+
+
+
+`安装`：
+
+```
+npm install  -g  yarn
+```
+
+>    // 全局方式安装yarn依赖包，这样在系统任何目录都可以使用yarn指令
+
+`配置镜像源`：
+
+```bash
+yarn config get registry				// 查看当前使用的源
+yarn config set registry https://registry.npm.taobao.org		// 配置为taobao的镜像源
+```
+
+
+
+`使用`：
+
+```bash
+yarn  add  依赖包  	==================  npm install  依赖包
+yarn remove 依赖包 	=================  npm uninstall  依赖包
+yarn               	==================  npm  i       // 安装全部依赖包
+yarn -y init       	==================  npm -y init  // 创建package.json文件
+yarn add global 依赖包 ================  npm i -g 依赖包  // 全局方式装包
+```
+
+yarn较比npm装包更快，界面体验更好(安装进度条提示)
+
+
+
+`注意`：
+
+1. yarn安装完毕后要配置镜像源为taobao，否则优势发挥不出来
+2. yarn全局方式装包要设置  global  关键字，而npm是 -g
+
+
+
+## VueCLI
+
+`什么是`
+
+答：是脚手架，其可以把许多项目**通用的依赖包**(vue、webpack、路由、vuex、less编译器等等) 和 **通用的配置**都给做好安装好，使得开发者全部的注意力都集中在业务层面，明显提升开发效率的，真实项目都要使用脚手架开发。
+
+依赖包：axios、vue等等都是依赖包，一个依赖包中有许多 模块
+
+
+
+### 安装
+
+`目标`：
+
+​	能够安装和使用vuecli
+
+
+
+`安装vuecli`：
+
+```bash
+######## yarn global add @vue/cli  // 弃用
+npm i -g @vue/cli   // 使用该方式安装
+```
+
+> 上述依赖包通过全局方式安装，完毕后在系统任何目录都会执行名称为"vue"的一个指令
+
+> 依赖包安装完毕，会形成 在 C:\Users\ssh\AppData\Roaming\npm\node_modules\@vue\cli 目录
+
+> vue --version  查看脚手架版本，现在默认是4.0.5版本(如果是2.9.6就是错误的，需要卸载重新安装)
+
+
+
+`vuecli创建项目`：
+
+```bash
+vue  create  项目名称(01-pro)
+```
+
+
+
+`注意`：
+
+1. npm全局方式安装依赖包关键字是-g，而yarn全局装包关键字为global
+
+2. vuecli创建新项目时，项目名称需要是一个**新目录**，完毕后会自动生产之，并在其中生成项目需要的文件
+
+3. 项目(01-pro)上级各个目录名字最好为**英文** 或 **数字** 或 **中横线** 不要设置 中文的
+
+   > 例如 E:\Vue86-87\87\87everyday\04day\01-pro  就是项目ok的各个目录体现
+
+
+
+### 创建项目结构文件
+
+`目标`：
+
+​	利用vuecli创建自己的第一个项目
+
+
+
+`步骤`：
+
+​	运行以下命令来创建一个新项目，位置随意，但是各个上级目录最好都是英文的，my-project是项目名称，也是项目目录，不要提前创建
+
+```
+vue create my-project
+```
+
+![1561622952268](Image/img(online)/1561622952268.png)
+
+
+
+![1565964186423](Image/img(online)/1565964186423.png)
+
+
+
+
+
+![1561623170607](Image/img(online)/1561623170607.png)
+
+
+
+![1561623274446](Image/img(online)/1561623274446.png)
+
+
+
+![1563505874818](Image/img(online)/1563505874818.png)
+
+> 上图的两个项目都不要选取
+
+
+
+![1561623412365](Image/img(online)/1561623412365.png)
+
+
+
+![1561623482895](Image/img(online)/1561623482895.png)
+
+
+
+![1561623586580](Image/img(online)/1561623586580.png)
+
+![1566010958700](Image/img(online)/1566010958700.png)
+
+![1561623689667](Image/img(online)/1561623689667.png)
+
+
+
+(题外话：当再次创建项目时，就可以选取之前配置好的项目，**一次性**完成项目的创建，不用再详细选取配置)
+
+![1561623755361](Image/img(online)/1561623755361.png)
+
+上边的20190628具体配置在如下文件，可以直接删除，以便恢复：
+
+![1561692040822](Image/img(online)/1561692040822.png)
+
+
+
+创建好的项目效果
+
+![1561623844071](Image/img(online)/1561623844071.png)
+
+
+
+`注意`：
+
+​	c:/用户/ssh/.vuerc文件被删除作用
+
+1. 创建项目选取配置的小项目被清除了
+2. 项目创建过程中会提示要求选取 yarn  或  npm  方式下载包
+
+​	创建项目过程中需要安装许多依赖包，建议通过yarn方式安装，如果不是，可以删除 “ c:\用户\用户名\.vuerc  ”  文件后再重新执行 "vue  create  xxx"命令，此时会提示选取
+
+
+
+### 结构文件说明
+
+`目标`：
+
+​	了解项目的各个文件作用
+
+```js
+|-- node_modules								// 项目需要的依赖包
+|-- public										 // 静态资源存储目录
+|   |-- index.html							// 项目主容器文件
+|   |-- favicon.ico							// 项目默认索引图片
+|-- src
+|   |-- assets									// 放置一些静态资源文件，例如图片、图标、字体 
+|   |-- components							// 公共组件目录
+|   |-- views									  // 业务组件目录
+|   |-- App.vue									// 顶层根基路由组件
+|   |-- main.js									// 项目主入口文件(包括Vue实例也在这)
+|-- .editorconfig								// 代码规范配置文件
+|-- .eslintrc.js								// eslint代码规范检查配置文件
+|-- .gitignore									// git上传需要忽略的文件格式
+|-- babel.config.js							// babel配置文件
+|-- yarn.lock										// 依赖包版本锁定文件
+|-- package.json								// 项目基本信息配置文件
+|-- postcss.config.js						// css预处理器配置文件
+|-- vue.config.js								// webpack 配置文件(与webpack.config.js作用一致)
+```
+
+`注意`：
+
+1. public/index.html文件是div容器所在文件
+
+2. src/main.js是Vue实例所在文件
+
+
+
+
+### 项目运行
+
+`步骤`：
+
+1. 修改src/main.js文件为如下内容
+
+   ```js
+   // import Vue from 'vue' // Vue实例有render可以使用的
+   import Vue from 'vue/dist/vue.common.js' // Vue实例 没有 render时候可以使用的
+   // import App from './App.vue'
+   
+   Vue.config.productionTip = false
+   
+   new Vue({
+     data:{
+       msg:'项目已经运行了'
+     }
+     // render: h => h(App)
+   }).$mount('#app')
+   ```
+
+   
+
+2. 修改public/index.html文件，使用Vue实例的data数据
+
+   ```html
+       <div id="app">
+         {{ msg }}
+       </div>
+   ```
+
+   
+
+3. 修改vue.config.js文件内容如下
+
+   ```js
+   module.exports = {
+     lintOnSave: false,
+     devServer:{
+       open:true, // 项目运行自动开启浏览器
+       port:16699 // 给项目运行创建web服务的端口号码(1~65535之间)
+     }
+   }
+   ```
+
+   > 当前项目运行的时候会创建一个http服务，上述16699就是服务器的端口号码，
+   >
+   > open:true  项目运行的时候，会**自动**打开浏览器并呈现效果
+
+4. 在终端中执行命令
+
+   ```
+    npm  run  serve
+   ```
+
+   > 上述命令需要在项目根目录下运行(01-pro目录下)
+   >
+   > serve:指令标志是package.json文件配置好了
+
+> 现在项目可以运行了，并且有实时加载的效果，业务文件随时改变，浏览器随时查看到对应效果
+
+
+
+## ES6模块化
+
+`什么是`：
+
+项目中一些**程序代码**经常被其他业务场景使用，为了避免重复开发，就把这些代码设置为**共享模式**，共享模式就是**模块化**。像jquery、axios、vue等等都是模块化的体现，需要的时候直接拿过来用即可 
+
+![1566000527767](Image/img(online)/1566000527767.png)
+
+
+
+
+
+`模块化技术有哪些`：
+
+CommonJS(nodejs)、ES6模块化、AMD、CMD等
+
+
+
+`CommonJS`：
+
+CommonJS模块化 是2009年发布的，是民间出品的，相对不正规，可以在nodejs中应用
+
+```js
+// 导出
+module.exports = 对象
+// 导入
+var obj = require(模块文件)
+```
+
+
+
+`ES6模块化`：
+
+ES6模块化 是2015年官方正式出品的，已经被纳入到JavaScript标准里边，也是js未来的标准，由于各种原因 nodejs和浏览器中现在还不能直接使用ES6模块化，要相信未来可以
+
+
+
+`AMD模块化`：
+
+ Asynchronous Module Definition  异步模块定义 
+
+2009年诞生，可以实现浏览器中应用模块化技术
+
+
+
+`CMD模块化`：
+
+Common Module Definition 通用模块定义
+
+2011年诞生，阿里公司出品，可以实现浏览器中应用模块化技术
+
+
+
+各个模块化应用的场合：
+
+1. commonjs模块化可以应用在nodejs中，浏览器中不可以
+2. es6模块化暂时还不能在nodejs 和 浏览器 中使用，但是要相信，未来可以
+3. 浏览器中可以运行的模块化名称为 AMD 和 CMD
+
+
+
+[AMD、CMD、Commonjs、ES6模块化介绍](https://segmentfault.com/a/1190000015302578)
+
+
+
+`注意`：
+
+​	重点掌握两种  ES6 和 CommonJS
+
+
+
+### 默认导出和导入
+
+`什么是默认导出和导入`：
+
+数据提供者称为 导出
+
+数据使用者称为 导入
+
+在一个js文件中，通过一个**对象**把全部的数据导出出去，就是**默认导出**
+
+对默认导出的成员进行接收就是默认导入
+
+
+
+`模块`：
+
+一个js文件就是一个模块，前提是该文件有做**导出**动作
+
+
+
+`导出语法`：
+
+```js
+// 导出：
+export default  对象
+```
+
+`导入语法`：
+
+```js
+// 导入：
+import 名称  from  模块文件名字
+```
+
+
+
+`注意`：
+
+1. 一个模块中 默认导出 只能进行**一次**
+2. es6模块化现在只可以在VueCli项目中使用
+
+
+
+`示意案例`：
+
+01-默认导出.js
+
+```js
+// 默认导出
+const a = 10
+const b = 20
+
+var cat = {name:'kitty',age:4}
+
+export default cat  // 与 module.exports = cat 相当
+```
+
+
+
+main.js导入
+
+```js
+// 1) 默认导入
+// import  对象  from  '模块'
+import obj from './modules/01-默认导出.js'
+console.log(obj)
+```
+
+
+
+### 按需导出和导入
+
+哪些成员可以做按需导出导入处理？
+
+答： **常量**、**对象** 、**函数** 三种信息可以做模块化应用 (var、let等变量用于模块化没有意义)
+
+
+
+`导出语法`：
+
+```js
+export const  a = 10		// 常量
+export function ab(){}  // 函数
+export const  b = 20
+export const cat = {name:'kitty',age:5} // 对象
+...
+```
+
+> 注意：一般按需只做常量、函数导出，var/let变量不导出，本身没有意义
+
+
+
+`导入语法`：
+
+```js
+import {xx,yy,zz} from 模块文件
+import {xx as kk,yy as mm,zz as qq} from 模块文件
+```
+
+
+
+`注意`：
+
+1. xx,yy,zz代表被导入的成员名称，与导出的要求一致
+
+2. 成员不用全部都导入，根据需要，导入 **1个或多个或全部** 都可以
+3. 如果导入进来的成员名称 与 当前环境名称 有冲突，可以设置别名，使用关键字as
+
+
+
+`案例`：
+
+对按需导出、导入进行简单使用
+
+导出：
+
+```js
+// 按需导出
+export const a = 10
+const b = 20
+
+export const cat = {name:'kitty',age:4}
+export function say(){
+  return 'hi'
+}
+
+```
+
+导入：
+
+```js
+// 2) 按需导入
+// import {name,name..} from '模块'
+import {a,  say as shuo} from './modules/02-按需导出.js'
+console.log(a,shuo)
+```
+
+
+
+### 默认和按需同时导出和导入
+
+`目标`：
+
+​	掌握 默认和按需 同时导出、导入技术
+
+
+
+有时，在一个模块中 默认 和 按需 导出会同时存在
+
+
+
+`导出语法`：
+
+```js
+export const  a = 10    // 按需导出
+export function ab(){}  // 按需导出
+export default  对象/{}  // 默认导出
+export const  b = 20
+export function abc(){}
+```
+
+
+
+`注意`：
+
+1. 一个模块只能  默认导出**一次**，按需导入可以设置多次
+2. 默认导出  的语句没有前后顺序要求
+
+
+
+`导入语法`：
+
+```js
+// 1) 分别导入
+import 名称  from  模块
+import  {xx,yy}  from  模块
+
+// 2) 一并导入
+import 名称,{xx,yy} from 模块
+```
+
+`注意`：
+
+​	一并导入必须是 默认在"前"，按需在"后"
+
+
+
+`案例`：
+
+对默认和按需同时导出和导入做简单应用
+
+导出：
+
+```js
+// 默认按需导出
+export default {city:'北京',weather:'雨'}
+export const a = 10
+const b = 20
+
+export const cat = {name:'kitty',age:4}
+export function say(){
+  return 'hi'
+}
+```
+
+导入：
+
+```js
+// 3) 默认按需导入
+// a. 分别导入
+// import 名称 from ''  // 默认
+// import {xx,yy,zz} from '' // 按需
+// b. 一并导入
+// import 名称,{xx,yy,zz} from ''
+import obj2, {a as aa,cat,say} from './modules/03-默认按需导出.js'
+console.log('%c%s','color:green',obj2.city)
+console.log('%c%s','color:green',aa)
+console.log('%c%s','color:green',cat.name)
+console.log('%c%s','color:green',say)
+```
+
+
+
+
+
+### 没有导出应用
+
+项目开发时有的文件没有做导出动作(例如 css、less)，这样文件可以称为为 非模块文件，那么可以通过如下方式做导入
+
+```
+import  文件路径名
+```
+
+
+
+使用示例：
+
+导出：
+
+```js
+// 没有导出
+for(var i=0; i<5; i++){
+  console.log(i)
+}
+```
+
+导入：
+
+```js
+// 4) 没有导出的导入
+// import '模块'
+import './modules/04-没有导出.js'
+```
+
+
+
+### 小结
+
+小结：
+
+1. 导出，就是共享内容**提供方**
+2. 导入，就是共享内容**使用者**
+3. **默认导出**就是通过一个对象把全部的内容都提供出来 export default 对象
+4. **按需导出**就是需要哪个信息就导哪个出来，不需要的不操作(常量和函数适合按需导出)  export const a = 10
+5. 按需导出导入的相关元素：常量、函数、对象
+6. 一个模块只能做**一次默认**导出，但是可以做**多次按需**导出
+
+
+
+作业：
+
+1. 给品牌管理案例实现**拦截器**加载图片效果
+
+2. 练习，vuecli脚手架安装、创建项目出来、配置项目运行
+
+3. 制作一个table表格组件，要求可以实现如下表格(4行3列)，其中数据部分来自data定义
+
+   | 序号 | 名称     | 价格   |
+   | ---- | -------- | ------ |
+   | 1    | 华为手机 | 3449元 |
+   | 2    | oppo手机 | 2999元 |
+   | 3    | 苹果手机 | 4229元 |
+
+   
+
 
 
 ## [vue-resource 实现 get, post, jsonp请求](https://github.com/pagekit/vue-resource)
@@ -1568,11 +2231,8 @@ methods: {
 ## 相关文章
 
 1. [js 里面的键盘事件对应的键码](http://www.cnblogs.com/wuhua1/p/6686237.html)
-
 2. [Vue.js双向绑定的实现原理](http://www.cnblogs.com/kidney/p/6052935.html)
-
 3. [pagekit/vue-resource](https://github.com/pagekit/vue-resource)
-
 4. [navicat如何导入sql文件和导出sql文件](https://jingyan.baidu.com/article/a65957f4976aad24e67f9b9b.html)
-
 5. [贝塞尔在线生成器](http://cubic-bezier.com/#.4,-0.3,1,.33)
+6. [Vue.js devtools - 翻墙安装方式 - 推荐](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=zh-CN)
