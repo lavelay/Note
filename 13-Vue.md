@@ -778,29 +778,6 @@ get()方法如果传递参数需要额外设置params，post()方法则不用
 
 
 
-## Promise
-
-它是一个对象，是用来处理**异步**操作的，可以让我们写异步调用的时候写起来更加优雅，更加美观便于阅读。
-
-`Promise的三种状态`：
-
-1. pending（进行中
-
-2. resolved（完成）
-
-3. rejected（失败） 
-
-异步：在同一个时间中，可以发送**多个**进行执行
-
-同步：在同一个时间点，只有**一个**进程在执行
-
-`作用`：
-
-1. 解决了异步调用彼此嵌套的**回调地狱**问题
-2. 解决了多个异步过程**顺序执行**问题
-
-
-
 ## axios-拦截器-interceptors
 
 axios在客户端与服务端之间传递数据时候是有**时间消耗**的
@@ -900,7 +877,9 @@ axios.interceptors.response.use(function (response) {
 
 答：模板中为了实现一个效果(例如分页)，需要绘制**20**个html标签，现在使用组件了，相同的功能就只绘制**一个**组件标签就达成了，明显提升开发速度
 
+### 区分大小写
 
+HTML中对大小写不敏感，默认都转为小写，如果配置对象时名称含有大写字母，在使用组件是名称要用短横线连接
 
 ### 私有组件语法
 
@@ -935,8 +914,6 @@ new Vue({
 ### 相关成员
 
 可以认为**组件**是特殊的**Vue实例**，拥有着与Vue实例大致相同的**成员**
-
-例如  **data**、**methods**、**filters**、**directives**、**created**等等成员在组件内部都可以设置
 
 `注意`：
 
@@ -1045,15 +1022,6 @@ yarn -y init       	==================  npm -y init  // 创建package.json文件
 yarn add global 依赖包 ================  npm i -g 依赖包  // 全局方式装包
 ```
 
-yarn较比npm装包更快，界面体验更好(安装进度条提示)
-
-
-
-`注意`：
-
-1. yarn安装完毕后要配置镜像源为taobao，否则优势发挥不出来
-2. yarn全局方式装包要设置  global  关键字，而npm是 -g
-
 
 
 ## VueCLI
@@ -1086,18 +1054,6 @@ npm i -g @vue/cli   // 使用该方式安装
 ```bash
 vue  create  项目名称(01-pro)
 ```
-
-
-
-`注意`：
-
-1. npm全局方式安装依赖包关键字是-g，而yarn全局装包关键字为global
-
-2. vuecli创建新项目时，项目名称需要是一个**新目录**，完毕后会自动生产之，并在其中生成项目需要的文件
-
-3. 项目(01-pro)上级各个目录名字最好为**英文** 或 **数字** 或 **中横线** 不要设置 中文的
-
-   > 例如 E:\Vue86-87\87\87everyday\04day\01-pro  就是项目ok的各个目录体现
 
 
 
@@ -1136,12 +1092,6 @@ vue create my-project
 上边的20190628具体配置在如下文件，可以直接删除，以便恢复：
 
 ![1561692040822](Image/img(online)/1561692040822.png)
-
-
-
-创建好的项目效果
-
-![1561623844071](Image/img(online)/1561623844071.png)
 
 
 
@@ -1308,10 +1258,6 @@ Common Module Definition 通用模块定义
 
 ### 默认导出和导入
 
-数据提供者称为 导出
-
-数据使用者称为 导入
-
 在一个js文件中，通过一个**对象**把全部的数据导出出去，就是**默认导出**
 
 对默认导出的成员进行接收就是默认导入
@@ -1319,8 +1265,6 @@ Common Module Definition 通用模块定义
 `模块`：
 
 一个js文件就是一个模块，前提是该文件有做**导出**动作
-
-
 
 `导出语法`
 
@@ -1336,37 +1280,8 @@ export default  对象
 import 名称  from  模块文件名字
 ```
 
-
-
 1. 一个模块中 默认导出 只能进行**一次**
 2. es6模块化现在只可以在VueCli项目中使用
-
-
-
-`示意案例`：
-
-01-默认导出.js
-
-```js
-// 默认导出
-const a = 10
-const b = 20
-
-var cat = {name:'kitty',age:4}
-
-export default cat  // 与 module.exports = cat 相当
-```
-
-
-
-main.js导入
-
-```js
-// 1) 默认导入
-// import  对象  from  '模块'
-import obj from './modules/01-默认导出.js'
-console.log(obj)
-```
 
 
 
@@ -1375,8 +1290,6 @@ console.log(obj)
 哪些成员可以做按需导出导入处理？
 
 答： **常量**、**对象** 、**函数** 三种信息可以做模块化应用 (var、let等变量用于模块化没有意义)
-
-
 
 `导出语法`：
 
@@ -1390,16 +1303,12 @@ export const cat = {name:'kitty',age:5} // 对象
 
 > 注意：一般按需只做常量、函数导出，var/let变量不导出，本身没有意义
 
-
-
 `导入语法`：
 
 ```js
 import {xx,yy,zz} from 模块文件
 import {xx as kk,yy as mm,zz as qq} from 模块文件
 ```
-
-
 
 `注意`：
 
@@ -1409,10 +1318,6 @@ import {xx as kk,yy as mm,zz as qq} from 模块文件
 3. 如果导入进来的成员名称 与 当前环境名称 有冲突，可以设置别名，使用关键字as
 
 
-
-`案例`：
-
-对按需导出、导入进行简单使用
 
 导出：
 
@@ -1452,14 +1357,10 @@ export const  b = 20
 export function abc(){}
 ```
 
-
-
 `注意`：
 
 1. 一个模块只能  默认导出**一次**，按需导入可以设置多次
 2. 默认导出  的语句没有前后顺序要求
-
-
 
 `导入语法`：
 
@@ -1467,7 +1368,6 @@ export function abc(){}
 // 1) 分别导入
 import 名称  from  模块
 import  {xx,yy}  from  模块
-
 // 2) 一并导入
 import 名称,{xx,yy} from 模块
 ```
@@ -1477,10 +1377,6 @@ import 名称,{xx,yy} from 模块
 ​	一并导入必须是 默认在"前"，按需在"后"
 
 
-
-`案例`：
-
-对默认和按需同时导出和导入做简单应用
 
 导出：
 
@@ -1522,10 +1418,6 @@ console.log('%c%s','color:green',say)
 import  文件路径名
 ```
 
-
-
-使用示例：
-
 导出：
 
 ```js
@@ -1551,13 +1443,9 @@ import './modules/04-没有导出.js'
 
 ​	把一个组件的全部内容汇合到**一个文件**中，文件名字是以`.vue`结尾的就称作**vue单文件组件**
 
-
-
 `普通组件的缺点`：
 
 普通vue组件  其代码 和 其它JS代码逻辑掺杂在一块儿，不易维护，优势没有发挥到极致！
-
-单文件组件才是重点、主角。
 
 
 
@@ -1603,31 +1491,11 @@ new Vue({
   components:{
     'com-one':ComOne
   },
-  
   data:{
     msg:'开始学习Vue单文件组件'
   }
 }).$mount('#app')
 ```
-
-> 注意：
->
-> 1. vue要引入 vue.common.js的
->
-> 2. import App的内容要去除
->
-> 3. Vue实例内部render去除
-
-4. public/index.html文件 使用 单文件组件
-
-```html
-    <div id="app">
-      {{msg}}
-      <com-one></com-one>
-    </div>
-```
-
-
 
 `注意`：
 
@@ -1638,50 +1506,14 @@ new Vue({
 
 ### 组织结构
 
-单文件组件的构成：
-
-```html
-<template>
-  相关html标签
-</template>
-
-<script>
-  export default {
-    data,
-    methods,
-    computed,
-    filters,
-    created,
-    ……
-  }
-</script>
-
-<style>
-  css样式内容
-</style>
-```
-
-
-
-一个单文件组件涉及有如下3部分：
-
 1. template标签，内部要求有**唯一根元素**(推荐div)，template是html5标签，只运行，浏览器源代码不显示
 2. script标签：该标签内部可以执行普通js代码，但是最主要的是内部可以通过**export  default {}** 导出一个对象，该对象的成员完全可以参考 **Vue实例**，类似 data、methods、created、filters、components等等都可以应用，各个成员都是为template模板服务的
 3. style标签:设置css样式，作用给template内部的html标签使用
-
-`注意`：
-
-​	script和style如果不需要，可以不设置，template必须要写
+4. script和style如果不需要，可以不设置，template必须要写
 
 
 
 ### 私有注册应用
-
-`目标`：
-
-​	制作一个table表格的组件， template、script、style 都使用，Vue实例要求应用data、methods、created等成员
-
-
 
 `私有方式注册语法`：
 
@@ -1694,111 +1526,6 @@ new Vue({
 	}
 })
 ```
-
-
-
-`步骤`：
-
-1. 创建组件文件 src/components/03-table.vue
-
-   ```html
-   <template>
-     <div>
-       <table>
-         <tr>
-           <td>序号</td>
-           <td>名称</td>
-         </tr>
-         <tr>
-           <td>{{goods.id}}</td>
-           <td @click="tip()">{{goods.name}}</td>
-         </tr>
-       </table>
-     </div>
-   </template>
-   
-   <script>
-   // es6模块化默认导出
-   // export default 对象 ，
-   //  该对象的成员可以参考Vue实例，因此data/methods/filters/created/computed等
-   //  并且是为 上述template做服务的
-   export default {
-     data(){
-       return {
-         goods:{id:203,name:'奔驰汽车'}
-       }
-     },
-     methods:{
-       tip(){
-         console.log('干啥，有事么？')
-       }
-     },
-     created(){
-       console.log('table表格的created执行了')
-     }
-   }
-   </script>
-   
-   <style>
-   /*css样式，具体也是为template做服务的*/
-   td{color:orange;}
-   </style>
-   
-   ```
-
-   
-
-2. 在main.js中引入组件  并  通过 私有方式注册 好
-
-   ```js
-   import Vue from 'vue/dist/vue.common.js' // Vue实例没有render要使用该vue
-   // import Vue from 'vue' // Vue实例有render要使用该vue(vue.runtime.common.js)
-   
-   // es6模块化导入单文件组件-默认方式
-   // import 组件模块 from './components/01-第一个单文件组件.vue'
-   import ComOne from './components/01-第一个单文件组件.vue'
-   import ComTable from './components/03-Table.vue'
-   
-   Vue.config.productionTip = false
-   
-   new Vue({
-     // 把导入进来的组件给注册好
-     // components:{组件名称:{配置对象成员}} // 普通组件
-     // components:{
-     //   组件名称:组件模块,
-     //   组件名称:组件模块,
-     // } // 单文件组件
-     // 组件名称推荐是“xx-yy”格式
-     components:{
-       'com-one':ComOne,
-       'com-table':ComTable,
-     },
-     
-     data:{
-       msg:'开始学习Vue单文件组件'
-     }
-   }).$mount('#app')
-   
-   ```
-
-   
-
-3. 在public/index.html中应用组件
-
-   ```html
-       <div id="app">
-         {{msg}}
-         <com-one></com-one>
-         <hr />
-         <com-table></com-table>
-       </div>
-   ```
-
-`注意`：
-
-​	vuecli脚手架已经把一些通用文件的后缀设置好了，像.js、.vue等可以不设置
-
-
 
 小结：
 
@@ -1830,112 +1557,11 @@ var vm = new Vue({……})
 
 ​	
 
-### 一并应用两个
-
-在实际项目中一并使用多个组件的情形也是存在的，并且很多，例如 要求同时使用 分页组件 和 table表格组件
-
-
-
-`步骤`：
-
-1. 创建 src/components/04-First.vue 和 src/components/04-Second.vue
-
-   ```html
-   <template>
-       <div>
-         <p>我是大哥</p>
-       </div>
-   </template>
-   
-   <style>
-     p{color:red;}
-   </style>
-   
-   ```
-
-   ```html
-   <template>
-     <div>
-       <p>我是小弟</p>
-     </div>
-   </template>
-   
-   <style>
-     p{color:blue;}
-   </style>
-   
-   ```
-
-   > 注意：它们有使用相同名称的css选择器进行样式控制
-
-2. 在main.js中**引入、注册**两个组件
-
-   ```js
-   import Vue from 'vue/dist/vue.common.js' // Vue实例没有render要使用该vue
-   // import Vue from 'vue' // Vue实例有render要使用该vue(vue.runtime.common.js)
-   
-   // es6模块化导入单文件组件-默认方式
-   // import 组件模块 from './components/01-第一个单文件组件.vue'
-   import ComOne from './components/01-第一个单文件组件.vue'
-   import ComTable from './components/03-Table.vue'
-   import ComFirst from './components/04-First.vue'
-   import ComSecond from './components/04-Second.vue'
-   
-   Vue.config.productionTip = false
-   // Vue.component('com-one',ComOne)
-   // Vue.component('com-table',ComTable)
-   
-   new Vue({
-     // 私有方式注册
-     // 把导入进来的组件给注册好
-     // components:{组件名称:{配置对象成员}} // 普通组件
-     // components:{
-     //   组件名称:组件模块,
-     //   组件名称:组件模块,
-     // } // 单文件组件
-     // 组件名称推荐是“xx-yy”格式
-     components:{
-       'com-one':ComOne,
-       'com-table':ComTable,
-       'com-first':ComFirst,
-       'com-second':ComSecond,
-     },
-     
-     data:{
-       msg:'开始学习Vue单文件组件'
-     }
-   }).$mount('#app')
-   ```
-
-   
-
-3. 在public/index.html中使用两个组件
-
-   ```html
-       <div id="app">
-         {{msg}}
-         <com-one></com-one>
-         <hr />
-         <com-table></com-table>
-         <hr />
-         <com-first></com-first>
-         <com-second></com-second>
-       </div>
-   ```
-
-`注意`：
-
-​	效果是不对的，First应该显示红色，Second应该显示蓝色，但是现在都显示蓝色了	
-
-
-
 ### scoped属性
 
 默认情况下，vue单文件组件的style样式是[全局的]()，
 
 如果在一个应用中使用了**多个**单文件组件，它们使用<span style="background-color:yellow;">相同选择器</span>为相同的元素设置了style样式，那么只有一个会起作用 (后者会覆盖前者)
-
-
 
 `scoped作用`：
 
@@ -1944,8 +1570,6 @@ var vm = new Vue({……})
 `原理`：
 
 ​	给每个style标签都设置一个`scoped`属性，这样组件的各个html标签解析出来后都会带有一个与其他单组件标签不同的 <font color=red>data-v-xxx</font> 的唯一属性名称，style样式设定也会自动与这个的data-v-xxx联系起来，这样就使得style样式只针对自己的组件起作用了
-
-![1572400675345](Image/img(online)/1572400675345.png)
 
 ```html
 <style  scoped>
@@ -1960,8 +1584,6 @@ var vm = new Vue({……})
 
 
 ### 父子嵌套组件应用
-
-多个组件一并应用，根据业务需要，它们可以是平行兄弟关系， 也可以是嵌套的父子关系，
 
 `步骤`：
 
@@ -2031,29 +1653,15 @@ var vm = new Vue({……})
    // import 组件模块 from './components/01-第一个单文件组件.vue'
    import ComOne from './components/01-第一个单文件组件.vue'
    import ComTable from './components/03-Table.vue'
-   import ComFirst from './components/04-First.vue'
-   import ComSecond from './components/04-Second.vue'
-   import ComFat from './components/05-Fat.vue'
    
    Vue.config.productionTip = false
    // Vue.component('com-one',ComOne)
    // Vue.component('com-table',ComTable)
    
    new Vue({
-     // 私有方式注册
-     // 把导入进来的组件给注册好
-     // components:{组件名称:{配置对象成员}} // 普通组件
-     // components:{
-     //   组件名称:组件模块,
-     //   组件名称:组件模块,
-     // } // 单文件组件
-     // 组件名称推荐是“xx-yy”格式
      components:{
        'com-one':ComOne,
        'com-table':ComTable,
-       'com-first':ComFirst,
-       'com-second':ComSecond,
-       'com-fat':ComFat,
      },
      
      data:{
@@ -2061,9 +1669,9 @@ var vm = new Vue({……})
      }
    }).$mount('#app')
    ```
-
    
-
+   
+   
 3. 在public/index.html 应用 041-Fat.vue
 
    ```html
@@ -2080,20 +1688,9 @@ var vm = new Vue({……})
        </div>
    ```
 
-
-
-关系：index.html容器------------->父组件---------------->子组件
-
 `嵌套本质`：
 
 ​	一个单文件组件可以  **引入**、**注册**、**使用** 另外一个单文件组件
-
-
-
-`小结`：
-
-1. style标签需要设置scoped属性，这样样式针对自己组件生效
-2. 父子组件嵌套，一个组件可以  引入import、注册components、使用 标签  另外一个组件
 
 
 
@@ -2132,12 +1729,6 @@ var vm = new Vue({……})
 
 父组件可以  引入、使用 子组件，从业务上看，该父组件有可能对子组件有**个性化**需求，为了体现组件的**灵活多变**，可以通过**传值**实现
 
-例如
-
-​	父组件多次使用按钮组件，每次要求按钮的文字显示不同颜色，就可以通过传值实现
-
-
-
 `语法`：
 
 父组件要在子组件标签上通过**属性值**方式传值
@@ -2159,12 +1750,6 @@ var vm = new Vue({……})
   }
 </script>
 ```
-
-`目标`：
-
-利用父给子传值实现应用**按钮组件**效果，多次使用，每次**按钮颜色**都不一样
-
-
 
 步骤：
 
@@ -2229,8 +1814,6 @@ var vm = new Vue({……})
      }
    </style>
    ```
-
-
 
 `注意`：
 
@@ -2303,161 +1886,15 @@ new Vue({
 
 
 
-### 组件切换案例
-
-`步骤`：
-
-1. 利用vuecli创建空项目，配置vue.config.js文件为如下内容
-
-   ```js
-   module.exports = {
-     lintOnSave: false,
-     devServer: {
-       open: true,
-       port: 16666
-     }
-   }
-   ```
-
-   > open：自动开启浏览器查看效果
-   >
-   > port：服务端口号码
-
-2. 在src/components目录中创建   Home.vue Movie.vue Music.vue  的3个业务组件，内容分别为如下：
-
-   ```html
-   <template>
-       <div>
-         首页展示
-       </div>
-   </template>
-   ```
-
-   ```html
-   <template>
-       <div>
-         电影展示
-       </div>
-   </template>
-   ```
-
-   ```html
-   <template>
-       <div>
-         音乐展示
-       </div>
-   </template>
-   ```
-
 3. 在 src/App.vue 中设置如下内容
 
-   ```html
-   <template>
-       <div id="app">
-         <h2>App根组件</h2>
-         <p>
-           <!--按钮区域-->
-           <!--
-             要给超链接按钮设置不同的"#锚点"信息，以便与相关的组件联系并显示
-             #锚点作用：
-             1. http://localhost/index.html#apple 大页面定位使用
-             2. 可以给组件显示设置对应的标志的
-             #锚点设置形式：#xxx  或  #/xxx  推荐后者
-             hm=====>home
-             mv=====>movie
-             ms=====>music
-           -->
-           <a href="#/hm">首页</a>
-           <a href="#/mv">电影</a>
-           <a href="#/ms">音乐</a>
-         </p>
-         <div id="showcom">
-           <!--业务组件展示区域-->
-           <!--通过“代表标签”实现各个业务组件显示
-             <component :is='组件名称'></component>
-             注意：is需要设置冒号 属性绑定格式
-           -->
-           <component :is=" comflag "></component>
-   
-         </div>
-       </div>
-   </template>
-   
-   <script>
-   // 业务组件需要  导入、注册、使用
-   import Home from './components/Home'
-   import Movie from './components/Movie'
-   import Music from './components/Music'
-   export default {
-     created(){
-       // 通过事件感知#锚点发生变化
-       // hash
-       // window.onhashchange = 箭头函数 ; 内部this与外部保持一致，都是"组件实例"对象
-       window.onhashchange = ()=>{
-         // console.log(123)
-         // 获得当前浏览器地址栏"#锚点"信息 哈希
-         var hh = window.location.hash
-         // console.log(hh) // #/hm
-         // 根据hh找到对应的组件并显示
-         if(hh === '#/hm'){
-           this.comflag = 'home'
-         } else if(hh === '#/mv'){
-           this.comflag = 'movie'
-         } else {
-           this.comflag = 'music'
-         }
-       }
-     },
-     data(){
-       return {
-         comflag:'movie' // 设置业务组件名称标志
-       }
-     },
-     components:{
-       'home':Home,
-       'movie':Movie,
-       'music':Music,
-     }
-   }
-   </script>
-   
-   <style lang="less" scoped>
-   #app{
-     a{margin-right:10px;}
-     #showcom{
-       width:320px;
-       height: 260px;
-       border:2px solid hotpink;
-     }
-   }
-   </style>
-   ```
-
-4. main.js文件代码
-
-   ```js
-   // import Vue from 'vue/dist/vue.common.js' // Vue实例没有render要使用该vue
-   import Vue from 'vue' // Vue实例有render要使用该vue(vue.runtime.common.js)
-   import App from './App.vue'
-   
-   Vue.config.productionTip = false
-   
-   new Vue({
-     render: h => h(App)
-   }).$mount('#app')
-   ```
 
 ```
-`说明`：
-
- 1. 在App.vue中设置component标签，代表各个业务组件要在此显示，component可以理解为是“占位符”
-
-    ```html
+1. 在App.vue中设置component标签，代表各个业务组件要在此显示，component可以理解为是“占位符”
     <component :is=" 组件名字  "></component>   // 设置显示各个子组件
 ```
 
     > is属性要接收一个具体组件名称，控制显示组件
-    >
     > is属性本身需要冒号属性绑定方式设置
 
 2. window.onhashchange事件，可以感知#锚点发生变化
@@ -2491,27 +1928,6 @@ new Vue({
    <div :id="   apple   ">  apple代表的是实例内部data成员名称
    <div :id="  'apple'  ">  apple是普通字符串
    ```
-
-
-`小结`：
-
-1. 业务组件有3个，App.vue是根基组件，它们形成父子关系
-2. 通过**#锚点**设置标志信息 (按钮和组件 的对应关系)
-3. 通过component的is属性设定哪个组件显示
-4. 通过 window.onhashchange 感知 锚点发生变化
-5. 通过 window.location.hash 获得变化后的锚点数据
-
-
-
-作业：
-
-1. 【父给子传值】给button按钮子组件不仅传递文字**颜色**信息，还要传递**文字大小**、**宽**、**高**、**背景**色等信息
-
-2. 通过spa完成**vue-cms**案例效果，4个按钮，4个组件页面
-
-   公共的头部 和 脚步按钮区域，中间是要显示的各个子级组件
-
-![1572841598765](Image/img(online)/1572841598765.png)
 
 
 
@@ -2701,7 +2117,6 @@ var vm = new Vue({
     :duration="{ enter: 500, leave: 800 }">
   	<div class="animated" v-show="isshow">动画哦</div>
 </transition>
-
 ```
 
 ### 使用动画钩子函数
@@ -2718,7 +2133,6 @@ var vm = new Vue({
       <div v-if="isshow" class="show">OK</div>
     </transition>
   </div>
-
 ```
 
 2. 定义三个 methods 钩子方法：
@@ -2759,7 +2173,6 @@ methods: {
       opacity: 0;
       transform: translateY(10px);
     }
-
     .list-enter-active,
     .list-leave-active {
       transition: all 0.3s ease;
@@ -2823,4 +2236,4 @@ methods: {
 3. [pagekit/vue-resource](https://github.com/pagekit/vue-resource)
 4. [navicat如何导入sql文件和导出sql文件](https://jingyan.baidu.com/article/a65957f4976aad24e67f9b9b.html)
 5. [贝塞尔在线生成器](http://cubic-bezier.com/#.4,-0.3,1,.33)
-6. [Vue.js devtools - 翻墙安装方式 - 推荐](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=zh-CN)
+6. [Vue.js devtools - 翻墙安装方式 - 推荐](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=zh-CN) 
