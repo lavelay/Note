@@ -968,14 +968,6 @@ components:{
 
 ​      相反，如果直接通过{}对象 给data赋值，多次使用组件会造成大家的data都是共享的，就是一份数据，一个组件修改data后，其他组件都受到影响，这与业务逻辑是相违背的
 
-`组件与Vue实例异同`：
-
-1. 组件中的 data 必须是一个 **function** 并 return 一个 字面量对象
-   (Vue 实例的 data 可以是 字面量对象，也可以是 function/return形式，前者推荐使用)
-2. 组件中直接通过 template 属性来指定组件的UI结构
-   Vue 实例中，一般通过 el 属性来指定渲染的容器，当然也可以使用template
-3. 组件和Vue实例拥有类似的成员，都有自己的生命周期函数，过滤器，methods、data等成员
-
 
 
 ### 全局组件语法
@@ -1157,16 +1149,6 @@ vue create my-project
      }
      // render: h => h(App)
    }).$mount('#app')
-   ```
-
-   
-
-2. 修改public/index.html文件，使用Vue实例的data数据
-
-   ```html
-       <div id="app">
-         {{ msg }}
-       </div>
    ```
 
    
@@ -1437,7 +1419,7 @@ import './modules/04-没有导出.js'
 
 
 
-## 单文件组件 (最最重要的)
+## 单文件组件 
 
 `什么是`：
 
@@ -1450,28 +1432,6 @@ import './modules/04-没有导出.js'
 
 
 ### 最简单使用
-
-`步骤`：
-
-1. 通过vuecli创建一个空的项目并运行
-
-2. 创建单文件组件   src/components/01-第一个单文件组件.vue文件，内容如下：
-
-   ```html
-   <template>
-     <div>
-       <p>今天是个好日子</p>
-     </div>
-   </template>
-   
-   <script>
-   </script>
-   
-   <style>
-   </style>
-   ```
-
-3. src/main.js文件 **导入**、**注册** 组件，内容如下：
 
 ```js
 import Vue from 'vue/dist/vue.common.js' // Vue实例没有render要使用该vue
@@ -1751,74 +1711,6 @@ var vm = new Vue({……})
 </script>
 ```
 
-步骤：
-
-1. 制作按钮子组件 05-Button.vue，设置一个简单按钮
-
-   ```html
-   <template>
-     <div>
-       <!--yan不用引号圈选，代表是"组件实例"的信息-->
-       <button :style="{color:yan}">我是按钮</button>
-     </div>
-   </template>
-   
-   <script>
-   export default {
-     // 接收父给传递过来的数据
-     // props:[名称，名称，……]
-     props:['yan']
-   }
-   </script>
-   
-   <style lang="less" scoped>
-   </style>
-   ```
-
-   
-
-2. 在05-Fat.vue  中  对 05-Button.vue 做 引入、注册、使用(3次)，并同时传值
-
-   ```html
-   <template>
-       <div id="fat">
-         <p>我是老子郭达</p>
-         <!--3. 使用-->
-         <com-son></com-son>
-         <!--通过"属性值"方式给当前组件传递业务需要的信息-->
-         <com-button yan="red"></com-button>
-         <com-button yan="blue"></com-button>
-         <com-button yan="green"></com-button>
-       </div>
-   </template>
-   
-   <script>
-     // 对其他组件做 导入、注册、使用
-     // 1.导入
-     import ComSon from './05-Son.vue'
-     import ComButton from './05-Button.vue'
-     export default {
-       // 2.注册
-       components:{
-         'com-son':ComSon,
-         'com-button':ComButton,
-       }
-     }
-   </script>
-   
-   <style lang="less" scoped>
-     #fat{
-       width:400px;
-       height:200px;
-       border:2px solid orange;
-     }
-   </style>
-   ```
-
-`注意`：
-
-1. 在子组件内部**必须**通过props接收传递过来的信息
-
 
 
 ### 扩展
@@ -1930,6 +1822,329 @@ new Vue({
    ```
 
 
+
+## 路由
+
+`什么是`：
+
+答：路由是一个js功能模块，用于解决做个组件切换显示问题的，本身对**组件切换**的各个底层技术有做**封装**，是更成熟组件切换解决方案，使用起来更高级、方便。
+
+路由封装的元素有：\#锚点超链接、component占位符标签、window.onhashchange、window.location.hash等等
+
+
+
+路由：通俗讲 就是#锚点 与 被显示组件 的对应关系，内部有若干执行环节
+
+![](Image/img(online)/5-8-3.png)
+
+
+
+安装路由两种方式：
+
+1. vuecli创建项目的时候
+
+2. 单独安装
+
+   > 两种方式本质完全一样
+
+
+
+执行指令单独安装：
+
+```bash
+yarn  add vue-router
+```
+
+`注意`：
+
+​	以上安装依赖包的指令需要在项目根目录(src目录并列的位置)执行
+
+
+
+> 依赖包：通过npm i  或 yarn  add 装的东西就是依赖包，每个依赖包内部有**多个**功能模块
+>
+> 模块：一个js文件内部有做"模块化导出"动作，这个js文件就是一个(功能)模块
+>
+> yarn add 依赖包     
+>
+> npm  install  依赖包
+
+
+
+#### 具体配置
+
+在src/main.js中给路由做如下配置：
+
+1. import引入 路由
+2. import引入 各个业务组件模块
+3. Vue.use(路由模块) 注册路由组件
+4. 创建路由对象，通过path、component设置#锚点 与 组件的联系
+5. 在Vue实例内部 挂载 router路由对象
+
+
+
+#### 设置切换按钮和占位符
+
+> 路由中通过router-link设置  按钮和#锚点信息
+
+占位符：
+
+```html
+<router-view></router-view>
+```
+
+> 路由中通过 router-view 设置组件显示占位符
+
+
+
+#### 执行过程分析
+
+路由执行过程：
+
+- 用户点击 页面的 路由链接router-link，点击的一瞬间，就会修改 浏览器 地址栏 中的 #号 锚点地址信息，
+- \#锚点变化了 会立即被  路由 监听到   (路由有封装onhashchange事件)
+- 之后 路由 会获取变化后的#锚点信息  (路由有封装window.location.hash)
+- 再之后 路由 根据#锚点信息找到对应 的组件 (在main.js中可知)
+- 最后组件是通过路由占位符rouer-view显示的
+
+
+
+#### 重定向
+
+`什么是`：
+
+用户第一次访问网站页面("/根目录"首页)时，地址栏里边没有“#锚点”的信息，
+也就没有对应的组件用于显示，明显项目体验不好，现在可以通过<font color=red>redirect</font>实现一种效果，即当浏览器没有任何 #锚点信息时，我们默认也给显示一个组件
+
+重定向：使得一个路由地址A与另一个路由地址B联系起来，执行A的时候会跳转执行B
+
+`语法`：
+
+```js
+var router = new VueRouter({
+  routes:[
+    // {path:'/', redirect:'跳转到的路由锚点信息'}
+    {path:'/', redirect:'/hm'},
+    {path:'/hm', component:Home},
+    ……
+  ]
+})
+```
+
+> 执行路由地址/根目录时，就跳转执行路由地址/hm，进而把对应的组件给显示出来了
+
+1. 不仅 "/" 可以被重定向配置，其他的普通路由锚点信息也可以设置
+2. 重定向会使得路由再次发生调用请求
+
+
+
+#### 按钮高亮设置
+
+> 通过观察，发现按钮被访问激活后，其对应的html标签就会存在  class="router-link-active" 的属性值
+
+​	通过观察，被激活的按钮的class属性值里边还有一个值为  router-link-exact-active  的信息，不要使用，其表达的意思是，只有路由**严格匹配**的时候才会出现这个信息，**模糊匹配**时候该信息就没有了，造成高亮失效，在后边学习子路由会有体现
+
+
+
+#### 小结：
+
+1. 安装路由yarn add vue-router
+2. main.js  配置路由5个步骤(导入、引入业务组件、注册、创建路由对象、挂载)
+3. 路由组件：
+   - router-link  设置#锚点超链接按钮
+   - router-view  设置组件显示占位符
+
+4. 重定向，  通过**redirect**设置一个路由执行时可以跳转到另一个路由去执行
+
+5. 切换按钮高亮显示， class="router-link-active" 被设置css样式即可
+
+
+
+### 子路由
+
+一般项目开发中，App.vue是根基组件(第1级别的)，内部可以有具体业务组件(Home.vue  Movie.vue  Music.vue，它们是第2级别的)，根据业务需要，业务组件内部还要做内容**分级**显示，这样就形成第3级别的业务组件，第3级别组件(香港音乐/台湾音乐/大陆音乐)的路由 是 第2级别组件路由 的**子路由**
+
+第3级别组件做应用的时候需要设置路由，并且与第2级别组件路由有形成父子关系，故称为  子路由
+
+> Music 和 children 内部都可以设置重定向，两种方式
+
+`注意`：
+
+1. 子路由设置**重定向**有两种方式：父路由中 或 子路由中
+2. 父级路由的component不能去除
+
+
+
+#### 小结
+
+1. main.js中import引入全部组件(包括子路由组件)，  给 Music二级组件通过**children**关键字路由设置子路由
+
+2. 在Music.vue中创建 子路由组件按钮  和  显示占位符
+
+3. 重定向：Music父路由 、子路由 都可以设置
+
+4. 在Music.vue中设置按钮高亮  router-link-active
+
+
+
+### 路由传参
+
+商品列表页面中，每个商品项目都有 `详情`等按钮，单击`详情`按钮查看当前商品时，就需要在url请求地址中把当前商品的id带着(例如： http://www.xxx.com/detail.html?gid=670)，以便据此查询商品的详细信息，商品id本身就是一个参数，spa项目应用中根据业务需求也要传递参数，这可以利用**路由传参**实现
+
+`接收路由参数`：
+
+```html
+<标签>{{$route.params.xxx}}</标签>
+
+<script>
+new Vue({
+	this.$route.params.xxx
+})
+</script>
+```
+
+> 模板 和 Vue实例 内部都可以接收
+
+`步骤`：
+
+1. 创建业务组件 src/components/Movie.vue，展示电影列表
+2. 创建业务组件 src/components/Detail.vue 展示电影详情，同时接收电影参数
+3. 在main.js中 给 Movie.vue 和 Detail.vue 两个组件创建路由，Detail的路由要设置**参数**
+4. App.vue中只保留router-view 和 css 样式即可
+
+
+
+1. 路由有参数，那么应用中要**传递**该参数
+2. router-link标签默认被编译为超链接a标签，可以设置**tag属性**，使其变为其他标签
+
+
+
+### 编程式导航
+
+`导航`：
+
+​	一个路由被执行的过程就是一次导航
+
+`导航种类`：
+
+1. 声明式导航：router-link可以编译生成超链接按钮，单击按钮就切换路由并显示对应的组件，这个过程称为“声明式导航(静态)”
+2. 编程式导航：有时由于业务需要，一个路由被切换执行并不方便通过**声明式导航**实现，相反是要通过**程序代码**的方式给实现出来，就是“编程式导航(动态)”
+
+`编程式导航的实现`：
+
+```js
+路由对象.push(锚点信息)   // 根据锚点执行指定的路由  最经常使用
+路由对象.back()  				// 后退
+路由对象.forward()  		// 前进
+路由对象.go(数字整数)    // 根据“整型数字”参数做路由的 前进(大于0)、刷新(等于0)、后退(小于0) 操作
+```
+
+
+
+### 守卫
+
+​	每个路由在执行的时候都会经历一些"**关卡**"，关卡可以做决定是否 继续前进 或 执行其他路由 或 停止当前路由执行 ，关卡就是守卫，守卫有着一夫当关万夫莫开的作用
+
+`为什么使用`：
+
+​	每个项目都要使用守卫，例如后台管理系统，很多组件页面要求只有处于登录状态的用户才可以访问，判断是否登录就是通过守卫做的。
+
+#### 简单使用
+
+`语法`：
+
+```js
+router.beforeEach((to, from, next) => { /* 导航守卫 处理逻辑 */ })
+```
+
+> router是 new VueRouter() 得到的 路由对象
+
+​	参数1
+
+- to:是一个对象，保存着将要访问的路由相关参数
+
+- from:是一个对象，保存着离开的那个路由的相关参数
+
+- next:是一个回调函数，对后续的执行起着 拦截 或 放行 的作用
+
+  如果没有问题请<font color=red>一定执行next()</font>方法，以进行后续操作，
+
+  next()方法也可以通过传递路由信息实现其他组件的显示
+
+  例如：next('/login')   显示登录组件
+
+  ​            next(false)  停止当前路由执行
+
+在main.js的**new VueRouter()代码之后**设置如下代码，查看执行效果
+
+`注意`：
+
+​	守卫种类有[**很多**](https://router.vuejs.org/zh/guide/advanced/navigation-guards.html)，我们要学习使用的是 “**全局前置守卫**” ，特点是所有的路由在执行之前会经过该守卫
+
+
+
+## WebStorage
+
+`cookie缺陷`：
+
+1. 大小受限，单个项目有**4k**限制
+2. 用户可以操作（禁用）cookie，使功能受限
+3. 每次请求时，cookie都会存放在请求头中，请求被拦截，cookie数据会存在安全隐患
+
+`WebStorage特点`：
+
+1. 存储空间更大，单个项目 Chrome，Firefox和Opera 数据大小可以达到 **5MB**， IE是10M 
+2. 只能存储**字符串**类型
+3. 不能被爬虫抓取到，更安全 
+
+
+
+WebStorage的使用具体分为两种：localStorage 和 sessionStorage
+
+- localStorage（持久存储），关闭浏览器之后localStorage中的数据也不会消失。除非主动删除数据，否则数据永远存在
+- sessionStorage（会话存储），临时存储，数据只在当前会话下是有效的，只要这个 浏览器/标签窗口 没有关闭，即使刷新页面或者进入同源另一个页面，数据依然存在，关闭了 浏览器/标签窗口 后数据就被被销毁
+
+`应用场景`：
+
+localStorage：用于长期登录（+判断用户是否已登录），适合长期保存在本地的数据。
+
+sessionStorage：敏感账号一次性登录
+
+
+
+## 强制登录
+
+`如何保持用户登录状态`：
+
+​	实际项目中：用户输入用户名、密码后，该账号信息需要给到服务器端做校验，校验成功  后台系统会给客户端浏览器传递一个**秘钥**信息  <font color=red>token</font>  [学员胸牌]，表明当前账号已经登录系统，请客户端浏览器把token保存起来，后期每次向服务器端发起请求的时候，都要把这个token带着，以便服务器端识别当前账号ok的，因此浏览器中有token就是**登录**状态，没有就是**退出**状态
+
+![1572678736831](Image/img(online)/1572678736831.png)
+
+`步骤`：
+
+1. 在 src/components 目录下创建业务组件： Login.vue(登录)   Home.vue(后台首页)
+2. 在main.js中 引入 相关组件 并  配置路由 ，同时设置路由守卫，使得非登录用户要访问后台页面，就强制登录去
+3. 在Login.vue组件中实现管理员登录系统
+
+   1. 创建form表单，双向数据绑定username/password
+   2. 制作"登录"按钮,methods方法实现登录页面跳转逻辑
+4. 账号校验成功通过sessionStorage存储token(暂时杜撰一个即可)信息
+5. Home.vue设置简单后台显示内容
+6. App.vue中只设置router-view占位符 和 css样式即可
+
+
+
+作业：
+
+1. 利用路由  实现标签切换显示组件(商城、购物车、**登录**)  必须  --重定向
+
+2. 子路由(商城：**手机**、电脑、服饰)  必须  ---重定向
+
+3. 编程式导航+守卫+localStorage  实现强制登录，
+
+   即访问  手机、电脑、服饰 路由时要求用户处于登录状态，否则强制登录
+
+    
 
 ## [vue-resource 实现 get, post, jsonp请求](https://github.com/pagekit/vue-resource)
 
@@ -2227,9 +2442,593 @@ methods: {
 }
 ```
 
+### webpack配置
 
+[官网参考](https://cli.vuejs.org/zh/config/#lintonsave)
+
+在项目根目录新建`vue.config.js`文件，内容设置结构为如下：
+
+> vue-cli脚手架创建项目主结构文件，webpack配置文件名字就是vue.config.js，与默认的名字(webpack.config.js)不一样
+
+```javascript
+module.exports = {
+  具体配置信息
+}
+```
+
+> 在根目录通过终端执行如下指令，可以看到webpack的大概配置信息，可以根据需要灵活配置
+>
+> vue inspect > output.js				// 查看全部webpack配置信息
+
+webpack和webpack-dev-server在脚手架创建的项目里边已经被**封装**了，具体可以通过如下路径名找到
+
+[node_modules\@vue\cli-service\lib\commands\serve.js]()
+
+
+
+### 浏览器相关参数
+
+在vue.config.js中直接配置，例如
+
+```javascript
+module.exports = {
+  lintOnSave: false,					// 在保存代码的时候开启eslint代码检查机制
+  devServer: {							// 实时保存、编译的配置段
+    open:true,							// 自动开启浏览器
+    port: 12306							// 服务运行端口
+  }
+}
+```
+
+
+
+# Plugin插件
+
+应用中会看到这样的语句：  Vue.use(xxx) ，专业称谓是“Plugin插件”
+
+意思是：
+
+​	Vue引入一个功能模块 (例如ElementUI 或 Vuex)，这个模块打比方有10个组件，现在全部都要注册给Vue，传统方式要执行10次  Vue.component()  这样的语句，工作繁琐、效率低下，现在执行一次  Vue.use() 就可以搞定
+
+
+
+定义插件语法：
+
+```js
+export default = {
+  install(vm,options){
+    // 1. 添加全局方法或属性
+    vm.xxx = function () {}
+    vm.xxx = yyy
+
+    // 2. 添加指令
+    vm.directive('my-directive', {
+      inserted (el) {}
+    })
+
+    // 3. 过滤器
+    vm.filter(xxx,function(){})
+
+    // 4. 添加实例方法
+    vm.prototype.$myMethod = yyy
+
+    // 5. 添加组件
+    vm.component(xxx,yyy)
+  }
+}
+```
+
+> 插件需要对外提供install方法
+>
+> vm：固定参数(不需要传递)，代表 “Vue实例” 对象，名称可以自定义
+>
+> options：给插件传递的参数，根据需要使用，例如 Vue.use(插件名称，参数)
+>
+> plugin插件  可以注册的内容很多，具体有：
+>
+> methods方法、data成员、directive指令、过滤器、组件、实例方法Vue.prototype等等
+
+
+
+目标1:
+
+通过插件一次性完成两个组件的注册
+
+```js
+// src/utils/many.js
+import one from '@/components/one'
+import two from '@/components/one'
+
+export default {
+  install(vm){
+    vm.component('com-one',one)
+    vm.component('com-two',two)
+  }
+}
+```
+
+引入注册：
+
+```js
+// src/main.js
+import many from '@/utils/many'
+Vue.use(many)
+```
+
+使用
+
+```html
+<!--src/App.vue-->
+<com-one></com-one>
+<com-two></com-two>
+```
+
+
+
+目标2:
+
+通过插件  把axios注册成为Vue实例的成员
+
+```js
+// src/utils/axios.js
+import axios from 'axios'
+
+export default {
+  install(Vue){
+    Vue.prototype.$http = axios
+  }
+}
+
+```
+
+引入注册：
+
+```js
+// src/main.js
+import axios from '@/utils/axios'
+Vue.use(axios)
+```
+
+使用
+
+```js
+this.$http.get(xxx)
+```
+
+
+
+# watch监听器
+
+watch监听：
+
+vue的data数据部分可以被监听，数据一旦发生变化马上可以感知到，并做相关处理
+
+
+
+watch 监听的特点：监听到某个数据的变化后，侧重于**做某件事情**；
+
+只要被监听的数据发生了变化，会自动触发 watch 中指定的处理函数；
+
+
+
+语法：
+
+```js
+data(){
+  return {
+    name:'',
+    addr:'',
+    cat:{
+      leg:'',
+      tail:''
+    }
+  }  
+}
+```
+
+ 
+
+```js
+watch:{
+	data成员名称: 函数(变化后的值，变化前的值){}
+  name:function(newval,oldval){},
+  addr:function(newval,oldval){},
+  'cat.leg':function(newval,oldval){},
+  'cat.tail':function(){}
+}
+```
+
+> 简单字符串成员可以监听，例如name、addr，复杂的对象，但是需要通过**点**连接被监听的成员(例如cat.leg和cat.tail)，并且要通过**引号**圈选
+
+
+
+案例：
+
+添加用户的  密码 的长度检测
+
+密码长度小于8个字符为<span style="color:green">绿色</span>；大于等于8个字符字体为<span style="color:red;">红色</span>；
+
+1. 给密码输入框组件设置ref属性
+
+   这样通过**this.$refs.xxx**的方式可以找到
+
+   ![1562141151880](Image\img(online)/1562141151880.png)
+
+2. 设置监听器
+
+   ![1562141203682](Image\img(online)/1562141203682.png)
+
+   > getInput() 作用：使得组件找到内部的input对应的dom节点，进而控制css样式
+
+
+
+# ESLint 代码规范检查
+
+ESLint最初是由Nicholas C. Zakas 于2013年6月创建的开源项目。
+
+它的目标是提供一个插件化的[javascript代码检测工具]()。
+
+[官网参考<https://cn.eslint.org/>](https://cn.eslint.org/)
+
+## ESLint规范要求
+
+- 声明变量但是**未使用**会报错
+- 简单语句结尾不能有**分号**
+- 给变量赋值 **等号** 左右要求有空格
+- 在行结尾处，**多余**的空格不允许
+- 字符串必须使用**单引号**圈选，不能是双引号
+- 对象 成员名称**冒号** 与 值 之间需要有一个空格
+- 方法名称小括号 的**左右**需要保留一个空格
+- 在每一个文件的结尾处，必须有一个空行
+- 文件中如果出现空白行，要求只能有一行空白，不能连续出现两行或以上的空白行
+- ……
+
+
+
+## ESLint配置
+
+在当前环境中，eslint针对js、vue等文件都会做代码规范检查工作
+
+
+
+### 开启eslint检查
+
+配置[vue.config.js]()文件，修改如下：
+
+```js
+module.exports = {
+  lintOnSave: true		// 开启eslint代码规范检测机制
+}
+```
+
+
+
+### 详细配置
+
+.eslintrc.js文件是eslint的配置文件，可以对各个规则进行相关配置
+
+例如：
+
+```
+// 配置空白行最多为3个，多了就报错
+'no-multiple-empty-lines':['error',{"max": 3}],
+```
+
+```
+// 禁用分号规则
+"semi": ["off", "always"],
+```
+
+```
+// 方法小括号前边不做"空格"显示
+"space-before-function-paren": ["off", "always"],
+```
+
+> error：做规范限制，会报错
+>
+> warning: 做规范限制，会警告
+>
+> off：禁用规范限制
+
+
+
+## vscode安装扩展
+
+### ESLint利器
+
+给vscode安装一个名称为ESLint的扩展包，使得vue文件代码可以被自动标准化，但又不用做烦琐的修复工作
+
+1. 给vscode编辑器安装扩展：**VS Code ESLint extension**
+
+2. 安装全局的eslint依赖包
+
+   ```
+   npm install -g eslint
+   ```
+
+   > 该依赖包安装完毕是对1步骤扩展做支撑的
+
+3. 打开vscode配置文件 settings.json  (by File-> Preferences->Settings)
+
+   在最末尾如下内容
+
+   ```javascript
+   "eslint.enable": true,
+   "eslint.autoFixOnSave": true,
+   "eslint.run": "onType",
+   "eslint.options": {
+       "extensions": [".js",".vue"]
+   },
+   "eslint.validate": [
+       { "language": "html", "autoFix": true },
+       { "language": "javascript", "autoFix": true },
+       { "language": "vue", "autoFix": true }
+   ]
+   ```
+
+4. 现在重启vscode编辑器
+
+   之后把项目服务开启 npm run serve
+
+   Ctrl+s： 保存编辑的文件后，会对**vue文件**做自动代码格式化操作，并且是遵守eslint规范的
+
+   
+
+## 小结
+
+- eslint对代码规范做要求，错误的规范并不是js语法的错误
+
+- eslint的规范要求很多，可能会有不适感
+
+- 可以给vscode编辑器安装  **eslint**   扩展
+
+  这样  <font color=red>Ctrl+s</font>  会自动对vue文件做自动代码格式化操作
+
+  ​		如果不理想，可以结合vscode编辑器本身的  <font color=red>Shift+Alt+f</font> 先预格式化处理一下
+
+  ​		经过以上步骤90%以上代码都是符合eslint规范要求，非常方便、智能
+
+
+
+# Element-UI
+
+## 介绍
+
+Element-UI 是 饿了么 前端团队，开源出来的一套 Vue 组件库(针对pc电脑浏览器端)，内部集成了许多项目中可以使用的成熟`组件component`，既增强了用户体验、又加快的开发速度。
+
+[官网地址](http://element-cn.eleme.io/#/zh-CN)
+
+
+
+基于Vue开发的常用组件库(了解)
+
+Vuetify
+Vue Material
+Keen UI
+Buefy
+Bootstrap-Vue
+AT-UI
+Fish-UI
+Quasar
+Muse UI
+Vux
+
+
+
+## 安装
+
+Element-UI本身是一个功能模块，使用之前需要像其他模块一样进行安装
+
+
+
+执行指令
+
+```bash
+yarn add element-ui
+```
+
+
+
+## 使用
+
+### 完整引入
+
+1. 引入、注册element-ui组件库
+
+   在 index.js 入口文件中，导入 element-ui 的包、配套样式表、并且安装给Vue上：
+
+   ```js
+   import ElementUI from 'element-ui'		// 导入 element-ui 这个包
+   
+   import 'element-ui/lib/theme-chalk/index.css'	// 导入 配套的样式表
+   
+   Vue.use(ElementUI)		// 把 element-ui 安装到 Vue 上
+   ```
+
+- Vue.use()  作用
+
+  一次性注册"全部"的component"组件"和"方法"，省时省力
+  Vue.component()“逐个”注册组件，过于繁琐
+
+
+
+2. 对组件库的按钮组件进行
+
+   在应用组件(例如App.vue)中设置如下内容
+
+   ```html
+   <el-row>
+     <el-button>默认按钮</el-button>
+     <el-button type="primary">主要按钮</el-button>
+     <el-button type="success">成功按钮</el-button>
+     <el-button type="info">信息按钮</el-button>
+     <el-button type="warning">警告按钮</el-button>
+     <el-button type="danger" @click="del">危险按钮</el-button>
+   </el-row>
+   ```
+
+
+
+3. 对组件库的确认框组件进行应用
+
+   在应用组件(例如App.vue)中设置如下内容
+
+   ```html
+   <el-button type="danger" @click="del">危险按钮</el-button>
+   ```
+
+   ```html
+   <script>
+   export default {
+     methods: {
+       del() {
+         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+           confirmButtonText: '确定',
+           cancelButtonText: '取消',
+           type: 'warning'
+         })
+           .then(() => {
+             this.$message({
+               type: 'success',
+               message: '删除成功!'
+             })
+           })
+           .catch(() => {
+             this.$message({
+               type: 'info',
+               message: '已取消删除'
+             })
+           })
+       }
+     }
+   }
+   </script>
+   ```
+
+   
+
+### 按需引入
+
+Element-UI本身有非常多的`组件`、`css样式`、`方法`，在一个项目中有可能不会用到全部，如果一次性全部引入，额外不用的部分会耗费很多系统资源，进而影响项目的性能。
+
+> Element-UI的引入包括 `css样式` 、 `组件` 和 `组件方法` 三部分，后续会看到
+
+解决：设置<font color=red>按需引入</font>，用多少，就引多少，避免浪费资源
+
+
+
+按需引入准备工作
+
+1. 运行命令  安装支持按需导入的plugin模块
+
+   ```javascript
+   yarn add babel-plugin-component -D
+   ```
+
+   
+
+2. 打开 babel.config.js配置文件，修改如下
+
+   ```javascript
+   {
+     "presets": ["@babel/preset-env"],
+     "plugins": [
+       "@babel/plugin-proposal-class-properties",
+       [
+         "component",
+         {
+           "libraryName": "element-ui",
+           "styleLibraryName": "theme-chalk"
+         }
+       ]
+     ]
+   }
+   ```
+
+   > 额外添加的是component及后续部分  作用是给组件库的css样式内容做按需引入
+
+以上步骤配置完毕，组件库css样式内容就按需引入了
+
+
+
+#### 按需引入css样式
+
+在index.js主入口文件应用处，把css样式文件引入给**注释掉**，做按需引入
+
+```javascript
+// 2) 引入css样式支持
+// import 'element-ui/lib/theme-chalk/index.css';
+```
+
+> 重启webpack，查看比较打包文件大小，可以对比出`按需引入`的使用效果
+
+
+
+![1561621759637](Image\img(online)/1561621759637.png)
+
+> 现在因为做了css样式的按需引入，打包文件已经变味1.5M了，较比之前优化很多
+
+#### 按需引入组件和事件方法
+
+在src/index.js入口文件处做组件库 **组件** 和 **方法** 的按需引入配置：
+
+```javascript
+// Vue.use(ElementUI);			// 注释掉 完整引入
+
+// B. 按需引入 组件和事件方法
+import {Row, Button, MessageBox, Message} from 'element-ui'  // es6模块化导入
+// 利用use()方法实现单个"组件"的注册
+Vue.use(Row)
+Vue.use(Button)
+// 实现"事件方法"注册
+Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$message = Message;
+```
+
+> 完整引入注释掉
+>
+> 按需引入的有两部分内容：组件 和 方法
+
+
+
+重启webpack，查看比较打包文件大小，可以对比出`按需引入`的使用效果
+
+![1561622057126](Image\img(online)/1561622057126.png)
+
+> 现在由于 **组件**和**事件方法** 的按需引入使得打包文件进一步减小，变为972K了
+
+element-ui可以做按需引入注册的全部 组件和方法 [请参考](http://element-cn.eleme.io/#/zh-CN/component/quickstart) 这里
+
+前期开发综合考虑，请只给**css样式**做按需引入即可,项目开发完毕后再一次性给 **组件** 和 **方法** 做按需引入配置
+
+
+
+## 小结
+
+1. element-ui本身就是一套组件库，里边提供了各种样式的组件，可以满足大部分业务场景的需要
+
+2. element-ui引入的时候考虑到资源的消耗情况可以分为：完整、按需两种方式
+
+3. 按需引入又分为   ：  css样式        组件/事件方法  两种
+
+   项目开发前期考虑到开发便捷性，只做 css样式按需 引入即可，项目开发完毕再做事件和方法的按需引入
+
+4. element-ui本身分为3部分：`组件`、`css样式`、`事件方法`
 
 ## 相关文章
+
+2. [npm](https://www.npmjs.com/)
+3. [饿了么组件库](http://element-cn.eleme.io/#/zh-CN)
+4. [webpack打包](https://webpack.docschina.org/)
+5. [babel下一代javascript编译器](https://babel.docschina.org/)
+6. [bootcdn免费提供静态内容支持](https://www.bootcdn.cn/)
+7. [鸟哥帮助官网](http://www.runoob.com)
+8. [JavaScript 指南](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide)
+9. [印记中文(深入挖掘国外前端新领域，为中国 Web 前端开发人员提供优质文档！)](https://docschina.org/)
+10. [Vue.js双向绑定的实现原理](http://www.cnblogs.com/kidney/p/6052935.html)
+11. [Vue开源项目汇总](https://github.com/opendigg/awesome-github-vue)
+12. [Vuejs中文社区](https://www.vue-js.com)
+13. [JavaScript Standard Style代码规范](https://standardjs.com/)
 
 1. [js 里面的键盘事件对应的键码](http://www.cnblogs.com/wuhua1/p/6686237.html)
 2. [Vue.js双向绑定的实现原理](http://www.cnblogs.com/kidney/p/6052935.html)

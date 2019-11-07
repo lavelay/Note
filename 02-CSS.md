@@ -52,9 +52,16 @@ transform会自动开启硬件加速，规避回流和重绘（性能相对较�
 
 BFC是一种渲染机制，触发一个元素的BFC，相当于在这个元素里面建立起一堵墙，墙里面的内容和外面的内容互不干扰
 
-zoom：1用来触发  haslayout （IE浏览器中的BFC）
+zoom：1用来触发 haslayout （IE浏览器中的BFC）
 
 zoom是缩放的意思
+
+**触发元素的BFC：**
+
+1. float属性不为none
+2. position为absolute或fixed
+3. display为inline-block，table-cell，table-caption，flex，inline-flex
+4. overflow不为visible
 
 
 
