@@ -1946,20 +1946,6 @@ var router = new VueRouter({
 
 
 
-#### 小结：
-
-1. 安装路由yarn add vue-router
-2. main.js  配置路由5个步骤(导入、引入业务组件、注册、创建路由对象、挂载)
-3. 路由组件：
-   - router-link  设置#锚点超链接按钮
-   - router-view  设置组件显示占位符
-
-4. 重定向，  通过**redirect**设置一个路由执行时可以跳转到另一个路由去执行
-
-5. 切换按钮高亮显示， class="router-link-active" 被设置css样式即可
-
-
-
 ### 子路由
 
 一般项目开发中，App.vue是根基组件(第1级别的)，内部可以有具体业务组件(Home.vue  Movie.vue  Music.vue，它们是第2级别的)，根据业务需要，业务组件内部还要做内容**分级**显示，这样就形成第3级别的业务组件，第3级别组件(香港音乐/台湾音乐/大陆音乐)的路由 是 第2级别组件路由 的**子路由**
@@ -1972,18 +1958,6 @@ var router = new VueRouter({
 
 1. 子路由设置**重定向**有两种方式：父路由中 或 子路由中
 2. 父级路由的component不能去除
-
-
-
-#### 小结
-
-1. main.js中import引入全部组件(包括子路由组件)，  给 Music二级组件通过**children**关键字路由设置子路由
-
-2. 在Music.vue中创建 子路由组件按钮  和  显示占位符
-
-3. 重定向：Music父路由 、子路由 都可以设置
-
-4. 在Music.vue中设置按钮高亮  router-link-active
 
 
 
@@ -2004,15 +1978,6 @@ new Vue({
 ```
 
 > 模板 和 Vue实例 内部都可以接收
-
-`步骤`：
-
-1. 创建业务组件 src/components/Movie.vue，展示电影列表
-2. 创建业务组件 src/components/Detail.vue 展示电影详情，同时接收电影参数
-3. 在main.js中 给 Movie.vue 和 Detail.vue 两个组件创建路由，Detail的路由要设置**参数**
-4. App.vue中只保留router-view 和 css 样式即可
-
-
 
 1. 路由有参数，那么应用中要**传递**该参数
 2. router-link标签默认被编译为超链接a标签，可以设置**tag属性**，使其变为其他标签
@@ -2079,7 +2044,7 @@ router.beforeEach((to, from, next) => { /* 导航守卫 处理逻辑 */ })
 
 `注意`：
 
-​	守卫种类有[**很多**](https://router.vuejs.org/zh/guide/advanced/navigation-guards.html)，我们要学习使用的是 “**全局前置守卫**” ，特点是所有的路由在执行之前会经过该守卫
+ “**全局前置守卫**” ，特点是所有的路由在执行之前会经过该守卫
 
 
 
@@ -2112,39 +2077,506 @@ sessionStorage：敏感账号一次性登录
 
 
 
-## 强制登录
+# ESLint
 
-`如何保持用户登录状态`：
+- 声明变量但是**未使用**会报错
+- 简单语句结尾不能有**分号**
+- 给变量赋值 **等号** 左右要求有空格
+- 在行结尾处，**多余**的空格不允许
+- 字符串必须使用**单引号**圈选，不能是双引号
+- 对象 成员名称**冒号** 与 值 之间需要有一个空格
+- 方法名称小括号 的**左右**需要保留一个空格
+- 在每一个文件的结尾处，必须有一个空行
+- 文件中如果出现空白行，要求只能有一行空白，不能连续出现两行或以上的空白行
 
-​	实际项目中：用户输入用户名、密码后，该账号信息需要给到服务器端做校验，校验成功  后台系统会给客户端浏览器传递一个**秘钥**信息  <font color=red>token</font>  [学员胸牌]，表明当前账号已经登录系统，请客户端浏览器把token保存起来，后期每次向服务器端发起请求的时候，都要把这个token带着，以便服务器端识别当前账号ok的，因此浏览器中有token就是**登录**状态，没有就是**退出**状态
+2. eslint只是针对 **js文件** 和 **vue文件的js部分** 做规范检查
 
-![1572678736831](Image/img(online)/1572678736831.png)
+
+
+## 自定义规则配置
+
+根据自己的想法给eslint配置规范，修改配置文件.eslintrc.js，给其中的rules段做配置即可
+
+```js
+// 匹配规则:[开启规则参数，要求/禁用参数]
+'semi':['error','always'],  // 简单语句后边要求设置分号，不设置会报错
+'semi':['error','never'],  // 简单语句后边不要设置分号，设置会报错
+'semi':['off','always'],  // 关闭规则检测
+'semi':['off','never'],  // 关闭规则检测
+  
+'space-before-function-paren': ['error', 'never'],  // 禁止在function小括号左边设置空格，否则报错
+'space-before-function-paren': ['error', 'always'], // 要求在function小括号左边设置空格，否则报错
+'space-before-function-paren': ['off', 'always'], // 关闭规则
+'space-before-function-paren': ['off', 'never'], // 关闭规则
+  
+'no-multiple-empty-lines': ['error', { 'max': 3 }], // 文件中间允许出现3个或以内的空白行
+'no-multiple-empty-lines': ['off', { 'max': 3 }], // 关闭规则
+```
+
+> 开启规则参数：
+>
+> ​	error：将规则视为一个错误
+>
+> ​	off：关闭规则
+>
+> 要求/禁用参数：
+>
+> ​	always：要求规则
+>
+> ​	never：禁止规则
+
+
+
+## 代码自动规范
+
+2. 全局方式安装eslint依赖包
+
+   ```
+   npm install -g eslint
+   ```
+
+   > 该依赖包安装完毕是对1步骤扩展做支撑的
+   >
+   > 注意：通过npm方式安装
+
+3. 打开vscode配置文件 settings.json  (by File-> Preferences->Settings)
+
+   在最末尾如下内容
+
+   ```javascript
+   "eslint.enable": true,
+   "eslint.autoFixOnSave": true,
+   "eslint.run": "onType",
+   "eslint.options": {
+       "extensions": [".js",".vue"]
+   },
+   "eslint.validate": [
+       { "language": "html", "autoFix": true },
+       { "language": "javascript", "autoFix": true },
+       { "language": "vue", "autoFix": true }
+   ]
+   ```
+
+4. 现在重启vscode编辑器
+
+   > 现在：
+   >
+   > Ctrl+s： 保存编辑的文件后，会对**vue文件**或**js文件** 做**js自动代码规范**操作，并且是遵守eslint规范的，有时vue文件内容html代码部分不规范，可以通过**Shift+Alt+f**键格式化，之后再**Ctrl+s**一下
+
+
+
+# ElementUI
+
+`ElementUI官网`：
+
+ https://element.eleme.cn/#/zh-CN 
+
+## 安装
+
+```
+yarn add element-ui
+```
+
+1. 在main.js文件中引入elementui模块和注册
+
+   ```js
+   // eslint要求import系列代码都要在普通代码上边设置
+   // 引入elementui组件库
+   import ElementUI from 'element-ui'
+   // 引入css样式
+   import 'element-ui/lib/theme-chalk/index.css'
+   // 把组件库注册给Vue
+   // 之前组件注册：Vue.component(名称,组件) 每次只能注册一个
+   // 现在组件注册: Vue.use(组件模块) 一次性注册"全部"的组件，非常高效
+   Vue.use(ElementUI)
+   ```
+
+   element组件库提供内容由两种：组件、事件方法
+
+
+`注意`：
+
+1. 我们要在src目录下编辑项目代码，这是项目的源代码，完毕后还要做**打包**上线处理
+2. src目录下的代码不能部署，相反是打包后的代码文件可以部署
+
+
+
+## 完整引入使用
+
+`什么是完整引入`：
+
+​	在项目入口文件main.js中一次性把ElementUI组件库全部的**组件**和**方法**做引入部署
+
+```js
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+Vue.use(ElementUI);
+```
+
+
+
+## 按需引入使用
+
+`什么是`：
+
+​	Element-UI本身有非常多的`组件`、`css样式`、`方法`，在一个项目中有可能不会用到全部，如果全部引入，不用的元素会造成额外资源开销，进而影响项目性能。采取的措施就是用多少就引多少，即按需引入
 
 `步骤`：
 
-1. 在 src/components 目录下创建业务组件： Login.vue(登录)   Home.vue(后台首页)
-2. 在main.js中 引入 相关组件 并  配置路由 ，同时设置路由守卫，使得非登录用户要访问后台页面，就强制登录去
-3. 在Login.vue组件中实现管理员登录系统
+1. 安装依赖包
 
-   1. 创建form表单，双向数据绑定username/password
-   2. 制作"登录"按钮,methods方法实现登录页面跳转逻辑
-4. 账号校验成功通过sessionStorage存储token(暂时杜撰一个即可)信息
-5. Home.vue设置简单后台显示内容
-6. App.vue中只设置router-view占位符 和 css样式即可
+   ```
+   yarn add babel-plugin-component -D
+   ```
+
+2. 在babel.config.js文件中做如下配置
+
+   ```js
+   module.exports = {
+     plugins: [
+       [
+         'component',
+         {
+           'libraryName': 'element-ui',
+           'styleLibraryName': 'theme-chalk'
+         }
+       ]
+     ]
+   }
+   ```
+
+以上两个步骤完成后，**css样式** 已经可以实现**按需引入**了(main.js中关于elementui的css样式引入已经不起作用了，鉴于代码美观可以删除 或 屏蔽   // import 'element-ui/lib/theme-chalk/index.css')
 
 
 
-作业：
+3. 在main.js文件中给 **组件** 和 **事件方法** 做按需引入
 
-1. 利用路由  实现标签切换显示组件(商城、购物车、**登录**)  必须  --重定向
+   ```js
+   // 2) 按需引入
+   import { Row, Button, MessageBox, Message } from 'element-ui'
+   // 按需注册组件
+   Vue.use(Row)
+   Vue.use(Button)
+   // 按需注册事件方法(原型继承)
+   Vue.prototype.$confirm = MessageBox.confirm
+   Vue.prototype.$message = Message
+   ```
 
-2. 子路由(商城：**手机**、电脑、服饰)  必须  ---重定向
+   > 以上配置完毕，请重启服务 npm run serve
 
-3. 编程式导航+守卫+localStorage  实现强制登录，
 
-   即访问  手机、电脑、服饰 路由时要求用户处于登录状态，否则强制登录
 
-    
+可以借鉴按需导入的全部组件和事件方法： https://element.eleme.cn/#/zh-CN/component/quickstart 
+
+
+
+2. 按需引入根据内容可以分为：css样式、组件、事件方法 3种
+3. 为了方便开发，前期只做**css样式**按需引入，待项目开发完毕后，再给**组件**和**事件方法** 做统计按需引入
+
+
+
+# 插槽
+
+`什么是`：
+
+​	根据业务需要，父组件可以给子组件传值，但一般传递的都是比较少量的信息(例如单个的String/Number/Boolean/Object/Array等)，如果要传递的数据非常多，例如**一大段html标签**内容，则不合适，这时可以通过   **插槽**  实现	
+
+​	父子组件嵌套情形，子组件给自己**个性化区域**设置一个占位符，父组件给占位符填充内容，占位符就是 **插槽**
+
+
+
+## 简单应用(匿名)
+
+匿名插槽定义语法：
+
+```html
+<slot></slot>
+```
+
+> 在一个子组件中，允许出现多个匿名插槽，它们都会接收相同内容，但一般没有实际意义
+
+给插槽传递数据：
+
+```html
+<子组件标签> 被填充到插槽的内容 </子组件标签>
+```
+
+`步骤`：
+
+1. 在components目录里边创建组件Button.vue，内容如下，其中有slot插槽体现
+
+   ```html
+   <template>
+       <div>
+         <button>
+           <!--设置插槽(占位符),父组件对该插槽进行内容填充，进而显示不同的按钮文字-->
+           <slot></slot>
+         </button>
+       </div>
+   </template>
+   ```
+
+2. 在App.vue实现如下代码，给子组件标签**内容区域**设置信息，其会被传递给插槽
+
+   ```html
+   <template>
+       <div>
+         <h2>App根组件</h2>
+         <!--使用子组件-->
+         <my-button><a href="#">确定</a></my-button>
+         <my-button><i>取消</i></my-button>
+         <my-button>重置</my-button>
+       </div>
+   </template>
+   
+   <script>
+   // 引入Button.vue组件
+   import Button from '@/components/Button.vue'
+   export default {
+     // 注册Button组件
+     components: { 'my-button': Button }
+   }
+   </script>
+   ```
+
+
+
+`注意`：
+
+1.  vue文件编译运行后**slot标签**会被父组件传递的信息覆盖掉，即使没有接受到信息本身也不在浏览器体现
+2.  一个组件根据需要可以声明多个匿名slot，每个slot会分别**独立接收**到相同的内容，匿名插槽在一个组件中通常只会出现**一个**
+3.  父组件给插槽传递的信息可以是     **html标签** 或 **字符串** 或 **组件** 等内容，并且数量没有限制
+4.  子组件标签**内容区域信息**必须与slot联系，如果子组件内部没有slot，那么这个信息会丢失
+
+
+
+## 命名插槽
+
+子组件根据需要，内部可能有多个**个性化区域**，这样就需要定义多个slot，为了加以区分，可以给slot定义名字，即  **命名插槽**
+
+
+
+`命名插槽语法`：
+
+```html
+<slot name="s1"></slot>
+<slot name="s2"></slot>
+<slot name="s3"></slot>
+```
+
+> 通过name属性给插槽定义名字
+
+父组件根据名字给插槽填充内容
+
+```html
+<子组件>
+  <div slot="s1">填充给name="s1"的插槽中</div>
+  <div slot="s2">填充给name="s2"的插槽中</div>
+  <p>填充给匿名插槽</p>
+  <div slot="s3">填充给name="s3"的插槽中</div>
+  <p>填充给匿名插槽</p>
+<子组件>
+```
+
+
+
+## 命名插槽应用
+
+`步骤`：
+
+1. 创建Page.vue组件并声明slot命名插槽
+
+   ```vue
+   <template>
+       <div>
+         <ul>
+           <li><slot name="one"></slot></li>
+           <li>1</li>
+           <li>2</li>
+           <li>3</li>
+           <li><slot name="two"></slot></li>
+         </ul>
+       </div>
+   </template>
+   ```
+
+2. App.vue  导入、注册、使用 Page.vue并传递信息
+
+   ```vue
+   <template>
+       <div>
+         <h2>App根组件</h2>
+         <!--使用子组件-->
+      		<my-button><a href="#">确定</a></my-button>
+         <my-button><i>取消</i></my-button>
+         <my-button>重置</my-button>
+         <page>
+           <a href="#" slot="one">上一页</a>
+           <a href="#" slot="two">下一页</a>
+         </page>
+       </div>
+   </template>
+   
+   <script>
+   // 引入Button.vue组件
+   import Button from '@/views/Button.vue'
+   import Page from '@/views/Page.vue'
+   export default {
+     // 注册Button组件
+     components: { 
+       'my-button': Button,
+       Page
+     }
+   }
+   </script>
+   ```
+
+
+
+`注意`：
+
+1. 命名插槽  和 匿名插槽 可以**同时**存在，它们会分别接受自己的信息
+2. 给 命名插槽 填充信息必须要通过  "**html标签**" 圈选，以便设置slot=xx的属性
+3. 针对同一个命名插槽，可以接收**多个**不同的内容
+
+
+
+## 作用域插槽(难点)
+
+`什么是`：
+
+​	插槽应用中，父组件给插槽填充的内容通常有两部分：**html标签**、**数据**部分
+
+​	实际情况是：父组件只传递html标签，数据信息要通过slot自己传递，
+
+​	父组件关注外在表现，子组件插槽关注核心数据
+
+​	子组件给插槽定义要使用的数据，这个数据只是自己应用区域可见 故称为   **作用域插槽**
+
+
+
+`语法`：
+
+1. 插槽给自己声明数据：
+
+   ```html
+   <slot xx=xx yy=yy zz=zz></slot>
+   ```
+
+   > 通过"属性值"方式定义数据
+
+   
+
+2. 父组件应用插槽数据
+
+   ```html
+   <子组件>
+     <html标签 slot-scope="名称">
+       {{ 名称.xx }}
+       {{ 名称.yy }}
+       {{ 名称.zz }}
+     </html标签>
+   </子组件>
+   ```
+
+   
+
+`插槽数据声明注意`：
+
+1. 通过  **属性值**  方式声明数据，数量不限制，名称不能是name(其为命名插槽固定属性)
+2. 匿名、命名插槽 都可以声明数据，实现 作用域插槽 效果
+3. 插槽数据来源可以是 **直接声明** 的，也可以进行 **属性绑定** 获取本身组件实例的信息
+4. 声明数据的类型不限制(例如String、Number、Boolean、Object、Array 都可以)
+
+
+
+`插槽数据使用注意`：
+
+1. 在html标签中声明属性值  **slot-scope=名称**   接收插槽声明的数据，**名称**是一个对象，成员就是插槽的属性名
+2. 接收的信息如果是数组，可以通过v-for遍历
+3. slot-scope  与 v-for  不能出现在同一个html标签中，确有需要，可以让它们出现在父子标签里边
+
+
+
+## 作用域插槽案例
+
+`步骤`：
+
+1. 创建名称为Page2.vue的组件，给两个slot声明要使用的数据
+
+   ```html
+   <template>
+       <div>
+         <!--分页组件-->
+         <ul>
+           <!--两个命名插槽-->
+           <!--作用域插槽：声明自己要使用的数据-->
+           <!--  通过"属性值"方式设置即可 -->
+           <slot name="shang" prev="上页"></slot>
+           <li>1</li>
+           <li>2</li>
+           <li>3</li>
+           <slot name="xia" next="下页"></slot>
+         </ul>
+       </div>
+   </template>
+   ```
+
+   
+
+2. App.vue 导入、注册、使用  PageOne.vue 组件，接收、使用插槽的数据
+
+   ```html
+   <template>
+       <div>
+         <h2>App根组件(作用域插槽)</h2>
+         <com-page>
+           <!--获得插槽定义的数据信息-->
+           <!--标签需要使用一个名称为"slot-scope"的属性接收信息-->
+           <!--例如slot-scope="stData"-->
+           <!--stData:是一个对象(自定义名称)，具体可以访问到插槽的属性名称，例如prev-->
+   
+           <li slot="shang" slot-scope="stData">{{ stData.prev }} </li>
+           <li slot="xia" slot-scope="stData">{{stData.next}}</li>
+   
+         </com-page>
+       </div>
+   </template>
+   
+   <script>
+   // 针对其他组件做：导入、注册、使用
+   import ComPage from './components/Page'
+   export default {
+     components: {
+       ComPage
+     }
+   }
+   </script>
+   ```
+
+
+
+`注意`：
+
+1. 自己slot插槽定义的数据，只能是自己的slot-scope接收使用
+
+v-for遍历针对作用域插槽应用：
+
+![1573122332582](Image/img(online)/1573122332582.png)
+
+
+
+2. 案例：
+
+   ​	制作分页组件Page6.vue，
+
+   ​	两个功能**组件**Up.vue 和 Down.vue，内容分别是  “前一页”、“后一页” (html标签简单设置)
+
+   ​	Page6.vue中针对 上一页 和 下一页 位置定义两个 **命名插槽**
+
+   ​	App.vue  导入、注册、使用Page6.vue、Up.vue 和 Down.vue时，在Page6组件的内容区域中设置Up.vue 和 Down.vue组件 ，以便填充给插槽
+
+
 
 ## [vue-resource 实现 get, post, jsonp请求](https://github.com/pagekit/vue-resource)
 
@@ -2661,359 +3093,6 @@ watch:{
    > getInput() 作用：使得组件找到内部的input对应的dom节点，进而控制css样式
 
 
-
-# ESLint 代码规范检查
-
-ESLint最初是由Nicholas C. Zakas 于2013年6月创建的开源项目。
-
-它的目标是提供一个插件化的[javascript代码检测工具]()。
-
-[官网参考<https://cn.eslint.org/>](https://cn.eslint.org/)
-
-## ESLint规范要求
-
-- 声明变量但是**未使用**会报错
-- 简单语句结尾不能有**分号**
-- 给变量赋值 **等号** 左右要求有空格
-- 在行结尾处，**多余**的空格不允许
-- 字符串必须使用**单引号**圈选，不能是双引号
-- 对象 成员名称**冒号** 与 值 之间需要有一个空格
-- 方法名称小括号 的**左右**需要保留一个空格
-- 在每一个文件的结尾处，必须有一个空行
-- 文件中如果出现空白行，要求只能有一行空白，不能连续出现两行或以上的空白行
-- ……
-
-
-
-## ESLint配置
-
-在当前环境中，eslint针对js、vue等文件都会做代码规范检查工作
-
-
-
-### 开启eslint检查
-
-配置[vue.config.js]()文件，修改如下：
-
-```js
-module.exports = {
-  lintOnSave: true		// 开启eslint代码规范检测机制
-}
-```
-
-
-
-### 详细配置
-
-.eslintrc.js文件是eslint的配置文件，可以对各个规则进行相关配置
-
-例如：
-
-```
-// 配置空白行最多为3个，多了就报错
-'no-multiple-empty-lines':['error',{"max": 3}],
-```
-
-```
-// 禁用分号规则
-"semi": ["off", "always"],
-```
-
-```
-// 方法小括号前边不做"空格"显示
-"space-before-function-paren": ["off", "always"],
-```
-
-> error：做规范限制，会报错
->
-> warning: 做规范限制，会警告
->
-> off：禁用规范限制
-
-
-
-## vscode安装扩展
-
-### ESLint利器
-
-给vscode安装一个名称为ESLint的扩展包，使得vue文件代码可以被自动标准化，但又不用做烦琐的修复工作
-
-1. 给vscode编辑器安装扩展：**VS Code ESLint extension**
-
-2. 安装全局的eslint依赖包
-
-   ```
-   npm install -g eslint
-   ```
-
-   > 该依赖包安装完毕是对1步骤扩展做支撑的
-
-3. 打开vscode配置文件 settings.json  (by File-> Preferences->Settings)
-
-   在最末尾如下内容
-
-   ```javascript
-   "eslint.enable": true,
-   "eslint.autoFixOnSave": true,
-   "eslint.run": "onType",
-   "eslint.options": {
-       "extensions": [".js",".vue"]
-   },
-   "eslint.validate": [
-       { "language": "html", "autoFix": true },
-       { "language": "javascript", "autoFix": true },
-       { "language": "vue", "autoFix": true }
-   ]
-   ```
-
-4. 现在重启vscode编辑器
-
-   之后把项目服务开启 npm run serve
-
-   Ctrl+s： 保存编辑的文件后，会对**vue文件**做自动代码格式化操作，并且是遵守eslint规范的
-
-   
-
-## 小结
-
-- eslint对代码规范做要求，错误的规范并不是js语法的错误
-
-- eslint的规范要求很多，可能会有不适感
-
-- 可以给vscode编辑器安装  **eslint**   扩展
-
-  这样  <font color=red>Ctrl+s</font>  会自动对vue文件做自动代码格式化操作
-
-  ​		如果不理想，可以结合vscode编辑器本身的  <font color=red>Shift+Alt+f</font> 先预格式化处理一下
-
-  ​		经过以上步骤90%以上代码都是符合eslint规范要求，非常方便、智能
-
-
-
-# Element-UI
-
-## 介绍
-
-Element-UI 是 饿了么 前端团队，开源出来的一套 Vue 组件库(针对pc电脑浏览器端)，内部集成了许多项目中可以使用的成熟`组件component`，既增强了用户体验、又加快的开发速度。
-
-[官网地址](http://element-cn.eleme.io/#/zh-CN)
-
-
-
-基于Vue开发的常用组件库(了解)
-
-Vuetify
-Vue Material
-Keen UI
-Buefy
-Bootstrap-Vue
-AT-UI
-Fish-UI
-Quasar
-Muse UI
-Vux
-
-
-
-## 安装
-
-Element-UI本身是一个功能模块，使用之前需要像其他模块一样进行安装
-
-
-
-执行指令
-
-```bash
-yarn add element-ui
-```
-
-
-
-## 使用
-
-### 完整引入
-
-1. 引入、注册element-ui组件库
-
-   在 index.js 入口文件中，导入 element-ui 的包、配套样式表、并且安装给Vue上：
-
-   ```js
-   import ElementUI from 'element-ui'		// 导入 element-ui 这个包
-   
-   import 'element-ui/lib/theme-chalk/index.css'	// 导入 配套的样式表
-   
-   Vue.use(ElementUI)		// 把 element-ui 安装到 Vue 上
-   ```
-
-- Vue.use()  作用
-
-  一次性注册"全部"的component"组件"和"方法"，省时省力
-  Vue.component()“逐个”注册组件，过于繁琐
-
-
-
-2. 对组件库的按钮组件进行
-
-   在应用组件(例如App.vue)中设置如下内容
-
-   ```html
-   <el-row>
-     <el-button>默认按钮</el-button>
-     <el-button type="primary">主要按钮</el-button>
-     <el-button type="success">成功按钮</el-button>
-     <el-button type="info">信息按钮</el-button>
-     <el-button type="warning">警告按钮</el-button>
-     <el-button type="danger" @click="del">危险按钮</el-button>
-   </el-row>
-   ```
-
-
-
-3. 对组件库的确认框组件进行应用
-
-   在应用组件(例如App.vue)中设置如下内容
-
-   ```html
-   <el-button type="danger" @click="del">危险按钮</el-button>
-   ```
-
-   ```html
-   <script>
-   export default {
-     methods: {
-       del() {
-         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-           confirmButtonText: '确定',
-           cancelButtonText: '取消',
-           type: 'warning'
-         })
-           .then(() => {
-             this.$message({
-               type: 'success',
-               message: '删除成功!'
-             })
-           })
-           .catch(() => {
-             this.$message({
-               type: 'info',
-               message: '已取消删除'
-             })
-           })
-       }
-     }
-   }
-   </script>
-   ```
-
-   
-
-### 按需引入
-
-Element-UI本身有非常多的`组件`、`css样式`、`方法`，在一个项目中有可能不会用到全部，如果一次性全部引入，额外不用的部分会耗费很多系统资源，进而影响项目的性能。
-
-> Element-UI的引入包括 `css样式` 、 `组件` 和 `组件方法` 三部分，后续会看到
-
-解决：设置<font color=red>按需引入</font>，用多少，就引多少，避免浪费资源
-
-
-
-按需引入准备工作
-
-1. 运行命令  安装支持按需导入的plugin模块
-
-   ```javascript
-   yarn add babel-plugin-component -D
-   ```
-
-   
-
-2. 打开 babel.config.js配置文件，修改如下
-
-   ```javascript
-   {
-     "presets": ["@babel/preset-env"],
-     "plugins": [
-       "@babel/plugin-proposal-class-properties",
-       [
-         "component",
-         {
-           "libraryName": "element-ui",
-           "styleLibraryName": "theme-chalk"
-         }
-       ]
-     ]
-   }
-   ```
-
-   > 额外添加的是component及后续部分  作用是给组件库的css样式内容做按需引入
-
-以上步骤配置完毕，组件库css样式内容就按需引入了
-
-
-
-#### 按需引入css样式
-
-在index.js主入口文件应用处，把css样式文件引入给**注释掉**，做按需引入
-
-```javascript
-// 2) 引入css样式支持
-// import 'element-ui/lib/theme-chalk/index.css';
-```
-
-> 重启webpack，查看比较打包文件大小，可以对比出`按需引入`的使用效果
-
-
-
-![1561621759637](Image\img(online)/1561621759637.png)
-
-> 现在因为做了css样式的按需引入，打包文件已经变味1.5M了，较比之前优化很多
-
-#### 按需引入组件和事件方法
-
-在src/index.js入口文件处做组件库 **组件** 和 **方法** 的按需引入配置：
-
-```javascript
-// Vue.use(ElementUI);			// 注释掉 完整引入
-
-// B. 按需引入 组件和事件方法
-import {Row, Button, MessageBox, Message} from 'element-ui'  // es6模块化导入
-// 利用use()方法实现单个"组件"的注册
-Vue.use(Row)
-Vue.use(Button)
-// 实现"事件方法"注册
-Vue.prototype.$confirm = MessageBox.confirm;
-Vue.prototype.$message = Message;
-```
-
-> 完整引入注释掉
->
-> 按需引入的有两部分内容：组件 和 方法
-
-
-
-重启webpack，查看比较打包文件大小，可以对比出`按需引入`的使用效果
-
-![1561622057126](Image\img(online)/1561622057126.png)
-
-> 现在由于 **组件**和**事件方法** 的按需引入使得打包文件进一步减小，变为972K了
-
-element-ui可以做按需引入注册的全部 组件和方法 [请参考](http://element-cn.eleme.io/#/zh-CN/component/quickstart) 这里
-
-前期开发综合考虑，请只给**css样式**做按需引入即可,项目开发完毕后再一次性给 **组件** 和 **方法** 做按需引入配置
-
-
-
-## 小结
-
-1. element-ui本身就是一套组件库，里边提供了各种样式的组件，可以满足大部分业务场景的需要
-
-2. element-ui引入的时候考虑到资源的消耗情况可以分为：完整、按需两种方式
-
-3. 按需引入又分为   ：  css样式        组件/事件方法  两种
-
-   项目开发前期考虑到开发便捷性，只做 css样式按需 引入即可，项目开发完毕再做事件和方法的按需引入
-
-4. element-ui本身分为3部分：`组件`、`css样式`、`事件方法`
 
 ## 相关文章
 
