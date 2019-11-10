@@ -538,7 +538,7 @@ vscode编辑器：设置--->User snippets---->html.json，配置如下内容
 
 
 
-### vue指令-v-if&v-else
+## vue指令-v-if&v-else
 
 在Vue中，v-if 、v-else-if 和 v-else 三个指令结合可以实现多路<font color=red>分支</font>结构
 
@@ -1959,8 +1959,8 @@ new Vue({
 
 `导航种类`：
 
-1. 声明式导航：router-link可以编译生成超链接按钮，单击按钮就切换路由并显示对应的组件，这个过程称为“声明式导航(静态)”
-2. 编程式导航：有时由于业务需要，一个路由被切换执行并不方便通过**声明式导航**实现，相反是要通过**程序代码**的方式给实现出来，就是“编程式导航(动态)”
+1. 声明式导航：router-link可以编译生成超链接按钮，单击按钮就切换路由并显示对应的组件，这个过程称为“声明式导航”
+2. 编程式导航：有时由于业务需要，一个路由被切换执行并不方便通过**声明式导航**实现，相反是要通过**程序代码**的方式给实现出来，就是“编程式导航”
 
 `编程式导航的实现`：
 
@@ -2513,6 +2513,677 @@ Vue.use(ElementUI);
 v-for遍历针对作用域插槽应用：
 
 ![1573122332582](Image/img(online)/1573122332582.png)
+
+
+
+
+
+# 起步
+
+2. import有两种使用方法
+   1. import xx from ''   模块化导入
+   2. import()  函数调用 ，引入一个文件进来
+
+
+
+## 项目-git初始化
+
+1. 在本地项目中给远程仓库连接地址设置“别名”
+
+   ```
+   git remote add top87 https://gitee.com/sunshuhua/topline87.git
+   ```
+
+3. 把当前初始化好的项目文件的master分支做push，推送给远程仓库
+
+   ```
+   git push top86 master
+   ```
+
+4. 现在给git创建login分支并切换过来
+
+   ```
+   git checkout -b login  // git branch  login   &  git checkout login
+   ```
+
+
+
+# 登录
+
+## 初始化login组件文件
+
+`步骤`：
+
+1. 创建views/login/index.vue 组件文件，内容简单设置
+
+2. 给login创建路由，src/router/index.js
+
+   ```js
+   // 当前项目内部已经对 index.vue和 index.js文件做了默认的索引寻找配置，
+   // 如果一个目录名字没有明确设置要找到的文件，那么优先寻找index.vue或index.js
+   // 故login目录下边的index.vue 处于代码优雅考虑 可以 不设置
+   
+     // @别名：代表src目录的绝对路径名地址(vuecli准备好的)
+     // E:\Vue86-87\87\87everyday\02daypro\topline87\src\
+     // index.vue文件是默认索引文件，不用设置，自动寻找
+   { path: '/login', name: 'login', component: () => import('@/views/login') }
+   ```
+
+   
+
+3. 启动服务 npm run serve
+
+4. 浏览器输入  http://127.0.0.1:12306/#/login  已经可以访问登录组件效果了
+
+`注意`：
+
+   @ 是系统给封装好的别名，代表src目录的"绝对路径名"信息
+
+   @：E:\Vue86-87\86\86everyday\02daypro\topline\src\
+
+## 给login组件绘制登录盒子
+
+`步骤`：
+
+1. 创建src/assets/css/global.css文件
+
+   ```css
+   html,body,#app{
+     height:100%;
+     margin:0;
+     padding:0;
+   }
+   ```
+
+2. 在main.js中引入global.css文件
+
+   ```js
+   // 导入全局样式文件
+   import '@/assets/css/global.css'
+   ```
+
+   
+
+3. 在login/index.vue文件中通过html标签 和 css样式实现登录盒子效果
+
+   
+
+`注意`：
+
+1. VueCli框架已经给src文件夹的**绝对路径名**信息定义为<font color=red>@符号</font>的别名了，可以直接使用
+
+2. 定义 **全局样式文件(src/assets/css/global.css)** 给父级 App.vue 和 index.html 文件**统一**做样式控制
+
+
+
+## 安装配置ElementUI组件库
+
+`步骤`：
+
+1. 安装组件库依赖包  yarn  add  element-ui
+
+2. 安装按需引入依赖包  yarn  add   babel-plugin-component -D
+
+3. 在babel.config.js中做css样式按需引入配置，设置plugins段
+
+   ```js
+   module.exports = {
+     plugins: [
+       [
+         'component',
+         {
+           'libraryName': 'element-ui',
+           'styleLibraryName': 'theme-chalk'
+         }
+       ]
+     ]
+   }
+   ```
+   
+4. 在main.js中引入、注册组件库模块
+
+   ```js
+   // 引入组件库模块
+   import ElementUI from 'element-ui'
+   // 注册
+   Vue.use(ElementUI)
+   ```
+   
+
+`注意`：
+
+​	eslint要求，一个文件中的所有导入**import语句**必须在其他语句**之前**配置(自动代码规范 会配置)
+
+
+
+## form表单组件介绍
+
+```html
+<el-form ref="form" :model="form" label-width="80px">
+ref: 使得可以获取当前的组件对象  this.$refs.form，后期表单校验会使用
+:model="form"  属性绑定model，与v-model没有关系，作用是要收集表单的全部数据，后期表单校验会使用
+label-width：设置表单域项目名字区域宽度
+
+  <el-form-item label="活动名称">
+    每个表单域项目的单元组成
+    label设置当前表单项目的名字
+    
+    <el-input v-model="form.name"></el-input>
+    具体输入框表单域项目
+    v-model:双向数据绑定，具体帮到到form对象的name成员里边
+```
+
+> \<div/组件 ref="xx" id="yy"\>
+>
+> 获得div的dom对象： document.getElementById('yy')
+> vue方式获取dom对象： this.$refs.xx
+>
+> 以上两者获得div对象完全一样(都是dom对象)
+>
+> 如果div是一个组件，那么this.$refs.xx 就会把该组件对象VueComponent给获得到
+>
+> div元素对象获取：两种方式，如上提示
+>
+> 组件对象获取：一种方式，如上提示
+
+
+
+`注意`：
+
+1. 以上各个属性  ref、model、v-model是必须的  label-width 和 label是非必须的
+
+2. ref：属性是方便后期通过vue的方式获得当前的组件，必须属性
+
+3. model：属性是要收集全部的表单信息以便后期校验等使用，必须属性
+
+4. label-width：给表单域名字区域设置宽度
+
+   > 以后每个el-form使用的时候都要设置ref 和 model属性
+
+
+
+## el-form表单组件绘制登录表单域
+
+login/index.vue代码如下：
+
+```html
+<template>
+  <div class="login-container">
+			<div class="login-box">
+        <el-form ref="loginFormRef" :model="loginForm">
+          <el-form-item>
+            <el-input v-model="loginForm.mobile" placeholder="请输入手机号码"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="loginForm.code"  placeholder="请输入校验码"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-checkbox v-model="loginForm.xieyi"></el-checkbox>
+            <span>我已阅读并同意用户协议和隐私条款</span>
+          </el-form-item>
+          <el-form-item>
+            <el-button style="width:100%;" type="primary">登录</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+  </div>
+</template>
+
+<script>
+export default {
+  // 注意：属性绑定、双向数据绑定的值需要通过data做支持
+  data () {
+    return {
+      loginForm: {
+        mobile: '', // 手机号码
+        code: '', // 校验码
+        xieyi: false // 协议
+      }
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.login-container{
+  height:100%;
+  background-color: gray;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  .login-box{
+      width:410px;
+      height:345px;
+      background-color: #fff;
+      display:flex;
+      justify-content: center;
+      align-items: center;
+      .el-form{
+        width:75%;
+      }
+  }
+}
+</style>
+```
+
+`说明`：
+
+1. 表单域项目具体有   **手机号码** 、 **校验码**、**协议**、**登录按钮** 
+2. el-form的label-width属性要去除，el-form-item的label属性去除
+3. elementui每个组件   都需要被编译为具体的html标签代码，html标签会同时生成class属性，**属性值就会包含当前组件标签的名字**，因此可以通过组件名称以class的方式进行css样式控制
+
+例如：
+
+```
+<el-form>      -----编译---->  <form class="el-form">
+<el-form-item> -----编译---->  <div class="el-form-item">
+<el-input>     -----编译---->  <div class="el-input">
+```
+
+`注意`：
+
+​	elementui组件库初次使用没有css样式效果，请重启服务npm run serve
+
+
+
+## 绘制登录图标和背景图片
+
+`步骤`：
+
+1. 把目标图片放到  views/login目录(2个图片  login_bg.jpg 和  logo_index.png  )
+
+2. login/index.vue代码如下：
+
+   ```html
+   <template>
+     <div class="login-container">
+       <div class="login-box">
+         <el-form ref="loginFormRef" :model="loginForm">
+           <img src="./logo_index.png" alt>
+           <el-form-item>
+             <el-input v-model="loginForm.mobile" placeholder="请输入手机号码"></el-input>
+           </el-form-item>
+           <el-form-item>
+             <el-input v-model="loginForm.code" placeholder="请输入校验码"></el-input>
+           </el-form-item>
+           <el-form-item style="text-align:left;">
+             <el-checkbox v-model="loginForm.xieyi" style="margin-right:10px;"></el-checkbox>
+             <span>我已阅读并同意用户协议和隐私条款</span>
+           </el-form-item>
+           <el-form-item>
+             <el-button style="width:100%;" type="primary">登录</el-button>
+           </el-form-item>
+         </el-form>
+       </div>
+     </div>
+   </template>
+   
+   <script>
+   export default {
+     // 注意：属性绑定、双向数据绑定的值需要通过data做支持
+     data () {
+       return {
+         loginForm: {
+           mobile: '', // 手机号码
+           code: '', // 校验码
+           xieyi: false // 协议
+         }
+       }
+     }
+   }
+   </script>
+   
+   <style lang="less" scoped>
+   .login-container {
+     height: 100%;
+     background-color: gray;
+     background-image: url("./login_bg.jpg");
+     background-size: cover;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+   
+     .login-box {
+       width: 410px;
+       height: 345px;
+       background-color: #fff;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       text-align: center;
+       img {
+         width: 50%;
+         margin: 20px auto;
+       }
+       .el-form {
+         width: 75%;
+       }
+     }
+   }
+   </style>
+   ```
+
+
+
+
+## 进入后台首页
+
+`步骤`：
+
+1. 创建后台首页组件文件  views/home/index.vue
+
+2. 给home设置路由( src/router/index.js )
+
+   ```js
+   { path: '/home', name: 'home', component: () => import('@/views/home') }
+   ```
+   
+
+   
+3. 给“登录”按钮设置单击事件@click="login()"，使得路由跳转
+
+   ```html
+   <el-button style="width:100%;" type="primary" @click="login()">登录</el-button>
+   ```
+   
+4. 在methods中实现login方法
+
+   ```js
+     methods: {
+       login () {
+         // this.$router.push('/home')
+         this.$router.push({name:'home'})
+       }
+     }
+   ```
+
+## 表单校验(自然方式)
+
+`步骤`:
+
+1. 给el-form设置rules属性
+
+   ```html
+   <el-form :rules="loginFormRules">
+   ```
+
+2. 给各个被校验项目的el-form-item组件设置prop属性，属性值就是表单对象的成员名称(不要定义为其他)
+
+   ```html
+   <el-form-item prop="mobile">
+   <el-form-item prop="code">
+   ```
+
+   > prop会使得校验规则 与 当前项目联系
+
+3. 在data中定义具体校验规则
+
+   ```js
+   // 给form表单域制作校验规则
+     data () {
+       return {
+         loginFormRules: {
+           mobile: [
+             { required: true, message: '手机号码必填' },
+             { pattern: /^1[35789]\d{9}$/, message: '手机号码格式不对' }
+           ],
+           code: [
+             { required: true, message: '验证码必填' }
+           ]
+         }
+       }
+     },
+   ```
+
+   
+
+`注意`：
+
+1. 每个表单域项目根据需要可以配置**多个**校验项目
+2. elementui内部有引入第三方功能包实现校验，名称为[async-validator](https://github.com/yiminghe/async-validator)  可以参考使用
+3. required只校验 null   undefined 和空字符串 ,但是不校验false/true
+
+
+
+| 规则         | 说明                                                         |
+| ------------ | ------------------------------------------------------------ |
+| type(可不填) | 指定要检验的字段的类型                                       |
+| required     | 必填项,如果不填 就无法通过校验/如果为true,就表示该字段必填   |
+| validator    | **`自定义校验函数`**                                         |
+| message      | 当不满足设置的规则时的提示信息                               |
+| pattern      | 正则表达式                                                   |
+| range        | 使用min和max属性定义范围。对于字符串和数组类型，将根据长度进行比较，对于数字类型，数字不得小于min，也不得大于max。 |
+| len          | 要验证字段的确切长度，请指定len属性。对于字符串和数组类型，对length属性执行比较，对于数字类型，此属性指示数字的完全匹配，即，它可能仅严格等于len。如果len属性与最小和最大范围属性组合，则len优先。 |
+| enum         | 要从可能值列表中验证值，请使用带枚举属性的枚举类型，列出该字段的有效值，例如： var descriptor = {   role: {type: "enum", enum: ['admin', 'user', 'guest']} } |
+
+
+
+
+
+## 表单校验(登录方式)
+
+给methods的login方法增加校验逻辑
+
+```js
+  methods: {
+    // 登录系统
+    login () {
+      // 全部表单域项目校验
+      // 获得form表单组件的语句: this.$refs.loginFormRef
+      // form组件.validate(回调函数)
+      // 参数valid：会体现布尔值，表示校验是否成功
+      this.$refs.loginFormRef.validate((valid) => {
+        if (valid) {
+          this.$router.push({ name: 'home' })
+        }
+      })
+
+      // this.$router.push('/home')
+      // this.$router.push({ name: 'home' })
+    }
+  }
+```
+
+`说明`：
+
+1. el-form组件内部有属性值 ref="loginFormRef"，Vue允许通过 this.$refs.loginFormRef的方式获得该组件对象
+2. el-form组件本身可以调用validate方法，实现对**全部**表单域项目做校验
+3. validate内部有**回调函数**参数，该函数内部还有valid参数，valid会返回布尔值，进而知道校验是否成功
+4. validate内部的回调函数要设置为  “箭头函数”，使得内部this与外部保持一致指引，都是组件实例
+5. form表单全部做校验还与el-form 的**model属性**有关系，其会获取全部的表单信息，提供校验使用
+
+
+
+## 表单校验(自定义-协议)
+
+`步骤`：
+
+1. 设置prop属性
+
+   给xieyi  的项目设置prop属性
+
+   ```html
+   <el-form-item prop="xieyi">
+   ```
+
+   
+
+2. 声明校验的function方法
+
+   在data中为xieyi校验声明方法
+
+   ```js
+     data () {
+       // 自定义校验函数，验证协议
+       var xieyiTest = function (rule, value, callback) {
+         // rule:校验规则，一般不用
+         // value:当前被校验的信息
+         // callback：回调函数，校验成功或失败都需要执行
+         // if (value) {
+         //   callback()
+         // } else {
+         //   return callback(new Error('请无条件遵守规矩'))
+         // }
+   
+         value ? callback() : callback(new Error('请无条件遵守规矩'))
+       }
+     }
+   ```
+
+   > 注意：校验方法需要在return语句的“前边”设置
+
+3. 通过validator使用该自定义校验方法
+
+   ```js
+   loginFormRules: {
+     ……
+     xieyi: [
+       { validator: xieyiTest }
+     ]
+   }
+   ```
+
+
+
+`说明`：
+
+1. 协议  项目没有提供校验机制(required不能校验true/false的信息)，故要自定义
+2. 校验协议信息的 xieyiTest 方法需要定义到data方法中，注意不是**return内部**
+3. 校验规则要使用 validator 关联 xieyiTest函数
+
+
+
+## 安装配置axios
+
+`步骤`：
+
+1. 安装axios：  yarn  add  axios
+
+2. 在main.js主入口文件中引入配置axios
+
+   ```js
+   import axios  from  'axios'
+   // 配置后端服务器接口公共根地址
+   axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'  
+   Vue.prototype.$http = axios  
+   ```
+
+`说明`：
+
+根据ElementUI事件方法注册机制，给axios做如下配置
+
+`Vue.prototype.$http = axios`   axios通过继承方式配置为Vue的成员，这样所有通过Vue实例出来的对象就都可以访问，形式为this.\$http
+
+单文件组件VueComponent也有继承Vue，因此组件实例都可以通过 this.\$http 的方式访问axios对象
+
+
+
+## 注册账号
+
+地址为http://ttmp.research.itcast.cn/的参考项目如果需要一个的账号，
+
+要通过postman向http://ttapi.research.itcast.cn/app/v1_0/authorizations 发送post请求并传递数据实现
+
+`步骤`：
+
+1. 请求方式为post
+
+2. 请求体为Body，二级选项为raw 和 JSON(application/json)
+
+   请求体：
+
+   ```json
+   {
+     "mobile": "你的手机号",
+     "code": "246810"
+   }
+   ```
+
+   > code固定为246810不要更改
+
+3. 请求数据为下图json格式
+
+![1563865009333](Image/img(online)/1563865009333.png)
+
+![1563865063685](Image/img(online)/1563865063685.png)
+
+
+
+## 校验账号
+
+用户登录系统，表单域校验成功后，要通过axios校验账号的真实性，成功再进入后台系统
+
+```js
+methods: {
+  login () {
+    this.$refs.loginFormRef.validate(valid => {
+      // 表单域校验成功
+      if (valid) {
+        // 账号真实性校验
+        var pro = this.$http.post('/authorizations', this.loginForm)
+        pro
+          .then(result => {
+            if (result.data.message === 'OK') {
+              // 进入后台系统
+              this.$router.push('/home')
+            }
+          })
+          .catch(err => {
+            return this.$message.error('用户名或密码错误' + err)
+          })
+      }
+    })
+  }
+}
+```
+
+
+
+`说明`：
+
+```js
+// elementui组件库事件方法$message使用有两种格式
+1. this.$message({type:'error', message:'用户名或密码错误'})
+2. this.$message.error('用户名或密码错误')
+设置停留时间：
+this.$message({type:'error', message:'用户名或密码错误',duration:1000})
+```
+
+## 客户端记录账号信息
+
+管理员登录系统成功，通过sessionStorage对各个信息(id/name/photo/token)做记录，用以表示当前用户处于登录状态
+
+```js
+  methods: {
+    login () {
+      this.$refs.loginFormRef.validate(valid => {
+        if (!valid) {
+          return false
+        }
+        var pro = this.$http.post('/authorizations', this.loginForm)
+        pro
+          .then(result => {
+            if (result.data.message === 'OK') {
+              // 客户端记录用户的信息
+              window.sessionStorage.setItem('userinfo', JSON.stringify(result.data.data))
+              this.$router.push('/home')
+            }
+          })
+          .catch(err => {
+            return this.$message.error('用户名或密码错误' + err)
+          })
+      })
+    }
+  }
+```
+
+![1573294885608](Image/img(online)/1573294885608.png)
+
+`说明`：
+
+1. 服务器端返回的账号数据信息是一个**对象**，内部有 id/name/photo/token等，webstorage不能存储对象，故要通过  **JSON.stringify()**  进行转换变为字符串，相反信息做应用时还要通过  **JSON.parse()**  再转回为对象
+2. 一般客户端只存储用户token信息即可(表明是否处于的登录状态)，存储其他信息是为了其他用途
+3. 如果有其他考虑，使用localStorage存储用户信息也可以
 
 
 
