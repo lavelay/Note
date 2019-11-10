@@ -3137,8 +3137,6 @@ methods: {
 }
 ```
 
-
-
 `说明`：
 
 ```js
@@ -3177,13 +3175,721 @@ this.$message({type:'error', message:'用户名或密码错误',duration:1000})
   }
 ```
 
-![1573294885608](Image/img(online)/1573294885608.png)
-
 `说明`：
 
 1. 服务器端返回的账号数据信息是一个**对象**，内部有 id/name/photo/token等，webstorage不能存储对象，故要通过  **JSON.stringify()**  进行转换变为字符串，相反信息做应用时还要通过  **JSON.parse()**  再转回为对象
 2. 一般客户端只存储用户token信息即可(表明是否处于的登录状态)，存储其他信息是为了其他用途
 3. 如果有其他考虑，使用localStorage存储用户信息也可以
+
+
+
+## 非登录用户限制访问
+
+在src/router/index.js中做守卫设置，代码如下：
+
+```js
+// 设置 全局前置守卫
+router.beforeEach((to, from, next) => {
+  // 用户如果是"非登录"状态，并且其还要访问 非登录 页面，那么就强制登录去
+  var userinfo = window.sessionStorage.getItem('userinfo')
+  if (!userinfo && to.path !== '/login') {
+    // 路由导航到登录页面
+    return next('/login') // ok
+  }
+  next()
+})
+```
+
+`注意`：
+
+1. 如果用户已经退出系统，或由于其他原因导致客户端数据丢失，则userinfo的信息为**null**
+2. 如果其他应用要用**userinfo**用户信息，其是字符串类型，需要通过**JSON.parse()**转换后才可以使用
+
+
+
+## 极验
+
+### 人机交互验证介绍
+
+极验是一款人机交互页面效果系统，用户的**行为**没有满足要求，不给与下一步执行的机会
+
+大致效果如下，用户如果没有把目标滑到指定区域就禁止下一步操作
+
+之前传统网站，用户输入 **用户名**、**密码**、**验证码**  就可以登录系统了
+
+这样的网站不安全，有网络**爬虫**技术，可以通过“后端程序代码” **模拟账号**登录，进而获得我们网站的信息
+
+现在比较先进的网站，都使用“**人机交互验证**”功能，对登录者提出高要求，不让模拟登录得逞，相反只允许“实在的人”来登录系统并应用
+
+极验官网：<https://www.geetest.com/>
+
+
+
+好处：防止账号暴力破解，不给模拟登录机会，增强系统的安全性
+
+
+
+### 获取并导入js脚本
+
+`目标`：
+
+​	知道如何获取gt.js文件
+
+`步骤`：
+
+1. 获取好的gt.js文件放到  src/assets/js  目录下
+
+2. 对不遵守eslint规范的代码稍加改动
+
+
+`说明`：
+
+eslint标准规范中有如下要求：
+
+1. 函数传递参数，不能直接传递boolean值，相反可以声明变量传递(gt.js文件中一共有4处，注意调整)
+
+2. 要通过 “===”恒等于 方式 判断两个字是否相等(上例为了使得数据类型是严格的字符串，额外调用了toString()方法，请注意)
+3. 不要设置**空的**回调函数实参，没有意义
+
+
+
+### 流程分析
+
+`结论`：
+
+开发人机验证步骤：
+
+1. axios向本身后端服务器发起请求，后端服务器会返回极验请求的秘钥信息
+2. **极验秘钥信息** + **用户行为** 一并提交给 极验服务器 做判断，查验行为是否正确
+
+
+
+### 获取极验秘钥信息
+
+`步骤`：
+
+1. 把 账号真实校验 和 登录系统 逻辑代码封装为独立的loginAct方法，方便开发
+2. axios根据接口发送请求，获得极验请求秘钥信息
+
+
+
+login/index.vue相关代码结构：
+
+```js
+  methods: {
+    login () {
+      this.$refs.loginFormRef.validate(valid => {
+        // 表单域校验成功
+        if (valid) {
+          // A. axios获得极验请求秘钥信息
+          let pro = this.$http.get(`/captchas/${this.loginForm.mobile}`)
+          pro
+            .then(result => {
+              // 服务器端返回极验的请求秘钥信息
+              console.log(result) // config 【data】 request  headers status statusText
+            })
+            .catch(err => {
+              return this.$message.error('获得极验初始校验信息错误：' + err)
+            })
+
+          // B. 账号真实校验，登录后台
+          // this.loginAct()
+        }
+      })
+    },
+    // 校验账号真实性，登录后台
+    loginAct () {
+      // 账号真实性校验
+      var pro = this.$http.post('/authorizations', this.loginForm)
+      pro
+        .then(result => {
+          if (result.data.message === 'OK') {
+            // 客户端记录用户的信息
+            window.sessionStorage.setItem('userinfo', JSON.stringify(result.data.data))
+            // 进入后台系统
+            this.$router.push('/home')
+          }
+        })
+        .catch(err => {
+          return this.$message.error('用户名或密码错误' + err)
+        })
+    }
+  }
+```
+
+
+
+### 创建校验窗口并应用
+
+`步骤`：
+
+1. 在login/index.vue中向引入gt.js文件
+2. 对返回的极验请求秘钥信息做接收处理(对象解构赋值)
+3. 调用initGeetest() 函数，生成极验窗口
+   1. 添加product:'bind'
+   2. verify()等方法调用
+
+具体代码(login/index.vue)：
+
+```js
+// 对gt.js文件进行导入
+// gt.js文件本身没有做导出动作，所以就直接导入即可，此时系统增加一个全局变量，名称为 initGeeTest
+import '@/assets/js/gt.js'
+……
+login () {
+  this.$refs.loginFormRef.validate(valid => {
+    // 表单域校验成功
+    if (valid) {
+      // A. axios获得极验初始校验信息
+      let pro = this.$http.get(`/captchas/${this.loginForm.mobile}`)
+      pro
+        .then(result => {
+          // 接收处理返回的极验请求秘钥信息
+          let { data } = result.data
+          // 显示极验应用窗口
+          // 请检测data的数据结构， 保证data.gt, data.challenge, data.success有值
+          window.initGeetest({
+            // 以下配置参数来自服务端 SDK
+            gt: data.gt,
+            challenge: data.challenge,
+            offline: !data.success,
+            new_captcha: true,
+            product: 'bind' // 没有按钮，通过登录按钮激活验证
+          }, captchaObj => {
+            // 这里可以调用验证实例 captchaObj 的实例方法
+            captchaObj.onReady(() => {
+              // 验证码ready之后才能调用verify方法显示验证码
+              captchaObj.verify() // 显示验证码窗口
+            }).onSuccess(() => {
+              // your code
+              // B. 校验账号真实性，登录
+              this.loginAct()
+            }).onError(() => {
+              // your code
+            })
+          })
+        })
+        .catch(err => {
+          return this.$message.error('获得极验初始校验信息错误：' + err)
+        })
+    }
+  })
+}
+```
+
+`注意`：
+
+​	在login方法内部为了使得this仍然指引VueComponent组件实例对象，要把相关的function都变为箭头函数
+
+
+
+### 按钮等待和禁用
+
+极验窗口的显示需要消耗一定时间，为了增强用户体验，给“登录”按钮设置“等待”效果，同时考虑到严谨性，要同时设置disabled，使得按钮等待的同时也不让单击
+
+```html
+<el-button :loading="ture/false" :disabled="true/false">登录</el-button>
+```
+
+> loading: 设置按钮等待效果
+>
+> disabled:使得按钮禁止单击
+
+`步骤`：
+
+1. data成员设置  isActive:false
+
+   ```js
+   isActive: false, // 按钮是否等待、禁用
+   ```
+
+2. 给el-button登录按钮应用 loading  和  disabled属性，它们的值通过 btnLoading控制
+
+   ```html
+   <el-button 
+              style="width:100%;" 
+              :loading="isActive" 
+              :disabled="isActive" 
+              type="primary" 
+              @click="login()">登录</el-button>
+   ```
+
+   
+
+3. 单击登录按钮后马上禁用 按钮  this.isActive= true
+
+   ```js
+   login () {
+     this.$refs.loginFormRef.validate(valid => {
+       // 表单域校验成功
+       if (valid) {
+         this.isActive = true // 登录按钮处于等待、禁用状态
+   ```
+
+   
+
+4. 极验交互窗口显示完毕 就恢复按钮 this.isActive= false
+
+   ```js
+   captchaObj.onReady(() => {
+     ……
+     this.isActive = false // 恢复按钮
+   ```
+
+
+
+### 处理重复创建dom问题
+
+每次单击“登录”按钮，那么就给显示“人机交互”页面，本质是许多div  html标签的集合体，如果反复点击“登录”按钮，之前的"窗口"，就隐藏掉(display:none)，再重新生成许多div出来，这个过程不好的地方是，用户都需要等很长时间，并且页面会残留许多无用、过时的dom内容
+
+
+
+我们做优化处理：
+
+第一次生成人机窗口后，就给保存起来，后续再发生相同的动作直接使用即可
+
+好处：用户等待时间缩短，页面上也不用生成许多div了
+
+`步骤`：
+
+1. 创建data成员 ctaObj
+
+   ```js
+   ctaObj: null, // 极验对象
+   ```
+
+2. 第一次生成的人机窗口对象 赋予给 this.ctaObj= captchaObj
+
+   ```js
+   captchaObj.onReady(() => {
+   	……
+     this.ctaObj = captchaObj // 已经极验对象赋予给ctaObj
+   ```
+
+   
+
+3. 用户重复单击登录窗口使用缓存好的极验对象
+
+   ```js
+   login () {
+     this.$refs.loginFormRef.validate(valid => {
+       // 表单域校验成功
+       if (valid) {
+         // 极验对象存在就直接调用
+         if (this.ctaObj !== null) {
+           return this.ctaObj.verify()
+         }
+         // 注意：按钮等待 要在 之后设置
+         this.isActive = true // 登录按钮处于等待、禁用状态
+   ```
+
+`注意`：
+
+登录按钮等待的代码要在之后设置，这样的原因是使用之前的缓存极验对象，由于速度很快，按钮就不要做禁用状态了
+
+
+
+## iconfont图标
+
+通过“命名插槽”的方式给 手机和验证码 的输入框前边设置对应的图标
+
+iconfont图标官网： https://www.iconfont.cn/ 
+
+elementui组件库有提供有限的图标供使用，我们可以通过  **阿里巴巴** 网站获取其他的一些图标做应用
+
+`步骤`：
+
+1. 在阿里巴巴网站获得需要的图标
+
+2. 把图标文件目录复制到 src/assets/iconfont目录里边
+
+    
+
+   3. 在login的vue文件中引入css样式
+
+      ```js
+      // 引入iconfont的css文件
+      import '@/assets/font/iconfont.css'
+      ```
+
+      
+
+   4. 给输入框做图标应用
+
+      ```vue
+      <el-form-item prop="mobile">
+        <!--el-input:普通输入框组件-->
+        <!--v-model:必须属性，双向数据绑定-->
+        <el-input v-model="loginForm.mobile" placeholder="请输入手机号码">
+          <i slot="prefix" class="iconfont icon-shoujihao"></i>
+        </el-input>
+      </el-form-item>
+      <el-form-item prop="code">
+        <el-input v-model="loginForm.code" placeholder="请输入校验码">
+          <i slot="prefix" class="iconfont icon-yanzhengma"></i>
+        </el-input>
+      </el-form-item>
+      ```
+
+
+
+
+# 首页搭建
+
+## 品字页面绘制
+
+`目标`：
+
+​	绘制后台品字页面结构
+
+`具体代码`：
+
+```vue
+<template>
+  <el-container>
+    <el-aside width="200px">Aside</el-aside>
+    <el-container>
+      <el-header>Header</el-header>
+      <el-main>Main</el-main>
+    </el-container>
+  </el-container>
+</template>
+
+<style lang="less" scoped>
+.el-container {
+  height:100%;
+  .el-aside {
+    background-color: #323745;
+  }
+  .el-header{
+    background-color: orange;
+  }
+  .el-main{
+    background-color: #f2f3f5;
+  }
+}
+</style>
+```
+
+
+
+## 头部制作
+
+`目标`：
+
+​	把后台头部各个元素效果实现出来
+
+模板内容：
+
+```html
+<el-header>
+  <div id="lt">
+    <i class="el-icon-s-fold"></i>
+    <span>江苏传智播客教育科技股份有限公司</span>
+  </div>
+
+  <div id="rt">
+    <el-input type="text" placeholder="请输入搜索的文章内容" style="width:300px;">
+      <i slot="prefix" class="el-input__icon el-icon-search"></i>
+    </el-input>
+    <span style="margin:0 10px;">消息</span>
+    <el-dropdown>
+      <span class="el-dropdown-link">
+        <img :src="photo" alt width="40" height="40">
+        {{name}}
+        <i class="el-icon-arrow-down el-icon--right"></i>
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item>个人信息</el-dropdown-item>
+        <el-dropdown-item>github地址</el-dropdown-item>
+        <el-dropdown-item>退出</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+  </div>
+</el-header>
+```
+
+行为提供头像 和 名称：
+
+```html
+<script>
+export default {
+computed: {
+  name () {
+    return JSON.parse(window.sessionStorage.getItem('userinfo')).name
+  },
+  photo () {
+    return JSON.parse(window.sessionStorage.getItem('userinfo')).photo
+  }
+}
+}
+</script>
+```
+
+css样式：
+
+```css
+  .el-aside {
+    background-color: rgb(50, 55, 69);
+  }
+  .el-header {
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px 0 9px;
+    min-width: 950px;
+    #lt {
+      height: 100%;
+      width: 40%;
+      background-color: white;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+    }
+    #rt {
+      height: 100%;
+      width: 50%;
+      background-color: white;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      .el-dropdown-link {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+```
+
+
+
+## 左侧导航
+
+### 菜单制作
+
+`解读`：
+
+el-menu组件标签
+
+```html
+<el-menu
+  background-color="#353B4E"   // 菜单背景颜色
+  text-color="#fff"    // 菜单文字颜色
+  active-text-color="#3C9DFF"  // 子菜单选中后的颜色
+>
+```
+
+> 各个属性都是配置颜色的
+
+```html
+<el-submenu index="1">  // 表示当前的菜单拥有子级菜单
+<el-menu-item index="2"> // 表示叶子菜单，没有子级
+```
+
+> index在父级菜单上边可以设置一个唯一属性用以区分彼此
+>
+> ​           在子菜单上后期可以设置请求#锚点信息，单击后也执行具体的导航
+
+`具体代码`：
+
+```html
+<el-aside width="200px">
+   <el-menu background-color="#323745" text-color="#fff" active-text-color="#ffd04b">
+      <el-menu-item index="1">
+        <i class="el-icon-location"></i>
+        <span slot="title">首页</span>
+      </el-menu-item>
+      <el-submenu index="2">
+        <template slot="title">
+          <i class="el-icon-menu"></i>
+          <span>内容管理</span>
+        </template>
+        <el-menu-item index="2-1">发布文章</el-menu-item>
+        <el-menu-item index="2-2">文章列表</el-menu-item>
+        <el-menu-item index="2-3">评论列表</el-menu-item>
+        <el-menu-item index="2-4">素材管理</el-menu-item>
+      </el-submenu>
+      <el-menu-item index="3">
+        <i class="el-icon-location"></i>
+        <span slot="title">粉丝管理</span>
+      </el-menu-item>
+      <el-menu-item index="4">
+        <i class="el-icon-location"></i>
+        <span slot="title">账户管理</span>
+      </el-menu-item>
+
+    </el-menu>
+</el-aside>
+```
+
+`注意`：
+
+​	给各个顶级菜单设置**图标**
+
+
+
+### 菜单制作(细节)
+
+有一些导航菜单宽度略小(199px)，真实是200px
+
+宽度细节处理，给相关的**el-menu-item**  和 **el-submenu** 组件设置统一宽度样式width:200px
+
+
+
+### 折叠展开效果制作
+
+`步骤`：
+
+1. 给el-menu设置相关属性
+
+   ```js
+   :collapse="isCollapse"   // 控制折叠展开
+   :collapse-transition="false"  // 禁用折叠动画
+   ```
+
+2. 创建data成员 isCollapse=false，控制折叠展开
+
+   ```js
+   isCollapse: false  // false:展开   true:折叠
+   ```
+
+3. 给"图标"设置单击事件，折叠展开要显示不同的图标(unfold  和 fold 区分)
+
+   ```html
+   <i
+     slot="prefix"
+     :class="isCollapse?'el-icon-s-unfold':'el-icon-s-fold'"
+     style="cursor:pointer;"
+     @click="isCollapse=!isCollapse"
+   ></i>
+   ```
+
+   > 菜单折叠展开，小图标也要做变换显示操作
+
+4. 菜单宽度自适应
+
+   
+
+## 退出系统
+
+`具体实现`：
+
+给退出按钮设置单击事件：
+
+```html
+<el-dropdown-item @click.native="logout()">退出</el-dropdown-item>
+```
+
+在methods中实现退出方法：
+
+```js
+    // 退出系统
+    logout () {
+      this.$confirm('确定要提出系统?', '退出', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        window.sessionStorage.clear()
+        this.$router.push('/login')
+      }).catch(() => { })
+    }
+  }
+```
+
+`说明`：
+
+给按钮设置点击事件
+
+```html
+<button @click="logout()">退出</button>     // 退出事件ok
+<el-dropdown-item @click="logout()">退出</el-dropdown-item>   // 事件操作失败
+```
+
+@click是vue事件绑定操作，具体是给普通的html标签使用的
+
+el-dropdown-item本身是一个“组件”，组件是组多html标签的集合体，这个集合体绑定事件，不知道具体给到那个标签使用，因此事件绑定失败
+
+解决：
+
+事件绑定设置一个名称为native的修饰符(**事件修饰符**)，使得该事件作用到内部的html标签身上
+
+```html
+<el-dropdown-item @click.native="logout()">退出</el-dropdown-item>   // 事件操作失败
+```
+
+
+
+## 右侧Welcome页面显示
+
+`步骤`：
+
+1. 创建views/welcome/index.vue组件
+
+2. 给welcome创建路由
+
+   具体要给welcome创建为home的**子级路由**(路由嵌套)
+
+   ```
+   当前项目组件的关系
+   App.vue  是根基组件
+   	home  是中间组件
+   		welcome  最内部组件
+   		article  最内部组件
+   		account  最内部组件
+   ```
+
+   在router.js中具体路由配置：
+
+   ```js
+       {
+         path: '/home',
+         name: 'home',
+         component: () => import('@/views/home'),
+         redirect: '/welcome', // 路由重定向
+         children: [
+           // 欢迎页面子路由配置
+           { path: '/welcome', name: 'welcome', component: () => import('@/views/welcome') }
+         ]
+       }
+   ```
+
+   > 注意：虽然有redirect重定向，component也需要保留
+
+3. 给home/index.vue配置子组件显示占位符
+
+   ```html
+   <el-main>
+     <!--给子组件设置占位符-->
+     <router-view></router-view>
+   </el-main>
+   ```
+
+
+
+## git收尾
+
+0. 创建并切换分支进来
+
+   ```bash
+   git checkout -b xxx
+   ```
+
+1. 给login分支做add/commit/push推送动作
+
+   ```bash
+   git add .
+   git commit -m '登录功能开发完毕'
+   git push top87 home
+   ```
+
+2. 切换到master分支，使得home被合并，然后push  master分支到远程仓库
+
+   ```bash
+   git checkout master
+   git merge home
+   git push top87 master
+   ```
 
 
 
