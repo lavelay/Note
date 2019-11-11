@@ -2510,12 +2510,6 @@ Vue.use(ElementUI);
 
 1. 自己slot插槽定义的数据，只能是自己的slot-scope接收使用
 
-v-for遍历针对作用域插槽应用：
-
-![1573122332582](Image/img(online)/1573122332582.png)
-
-
-
 
 
 # 起步
@@ -2704,68 +2698,6 @@ label-width：设置表单域项目名字区域宽度
 
 ## el-form表单组件绘制登录表单域
 
-login/index.vue代码如下：
-
-```html
-<template>
-  <div class="login-container">
-			<div class="login-box">
-        <el-form ref="loginFormRef" :model="loginForm">
-          <el-form-item>
-            <el-input v-model="loginForm.mobile" placeholder="请输入手机号码"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="loginForm.code"  placeholder="请输入校验码"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-checkbox v-model="loginForm.xieyi"></el-checkbox>
-            <span>我已阅读并同意用户协议和隐私条款</span>
-          </el-form-item>
-          <el-form-item>
-            <el-button style="width:100%;" type="primary">登录</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-  </div>
-</template>
-
-<script>
-export default {
-  // 注意：属性绑定、双向数据绑定的值需要通过data做支持
-  data () {
-    return {
-      loginForm: {
-        mobile: '', // 手机号码
-        code: '', // 校验码
-        xieyi: false // 协议
-      }
-    }
-  }
-}
-</script>
-
-<style lang="less" scoped>
-.login-container{
-  height:100%;
-  background-color: gray;
-  display:flex;
-  justify-content: center;
-  align-items: center;
-  .login-box{
-      width:410px;
-      height:345px;
-      background-color: #fff;
-      display:flex;
-      justify-content: center;
-      align-items: center;
-      .el-form{
-        width:75%;
-      }
-  }
-}
-</style>
-```
-
 `说明`：
 
 1. 表单域项目具体有   **手机号码** 、 **校验码**、**协议**、**登录按钮** 
@@ -2783,85 +2715,6 @@ export default {
 `注意`：
 
 ​	elementui组件库初次使用没有css样式效果，请重启服务npm run serve
-
-
-
-## 绘制登录图标和背景图片
-
-`步骤`：
-
-1. 把目标图片放到  views/login目录(2个图片  login_bg.jpg 和  logo_index.png  )
-
-2. login/index.vue代码如下：
-
-   ```html
-   <template>
-     <div class="login-container">
-       <div class="login-box">
-         <el-form ref="loginFormRef" :model="loginForm">
-           <img src="./logo_index.png" alt>
-           <el-form-item>
-             <el-input v-model="loginForm.mobile" placeholder="请输入手机号码"></el-input>
-           </el-form-item>
-           <el-form-item>
-             <el-input v-model="loginForm.code" placeholder="请输入校验码"></el-input>
-           </el-form-item>
-           <el-form-item style="text-align:left;">
-             <el-checkbox v-model="loginForm.xieyi" style="margin-right:10px;"></el-checkbox>
-             <span>我已阅读并同意用户协议和隐私条款</span>
-           </el-form-item>
-           <el-form-item>
-             <el-button style="width:100%;" type="primary">登录</el-button>
-           </el-form-item>
-         </el-form>
-       </div>
-     </div>
-   </template>
-   
-   <script>
-   export default {
-     // 注意：属性绑定、双向数据绑定的值需要通过data做支持
-     data () {
-       return {
-         loginForm: {
-           mobile: '', // 手机号码
-           code: '', // 校验码
-           xieyi: false // 协议
-         }
-       }
-     }
-   }
-   </script>
-   
-   <style lang="less" scoped>
-   .login-container {
-     height: 100%;
-     background-color: gray;
-     background-image: url("./login_bg.jpg");
-     background-size: cover;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-   
-     .login-box {
-       width: 410px;
-       height: 345px;
-       background-color: #fff;
-       display: flex;
-       justify-content: center;
-       align-items: center;
-       text-align: center;
-       img {
-         width: 50%;
-         margin: 20px auto;
-       }
-       .el-form {
-         width: 75%;
-       }
-     }
-   }
-   </style>
-   ```
 
 
 
@@ -2932,7 +2785,7 @@ export default {
            ]
          }
        }
-     },
+     }
    ```
 
    
@@ -2954,9 +2807,7 @@ export default {
 | pattern      | 正则表达式                                                   |
 | range        | 使用min和max属性定义范围。对于字符串和数组类型，将根据长度进行比较，对于数字类型，数字不得小于min，也不得大于max。 |
 | len          | 要验证字段的确切长度，请指定len属性。对于字符串和数组类型，对length属性执行比较，对于数字类型，此属性指示数字的完全匹配，即，它可能仅严格等于len。如果len属性与最小和最大范围属性组合，则len优先。 |
-| enum         | 要从可能值列表中验证值，请使用带枚举属性的枚举类型，列出该字段的有效值，例如： var descriptor = {   role: {type: "enum", enum: ['admin', 'user', 'guest']} } |
-
-
+| enum         | 要从可能值列表中验证值，请使用带枚举属性的枚举类型，列出该字段的有效值，例如： var descriptor = {   role: {type: "enum", enum: ['admin', 'user', 'guest']} |
 
 
 
@@ -3024,14 +2875,13 @@ export default {
          // } else {
          //   return callback(new Error('请无条件遵守规矩'))
          // }
-   
          value ? callback() : callback(new Error('请无条件遵守规矩'))
        }
      }
    ```
-
-   > 注意：校验方法需要在return语句的“前边”设置
-
+   
+> 注意：校验方法需要在return语句的“前边”设置
+   
 3. 通过validator使用该自定义校验方法
 
    ```js
@@ -3104,8 +2954,6 @@ export default {
 3. 请求数据为下图json格式
 
 ![1563865009333](Image/img(online)/1563865009333.png)
-
-![1563865063685](Image/img(online)/1563865063685.png)
 
 
 
@@ -3213,8 +3061,6 @@ router.beforeEach((to, from, next) => {
 
 极验是一款人机交互页面效果系统，用户的**行为**没有满足要求，不给与下一步执行的机会
 
-大致效果如下，用户如果没有把目标滑到指定区域就禁止下一步操作
-
 之前传统网站，用户输入 **用户名**、**密码**、**验证码**  就可以登录系统了
 
 这样的网站不安全，有网络**爬虫**技术，可以通过“后端程序代码” **模拟账号**登录，进而获得我们网站的信息
@@ -3225,37 +3071,7 @@ router.beforeEach((to, from, next) => {
 
 
 
-好处：防止账号暴力破解，不给模拟登录机会，增强系统的安全性
-
-
-
-### 获取并导入js脚本
-
-`目标`：
-
-​	知道如何获取gt.js文件
-
-`步骤`：
-
-1. 获取好的gt.js文件放到  src/assets/js  目录下
-
-2. 对不遵守eslint规范的代码稍加改动
-
-
-`说明`：
-
-eslint标准规范中有如下要求：
-
-1. 函数传递参数，不能直接传递boolean值，相反可以声明变量传递(gt.js文件中一共有4处，注意调整)
-
-2. 要通过 “===”恒等于 方式 判断两个字是否相等(上例为了使得数据类型是严格的字符串，额外调用了toString()方法，请注意)
-3. 不要设置**空的**回调函数实参，没有意义
-
-
-
 ### 流程分析
-
-`结论`：
 
 开发人机验证步骤：
 
@@ -3536,12 +3352,6 @@ elementui组件库有提供有限的图标供使用，我们可以通过  **阿�
 
 # 首页搭建
 
-## 品字页面绘制
-
-`目标`：
-
-​	绘制后台品字页面结构
-
 `具体代码`：
 
 ```vue
@@ -3574,10 +3384,6 @@ elementui组件库有提供有限的图标供使用，我们可以通过  **阿�
 
 
 ## 头部制作
-
-`目标`：
-
-​	把后台头部各个元素效果实现出来
 
 模板内容：
 
@@ -3626,48 +3432,9 @@ computed: {
 </script>
 ```
 
-css样式：
-
-```css
-  .el-aside {
-    background-color: rgb(50, 55, 69);
-  }
-  .el-header {
-    background-color: white;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 10px 0 9px;
-    min-width: 950px;
-    #lt {
-      height: 100%;
-      width: 40%;
-      background-color: white;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-    }
-    #rt {
-      height: 100%;
-      width: 50%;
-      background-color: white;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      .el-dropdown-link {
-        display: flex;
-        align-items: center;
-      }
-    }
-  }
-```
-
 
 
 ## 左侧导航
-
-### 菜单制作
-
-`解读`：
 
 el-menu组件标签
 
@@ -3690,49 +3457,9 @@ el-menu组件标签
 >
 > ​           在子菜单上后期可以设置请求#锚点信息，单击后也执行具体的导航
 
-`具体代码`：
-
-```html
-<el-aside width="200px">
-   <el-menu background-color="#323745" text-color="#fff" active-text-color="#ffd04b">
-      <el-menu-item index="1">
-        <i class="el-icon-location"></i>
-        <span slot="title">首页</span>
-      </el-menu-item>
-      <el-submenu index="2">
-        <template slot="title">
-          <i class="el-icon-menu"></i>
-          <span>内容管理</span>
-        </template>
-        <el-menu-item index="2-1">发布文章</el-menu-item>
-        <el-menu-item index="2-2">文章列表</el-menu-item>
-        <el-menu-item index="2-3">评论列表</el-menu-item>
-        <el-menu-item index="2-4">素材管理</el-menu-item>
-      </el-submenu>
-      <el-menu-item index="3">
-        <i class="el-icon-location"></i>
-        <span slot="title">粉丝管理</span>
-      </el-menu-item>
-      <el-menu-item index="4">
-        <i class="el-icon-location"></i>
-        <span slot="title">账户管理</span>
-      </el-menu-item>
-
-    </el-menu>
-</el-aside>
-```
-
 `注意`：
 
 ​	给各个顶级菜单设置**图标**
-
-
-
-### 菜单制作(细节)
-
-有一些导航菜单宽度略小(199px)，真实是200px
-
-宽度细节处理，给相关的**el-menu-item**  和 **el-submenu** 组件设置统一宽度样式width:200px
 
 
 
@@ -3822,39 +3549,22 @@ el-dropdown-item本身是一个“组件”，组件是组多html标签的集合
 
 ## 右侧Welcome页面显示
 
-`步骤`：
+在router.js中具体路由配置：
 
-1. 创建views/welcome/index.vue组件
+```js
+    {
+      path: '/home',
+      name: 'home',
+      component: () => import('@/views/home'),
+      redirect: '/welcome', // 路由重定向
+      children: [
+        // 欢迎页面子路由配置
+        { path: '/welcome', name: 'welcome', component: () => import('@/views/welcome') }
+      ]
+    }
+```
 
-2. 给welcome创建路由
-
-   具体要给welcome创建为home的**子级路由**(路由嵌套)
-
-   ```
-   当前项目组件的关系
-   App.vue  是根基组件
-   	home  是中间组件
-   		welcome  最内部组件
-   		article  最内部组件
-   		account  最内部组件
-   ```
-
-   在router.js中具体路由配置：
-
-   ```js
-       {
-         path: '/home',
-         name: 'home',
-         component: () => import('@/views/home'),
-         redirect: '/welcome', // 路由重定向
-         children: [
-           // 欢迎页面子路由配置
-           { path: '/welcome', name: 'welcome', component: () => import('@/views/welcome') }
-         ]
-       }
-   ```
-
-   > 注意：虽然有redirect重定向，component也需要保留
+> 注意：虽然有redirect重定向，component也需要保留
 
 3. 给home/index.vue配置子组件显示占位符
 
@@ -3863,32 +3573,6 @@ el-dropdown-item本身是一个“组件”，组件是组多html标签的集合
      <!--给子组件设置占位符-->
      <router-view></router-view>
    </el-main>
-   ```
-
-
-
-## git收尾
-
-0. 创建并切换分支进来
-
-   ```bash
-   git checkout -b xxx
-   ```
-
-1. 给login分支做add/commit/push推送动作
-
-   ```bash
-   git add .
-   git commit -m '登录功能开发完毕'
-   git push top87 home
-   ```
-
-2. 切换到master分支，使得home被合并，然后push  master分支到远程仓库
-
-   ```bash
-   git checkout master
-   git merge home
-   git push top87 master
    ```
 
 
@@ -4346,17 +4030,11 @@ this.$http.get(xxx)
 
 # watch监听器
 
-watch监听：
-
 vue的data数据部分可以被监听，数据一旦发生变化马上可以感知到，并做相关处理
-
-
 
 watch 监听的特点：监听到某个数据的变化后，侧重于**做某件事情**；
 
 只要被监听的数据发生了变化，会自动触发 watch 中指定的处理函数；
-
-
 
 语法：
 
@@ -4398,8 +4076,6 @@ watch:{
 1. 给密码输入框组件设置ref属性
 
    这样通过**this.$refs.xxx**的方式可以找到
-
-   ![1562141151880](Image\img(online)/1562141151880.png)
 
 2. 设置监听器
 
