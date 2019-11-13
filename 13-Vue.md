@@ -3344,91 +3344,6 @@ elementui组件库有提供有限的图标供使用，我们可以通过  **阿�
 
 
 
-
-# 首页搭建
-
-`具体代码`：
-
-```vue
-<template>
-  <el-container>
-    <el-aside width="200px">Aside</el-aside>
-    <el-container>
-      <el-header>Header</el-header>
-      <el-main>Main</el-main>
-    </el-container>
-  </el-container>
-</template>
-
-<style lang="less" scoped>
-.el-container {
-  height:100%;
-  .el-aside {
-    background-color: #323745;
-  }
-  .el-header{
-    background-color: orange;
-  }
-  .el-main{
-    background-color: #f2f3f5;
-  }
-}
-</style>
-```
-
-
-
-## 头部制作
-
-模板内容：
-
-```html
-<el-header>
-  <div id="lt">
-    <i class="el-icon-s-fold"></i>
-    <span>江苏传智播客教育科技股份有限公司</span>
-  </div>
-
-  <div id="rt">
-    <el-input type="text" placeholder="请输入搜索的文章内容" style="width:300px;">
-      <i slot="prefix" class="el-input__icon el-icon-search"></i>
-    </el-input>
-    <span style="margin:0 10px;">消息</span>
-    <el-dropdown>
-      <span class="el-dropdown-link">
-        <img :src="photo" alt width="40" height="40">
-        {{name}}
-        <i class="el-icon-arrow-down el-icon--right"></i>
-      </span>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>个人信息</el-dropdown-item>
-        <el-dropdown-item>github地址</el-dropdown-item>
-        <el-dropdown-item>退出</el-dropdown-item>
-      </el-dropdown-menu>
-    </el-dropdown>
-  </div>
-</el-header>
-```
-
-行为提供头像 和 名称：
-
-```html
-<script>
-export default {
-computed: {
-  name () {
-    return JSON.parse(window.sessionStorage.getItem('userinfo')).name
-  },
-  photo () {
-    return JSON.parse(window.sessionStorage.getItem('userinfo')).photo
-  }
-}
-}
-</script>
-```
-
-
-
 ## 左侧导航
 
 el-menu组件标签
@@ -3540,36 +3455,6 @@ el-dropdown-item本身是一个“组件”，组件是组多html标签的集合
 <el-dropdown-item @click.native="logout()">退出</el-dropdown-item>   // 事件操作失败
 ```
 
-
-
-## 右侧Welcome页面显示
-
-在router.js中具体路由配置：
-
-```js
-    {
-      path: '/home',
-      name: 'home',
-      component: () => import('@/views/home'),
-      redirect: '/welcome', // 路由重定向
-      children: [
-        // 欢迎页面子路由配置
-        { path: '/welcome', name: 'welcome', component: () => import('@/views/welcome') }
-      ]
-    }
-```
-
-> 注意：虽然有redirect重定向，component也需要保留
-
-3. 给home/index.vue配置子组件显示占位符
-
-   ```html
-   <el-main>
-     <!--给子组件设置占位符-->
-     <router-view></router-view>
-   </el-main>
-   ```
-
  
 
 # 文章列表
@@ -3639,91 +3524,6 @@ Vue中属性绑定布尔值true，可以通过如下两种方式
 
 
 
-## 搜索区域
-
-### 卡片区和空表单
-
-article/index.vue中要设置如下代码：
-
-```vue
-<template>
-  <div>
-    <!--搜索卡片区-->
-    <el-card class="box-card">
-      <!--命名插槽，头部内容-->
-      <div slot="header" class="clearfix">
-        <span>全部图文</span>
-      </div>
-      <!--匿名插槽，内容主体-->
-      <div class="text item">
-        <!--el-form搜索表单区域-->
-        <el-form ref="searchFormRef" :model="searchForm" label-width="100px">
-          <el-form-item label="文章状态："></el-form-item>
-          <el-form-item label="频道列表："></el-form-item>
-          <el-form-item label="时间选择："></el-form-item>
-        </el-form>
-      </div>
-    </el-card>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'ArticleList',
-  data () {
-    return {
-      // 搜索表单数据对象
-      searchForm: {}
-    }
-  }
-}
-</script>
-```
-
-`说明`：
-
-​	el-card可以创建一个白底的**卡片区域**
-
-​	内部第一个div是卡片的头信息区域、第二个div是卡片的主体内容区域
-
-
-
-### 状态表单域
-
-`步骤`：
-
-1. 在article/index.vue文章状态表单域绘制如下代码：
-
-```html
-<el-form-item label="文章状态：">
-  <el-radio v-model="searchForm.status" label="">全部</el-radio>
-  <el-radio v-model="searchForm.status" label="0">草稿</el-radio>
-  <el-radio v-model="searchForm.status" label="1">待审核</el-radio>
-  <el-radio v-model="searchForm.status" label="2">审核通过</el-radio>
-  <el-radio v-model="searchForm.status" label="3">审核失败</el-radio>
-  <el-radio v-model="searchForm.status" label="4">已删除</el-radio>
-</el-form-item>
-```
-
-> `说明`：
->
-> 1. v-model：双向绑定，获取被选中的项目  或 设置哪个项目选中
->
-> 2. label：用于设置当前单选按钮的**value**值情况
-
-2. data成员：
-
-```js
-return {
-  // 搜索表单数据对象
-  searchForm: {
-    status: '0'  // 文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除，不传为全部
-  }
-}
-```
-
-
-
 ### 频道表单域
 
 `步骤`：
@@ -3741,7 +3541,6 @@ return {
     ></el-option>
   </el-select>
 </el-form-item>
-
 ```
 
 > `说明`：
@@ -3811,13 +3610,9 @@ el-date-picker组件的v-model="timetotime"接收到的是一个**数组**信息
 
 
 
-### watch监听器(500)
-
-`什么是watch监听器`：
+### watch监听器
 
 监听器就是一致机制，可以监测vue中data数据的变化，并做相关处理
-
-关键字：watch
 
 `语法`：
 
@@ -3856,12 +3651,6 @@ watch:{
 2. 一般this可以调用的成员属性都可以监听，例如computed计算属性，但是data作为主要使用对象
 3. 深度监听，使用**handler**+**deep**关键字达成
 
-
-
-`目标`：
-
-​	利用watch监听器把接收到的日期数组信息拆分到searchForm的**begin_pubdate**和**end_pubdate**里边
-
 `步骤`：
 
 1. 给data  searchForm增加两个成员begin_pubdate和end_pubdate（搜索文章发布的开始和结束时间）
@@ -3895,7 +3684,6 @@ watch:{
    },
    ```
 
-   现在时间选择器的信息就会自动填充给begin_pubdate 和 end_pubdate了
 
 `注意`：
 
@@ -3965,15 +3753,7 @@ watch:{
 
 
 
-## 文章列表区域
-
 ### 配置token
-
-用户第一次登录系统时，服务器端返回了一个身份秘钥信息(token)，表明当前用户有 资格、权利 访问服务器，
-
-token之后通过sessionStorage存储在浏览器中，后续再向服务器发送请求，需要携带token，用以亮明身份。
-
-
 
 在main.js的axios的**请求拦截器**中给配置token
 
@@ -3995,16 +3775,10 @@ axios.interceptors.request.use(function (config) {
 })
 ```
 
-
-
 `注意`：
 
 1. 浏览器中并不是始终存在userinfo的用户信息的，也并不是每次请求都要传递token秘钥信息，故要把包含着token的userinfo获得出来，判断存在再赋予给axios，不做判断贸然使用会有错误
 2. 根据API接口提示，token信息前边需要  “Bearer ”标志，Bearer后边有<font color=red>空格</font>
-
-
-
-如果token秘钥没有配置好，获取文章列表相关axios请求会报如下错误信息：
 
 
 
@@ -4054,39 +3828,23 @@ main.js文件是项目的主入口文件，非常重要，里边的内容如果�
    import '@/utils/ax.js'
    ```
 
-`注意`：
-
-1. ax.js中要再次Vue引入进来
-
-2. 虽然两个文件(main.js  和 ax.js)都有引入Vue，但是系统运行的时候它们是一个对象，运行在不同文件中而已
-
-
-
-注意：
-
-​	如果axios请求有报401错误
-
-​	原因：token在服务器端(2个小时)已经过期了，重新登录系统即可
-
 
 
 ### 获取文章列表信息
 
 `步骤`：
 
-1. 创建data成员
+```js
+articleList: [], // 文章列表
+searchForm:{
+  ……
+  // 增加分页相关成员
+  page: 1, // 默认获取第1页数据
+  per_page: 10 // 每页返回10条记录
+}
+```
 
-   ```js
-   articleList: [], // 文章列表
-   searchForm:{
-     ……
-     // 增加分页相关成员
-     page: 1, // 默认获取第1页数据
-     per_page: 10 // 每页返回10条记录
-   }
-   ```
 
-   
 
 2. 在methods里边创建  getArticleList()方法，axios去获得文章列表信息
 
@@ -4115,17 +3873,7 @@ main.js文件是项目的主入口文件，非常重要，里边的内容如果�
    this.getArticleList()
    ```
 
-
-
-`注意`：
-
-1. 如果没有文章数据信息，请通过**公共账号(手机：13911111111；验证码：246810)**登录系统获取，后期开发完毕添加文章再使用自己的账号
-
-2. 状态需要设置为“全部”，status=''
-
-    
-
-
+  
 
 ### table表格-文章列表展示
 
@@ -4356,6 +4104,773 @@ stData.row.cover.images[0]：代表当前被遍历出来的每条记录的图标
         })
     },
 ```
+
+
+
+# 文章列表
+
+el-pagination分页组件属性解读：
+
+```html
+<el-pagination
+               @size-change="handleSizeChange"
+               @current-change="handleCurrentChange"
+               :current-page="currentPage4"
+               :page-sizes="[100, 200, 300, 400]"
+               :page-size="100"
+               layout="total, sizes, prev, pager, next, jumper"
+               :total="400"
+               >
+</el-pagination>
+```
+
+> ​          @size-change="handleSizeChange"  // 每页显示条数变化的处理事件，需要methods方法配合
+>
+> ​          @current-change="handleCurrentChange" // 当前页码变化的回调处理事件，需要methods方法配合
+>
+> ​          :current-page="currentPage4" // 默认当前页码 1
+>
+> ​          :page-sizes="[100, 200, 300, 400]" // 下拉列表，设计每页显示条数的
+>
+> ​          :page-size="100" // 默认每页显示条数
+>
+> ​          layout="total, sizes, prev, pager, next, jumper" // 分页元素构成设计
+>
+> ​          :total="400" // 记录总条数
+
+
+
+### 应用
+
+步骤：
+
+1. 应用el-pagination组件，并设置相关属性
+
+   ```html
+   <el-pagination
+     @size-change="handleSizeChange"
+     @current-change="handleCurrentChange"
+     :current-page="searchForm.page"
+     :page-sizes="[10, 15, 20, 40]"
+     :page-size="searchForm.per_page"
+     layout="total, sizes, prev, pager, next, jumper"
+     :total="tot"
+   ></el-pagination>
+   ```
+
+   > 以上 current-page、page-size、total 的值来自**data**声明的
+   >
+   > @size-change和@current-change 需要在**methods**中声明空方法
+
+
+
+
+2. 页码 和 每页条数  变化处理更新
+
+   在methods中声明相关方法
+
+   ```js
+   // 当前页码变化的回调处理
+   handleCurrentChange (val) {
+     // val: 变化后页码的值
+     // console.log(val)
+     // 把val赋予给searchForm.page成员
+     this.searchForm.page = val
+     // 根据变化后的条件，重新获得记录信息
+     this.getArticleList()
+   },
+     // 每页数据记录条数变化的回调处理
+     handleSizeChange (val) {
+       // val: 变化后的页码条数
+       // console.log(val)
+       // 把val赋予给searchForm.per_page
+       this.searchForm.per_page = val
+       // 根据变化后的per_page重新获取数据
+       this.getArticleList()
+     },
+   ```
+
+   
+
+3. 相关data数据支持
+
+   ```js
+   data () {
+     return {
+       searchForm: {
+         page: 1,
+         per_page: 10
+       },
+       tot: 0 // 总记录条数
+     }
+   },
+   ```
+
+   
+
+4. 设置css样式，使得分页有向上的外边距
+
+   ```css
+   .el-pagination{
+     margin-top:15px;
+   }
+   ```
+
+
+
+## 筛选过滤
+
+`实现`：
+
+​	给el-radio单选按钮升级处理，通过el-radio-group组别圈选设置
+
+​	以便给el-radio-group组别设置change内容改变事件
+
+​	再者多个radio的v-model 可以通过group设置一次即可
+
+```html
+<el-form-item label="文章状态：">
+  <el-radio-group v-model="searchForm.status" @change="getArticleList()">
+  	<el-radio label>全部</el-radio>
+  	<el-radio label="0">草稿</el-radio>
+  	<el-radio label="1">待审核</el-radio>
+  	<el-radio label="2">审核通过</el-radio>
+  	<el-radio label="3">审核失败</el-radio>
+  	<el-radio label="4">已删除</el-radio>
+  </el-radio-group>
+</el-form-item>
+```
+
+
+
+为什么要使用group做分组
+
+答：该group可以统一给多个radio单选按钮设置change事件，当一个项目被选中后，可以被感知，之后可以调用getArticleList()方法，根据变化后的文章状态获取对应的文章列表数据
+
+
+
+87期同学通过watch监听器实现的状态筛选文章：
+
+```html
+<el-form-item label="文章状态：">
+  <el-radio-group v-model="searchForm.status" @change="getArticleList()">
+  	<el-radio label>全部</el-radio>
+  	<el-radio label="0">草稿</el-radio>
+  	<el-radio label="1">待审核</el-radio>
+  	<el-radio label="2">审核通过</el-radio>
+  	<el-radio label="3">审核失败</el-radio>
+  	<el-radio label="4">已删除</el-radio>
+  </el-radio-group>
+</el-form-item>
+```
+
+
+
+```js
+  watch: {
+    // status变化的回调处理
+    'searchForm.status': function (newv, oldv) {
+      // 更新相关文章即可
+      this.getArticleList()
+    },
+  }
+```
+
+
+
+### 频道下拉列表筛选
+
+`实现`：
+
+给频道的下拉列表组件设置change事件，使得项目变化被感知，并根据变化后频道获得文章
+
+```html
+<el-select 
+           v-model="searchForm.channel_id" 
+           placeholder="请选择" 
+           clearable 
+           @change="getArticleList()" >
+```
+
+
+
+### 时间范围筛选
+
+`实现`：
+
+在timetotime的watch监听器的最后设置getArticleList()方法调用，获取最新的文章
+
+```js
+  watch: {
+    // 对timetotime成员进行监听
+    timetotime (newval) {
+      // 把newval的值拆分分别给到 begin_pubdate和end_pubdate 里边
+      if (newval) {
+        this.searchForm.begin_pubdate = newval[0]
+        this.searchForm.end_pubdate = newval[1]
+      } else {
+        this.searchForm.begin_pubdate = ''
+        this.searchForm.end_pubdate = ''
+      }
+      // 根据最新的时间范围，获得对应文章信息
+      this.getArticleList()
+    }
+  },
+```
+
+
+
+汇总：
+
+```js
+  // 对searchForm的各个成员多深度监听，统一筛选获得文章，其他地方的getArticleList都可以省略了
+	watch:{
+    searchForm: {
+      handler: function (newv, oldv) {
+        this.getArticleList()
+      },
+      deep: true
+    }
+  }
+```
+
+
+
+## 401状态码的处理
+
+axios向服务器端发送请求时有两种情况会出现401状态码(unauthorized未授权)：
+
+1. 服务端要求传递token信息，而实际没有传递
+2. 我们有传递token到达服务器端，但由于时间比较久，这个token在服务器中已经过期了(服务器存储token有效期时间为2个小时)
+
+总之，服务器端有些api接口要求传递token，我们的token失效或没有传递，就会报401错误
+
+第1种情况，已经在**axios请求拦截器**中做token传递操作了
+
+第2种情况，可以这样设置，在**axios响应拦截器**中判断请求状态如果是401，就强制用户重新登录系统
+
+
+
+`第2中情况处理实现`：
+
+在axios的响应拦截器中，判断错误码等于401就强制登录
+
+```js
+// 引入路由
+import router from '@/router'
+…………
+// axios配置响应拦截器
+axios.interceptors.response.use(function (response) {
+  // response：服务器端返回的数据信息，与 then(result=>{}) 的result一致
+  return response
+}, function (error) {
+  // 判断响应状态码如果登录401，就强制登录
+  // error对象
+  // error.response.status======401
+  // console.dir(error)
+  if (error.response.status === 401) {
+    // 强制登录
+    router.push({ name: 'login' })
+  }
+  return Promise.reject(error)
+})
+```
+
+`注意`：
+
+路由对象.push(xxx) 可以实现编程式导航
+
+路由对象：在组件中是  this.$router ，在main.js中就是router，要在ax.js中对路由模块做导入才可以使用
+
+
+
+# 发布文章
+
+创建src/views/articleadd/articleadd.vue 组件文件
+
+```vue
+<template>
+    <div>发表文章展示</div>
+</template>
+
+<script>
+export default {
+  name: 'ArticleAdd'
+}
+</script>
+
+<style lang="less" scoped>
+</style>
+```
+
+1. 在src/router/index.js中创建路由(home子路由)
+
+   ```js
+   { 
+     path: '/articleadd', 
+     name: 'articleadd', 
+     component: () => import('@/views/articleadd/articleadd.vue') 
+   }
+   ```
+
+   
+
+2. 在src/views/home/index.vue中为发表文章创建导航路由菜单
+
+   ```html
+   <el-menu-item index="/articleadd">发布文章</el-menu-item>
+   ```
+
+
+## 绘制表单
+
+`实现`：
+
+绘制 **标题**(普通输入框)、**内容**(普通输入框)、**封面**(单选按钮)、**频道**(下拉列表) 4个表单域，
+
+其中频道的创建 与 文章列表页面完全一致
+
+1. ​	创建data成员channelList
+2. ​	methods方法getChannelList()
+3. ​	created调用getChannelList()
+4. el-select组件应用
+
+具体代码如下：
+
+```html
+<template>
+  <div>
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>发表文章</span>
+      </div>
+      <div class="text item">
+        <el-form ref="addForm" :model="addForm" label-width="120px">
+          <el-form-item label="标题：">
+            <el-input v-model="addForm.title"></el-input>
+          </el-form-item>
+          <el-form-item label="内容：">
+            <el-input v-model="addForm.content"></el-input>
+          </el-form-item>
+          <el-form-item label="封面：">
+            <el-radio-group v-model="addForm.cover.type">
+              <el-radio :label="1">单图</el-radio>
+              <el-radio :label="3">三图</el-radio>
+              <el-radio :label="0">无图</el-radio>
+              <el-radio :label="-1">自动</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="频道：">
+             <el-select
+              v-model="addForm.channel_id"
+              placeholder="请选择"
+              clearable
+            >
+              <el-option
+                v-for="item in channelList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+  </div>
+</template>
+```
+
+```html
+<script>
+export default {
+  name: 'ArticleAdd',
+  data () {
+    return {
+      channelList: [], // 接收频道列表数据
+      addForm: {
+        title: '', // 文章标题
+        content: '', // 文章内容
+        cover: {
+          type: 0, // 封面类型 -1:自动，0-无图，1-1张，3-3张
+          images: []
+        },
+        channel_id:'' // 频道
+      }
+    }
+  },
+  created () {
+    this.getChannelList()
+  },
+  methods: {
+    // 获取频道列表数据
+    getChannelList () {
+      var pro = this.$http.get('/channels')
+      pro
+        .then(result => {
+          if (result.data.message === 'OK') {
+            this.channelList = result.data.data.channels
+          }
+        })
+        .catch(err => {
+          return this.$message.error('获得文章频道错误：' + err)
+        })
+    }
+  }
+}
+</script>
+```
+
+
+
+## 使用富文本编辑器
+
+github中有一个名称awesome(厉害、强大的) 的资源汇总页面，把与计算机项目开发有关系的技术、文章、话题等给罗列出来了
+
+想要什么资源都可以到其中去获取
+
+github里边awesome的直接请求地址：https://github.com/sindresorhus/awesome
+
+vue的话题汇总：vuejs/awesome-vue（github） https://github.com/vuejs/awesome-vue#readme 
+
+我们要使用富文本编辑器名称为：vue-quill-editor  https://github.com/surmon-china/vue-quill-editor 
+
+
+
+富文本编辑器应用步骤：
+
+1. 安装 yarn add vue-quill-editor
+
+2. 在应用组件中引入3个css文件
+
+   ```js
+   import 'quill/dist/quill.core.css'
+   import 'quill/dist/quill.snow.css'
+   import 'quill/dist/quill.bubble.css'
+   ```
+
+   
+
+3. 在应用组件中引入quillEditor模块
+
+   ```js
+   // 通过es6按需导入方式 导入需要的组件模块
+   import { quillEditor } from 'vue-quill-editor'
+   ```
+
+   
+
+4. 在应用组件中注册 quillEditor模块 为具体的组件
+
+   ```js
+     components: {
+       // 简易成员赋值 quillEditor: quillEditor
+       // 组件使用两种方式：<quillEditor></quillEditor> 或 <quill-editor></quill-editor>
+       quillEditor
+     },
+   ```
+
+   
+
+5. 应用编辑器组件即可
+
+   ```html
+   有两种方式引用编辑器组件：
+   <quillEditor v-model="addForm.content"></quillEditor>
+   <quill-editor v-model="addForm.content"></quill-editor>
+   ```
+
+   > <quillEditor>  或  <quill_editor>
+
+6. 给编辑器区域设置高度(500)
+
+   ```html
+   <style lang="less" scoped>
+   /*给富文本编辑器设置内容区域高度*/
+   /* .ql-editor{   .ql-editor[data-v-xxx]不对了*/
+   /*deep：深度作用选择器，使得编译后的效果为：.el-form[data-v-xx] .ql-editor{}*/
+   .el-form /deep/ .ql-editor{
+    height:200px;
+   }
+   </style>
+   ```
+
+   > deep是深度作用选择器的体现(还可以使用 >>>)
+   >
+   > 注意：在articleadd/index.vue的结尾处重新创建一个**没有scoped属性**的style设置编辑器高度样式
+
+## 深度作用选择器
+
+当前组件A 引入一个其他组件B做应用
+
+A组件由于scoped作用，本身的全部html标签都会包含一个 data-v-xxx 的属性名称，使得css样式达到私有效果
+
+被使用的组件B由于某些原因，编译解析后各个html标签**不会**形成 data-v-xxx 的属性，这样在组件A中给组件B设置样式会导致无效
+
+解决：
+
+通过深度作用选择器/deep/ 给B组件的某些标签设置样式
+
+```
+.a /deep/ .b { /* ... */ }
+```
+
+a是组件A的选择器，b是组件B的选择器，它们会形成如下效果
+
+```css
+.a[data-v-f3f3eg9] .b { /* ... */ }
+```
+
+这样.b的css样式就生效了
+
+
+
+深度作用选择器： https://vue-loader.vuejs.org/zh/guide/scoped-css.html#
+
+`注意`：
+
+1. 某些情况下>>>符号有可能无法正确解析，可以替换为别名  /deep/ 或 ::v-deep
+2. 深度作用选择器的**左边**必须是当前组件的css选择器，**右边**是子组件标签选择器
+
+
+
+## 表单校验
+
+`步骤`：
+
+1. 给el-form设置 :rules="addFormRules" 属性
+
+   ```html
+   <el-form ref="addFormRef" :model="addForm" label-width="120px" 
+            :rules="addFormRules">
+   ```
+
+   > 注意：  :rules 带“冒号”属性绑定设置
+
+2. 给各个表单域项目配置prop   el-form-item prop="xxx"
+
+   ```html
+   <el-form-item label="标题：" prop="title">
+   <el-form-item label="内容：" prop="content">
+   <el-form-item label="频道：" prop="channel_id">
+   ```
+
+   
+
+3. 在data中配置具体校验规则
+
+   ```js
+   // 表单校验规则
+   addFormRules: {
+     title: [
+       { required: true, message: '标题必填' },
+       // 后端要求title长度介于5-30个字符
+       {
+         min: 5,
+         max: 30,
+         message: '标题长度介于5-30个字符'
+       }
+     ],
+     content: [{ required: true, message: '内容必填'}],
+     channel_id: [{ required: true, message: '频道必选'}]
+   },
+   ```
+
+## 存储数据
+
+`步骤`：
+
+1. 创建发布按钮
+
+   ```html
+   <el-form-item>
+     <el-button type="primary" @click="addarticle(false)">发布</el-button>
+     <el-button @click="addarticle(true)">存入草稿</el-button>
+   </el-form-item>
+   ```
+
+   > 按钮click事件要去传入 true/false参数，表示 存入草稿 或 正式发布
+
+2. 制作发布文章的methods方法
+
+   ```js
+   // 添加文章-收集数据存储
+   // flag:true  发布一个草稿文章
+   // flag:false 发布一个正式文章
+   addarticle (flag) {
+     // 表单校验
+     this.$refs.addFormRef.validate(valid => {
+       if (valid) {
+         // 把被添加的文章信息通过axios传递给服务器端存储
+         // axios发起post请求的时候，不仅可以传递post数据还可以传递get请求字符串信息
+         // this.$http.post(地址,post数据,get请求字符串信息)
+         var pro = this.$http.post('/articles', this.addForm, {
+           params: { draft: flag }
+         })
+         pro
+           .then(result => {
+             this.$message.success('文章发布成功')
+             this.$router.push({ name: 'article' })
+           })
+           .catch(err => {
+             return this.$message.error('发布文章失败' + err)
+           })
+       }
+     })
+   },
+   ```
+
+   > axios进行post请求的同时，本身通过第3个参数还可以传递get请求字符串信息
+
+
+
+注意：
+
+在addForm表单里边要求设置addForm.cover.type的类型为整型的，并且要设置**为0**，表示无图,切记切记！
+
+```js
+cover: {
+  type: 0,  // 整型的0
+  images: []
+},
+```
+
+
+
+# 文章删除
+
+后端服务器给我们返回的文章id已经大大超过了js可以表达的整型范畴，因而使用的时候会发生**变型**
+
+例如：
+
+​	本质id为：1194555075163324416
+
+​	变型后为：1194555075163324400
+
+​	通过console.log(1194555075163324416 )输出即可看出
+
+答：文章的id是整型的信息，并且已经超过了javascript语言可以表达的最大整型范畴
+
+```js
+// javascript中可以表达的最大整型可以通过如下代码获得
+console.log( Number.MAX_SAFE_INTEGER )
+// 输出：9007199254740991
+```
+
+首次文章删除失败原因：
+
+文章的id由于太大了，变型为一个其他信息了，导致后端无法删除该记录了
+
+## 大数字处理依赖包介绍
+
+项目中如果使用一些超出javascript语言限制的大整型数字信息，该数字会变形为其他信息，为了避免产生问题，可以通过json-bigint做转换，使得大整型数字可以正常使用，这就是json-bigint的作用
+
+`原理`：
+
+​	json-bigint会把大整型的数字信息拆分个小段信息存储到数组的各个元素中，待使用的时候再拼接到一起变为字符串
+
+github网站相关介绍： https://github.com/sidorares/json-bigint 
+
+
+
+json-bigint使用示例：
+
+```js
+var JSONBig = require('json-bigint');  // 需要先安装 yarn add json-bigint
+var str = '{ "value" : 9223372036854775807, "v2": 123 }';
+
+var obj = JSONBig.parse(str) // 字符串--->对象
+console.log(obj.value) // 9223372036854775807(正确)
+
+var obj2 = JSON.parse(str) // 字符串--->对象
+console.log(obj2.value) // 9223372036854776000(错误)
+```
+
+结论：
+
+​	json-bigint需要对一个包含大整型信息的“**字符串**”做转换处理变为对象，这个对象可以获得正确的大数字信息
+
+
+
+## 大数字具体处理
+
+服务器给客户端返回数据的第一手处理者是 “转换器( transformResponse )”，转换器处理完毕再交给响应拦截器使用，故要对大数字信息做处理，下手点是"转换器"(响应拦截器获得数据已经是变形后的内容了)
+
+> 本质上：服务器返回信息的类型是“字符串”，要经过转换器做JSON.parse()转化处理，所以响应拦截器接收到的是对象
+
+
+
+`步骤`：
+
+1. 给项目安装工具依赖包   
+
+   ```bash
+   yarn add json-bigint
+   ```
+
+   
+
+2. 在src/utils/ax.js中引入json-bigint模块，对服务器返回的信息做处理，具体通过axios的 “数据转换”  机制实现
+
+   ```js
+   // 引入json-bigint
+   import JSONbig from 'json-bigint'
+   ……
+   // 对服务器端返回来的数据信息做处理(尤其是大数字的处理)
+   // axios配置"数据转换器"
+   axios.defaults.transformResponse = [function (data) {
+     // 服务器端返回给客户端的data数据主要就两种类型
+     // 1) 字符串对象  '{xx:xx...}'
+     // 2) 空字符串   ''
+     // 在此处要利用JSONbig对返回的信息加以处理，如果不处理，系统默认是通过JSON.parse()给处理的
+     // 这样大数字就错误了
+     if (data) {
+       return JSONbig.parse(data)
+     } else {
+       return data
+     }
+   }]
+   ```
+
+   > 注意：
+   >
+   > 上述数据转换一定要设置else，以便对空字符串的做处理，因为服务器有时候会返回空字符串信息
+
+3. 给文章列表的删除按钮设置del()删除事件，同时传递被删除文件的id
+
+   ```html
+   <el-button type="danger" size="mini" @click="del(stData.row.id)">删除</el-button>
+   
+   ```
+
+4. 在methods里边定义del()方法实现删除逻辑
+
+   ```js
+   // 删除文章
+   del (id) {
+     this.$confirm('确认要删除该数据么?', '删除', {
+       confirmButtonText: '确定',
+       cancelButtonText: '取消',
+       type: 'warning'
+     }).then(() => {
+       let pro = this.$http.delete(`/articles/${id}`)
+       pro
+         .then(result => {
+           this.$message.success('文章删除成功!')
+         	// 更新删除的文章
+           this.getArticleList()
+         })
+         .catch(err => {
+           return this.$message.error('删除文章错误：' + err)
+         })
+     }).catch(() => { })
+   },
+   ```
+
+
+`注意`：
+
+​	json-bigint处理的是**字符串类型**的信息，大数字给处理，普通信息不给与处
 
 
 
@@ -4676,22 +5191,6 @@ module.exports = {
 webpack和webpack-dev-server在脚手架创建的项目里边已经被**封装**了，具体可以通过如下路径名找到
 
 [node_modules\@vue\cli-service\lib\commands\serve.js]()
-
-
-
-### 浏览器相关参数
-
-在vue.config.js中直接配置，例如
-
-```javascript
-module.exports = {
-  lintOnSave: false,					// 在保存代码的时候开启eslint代码检查机制
-  devServer: {							// 实时保存、编译的配置段
-    open:true,							// 自动开启浏览器
-    port: 12306							// 服务运行端口
-  }
-}
-```
 
 
 
