@@ -1029,7 +1029,6 @@ yarn add global 依赖包 ================  npm i -g 依赖包  // 全局方式�
 `安装vuecli`：
 
 ```bash
-######## yarn global add @vue/cli  // 弃用
 npm i -g @vue/cli   // 使用该方式安装
 ```
 
@@ -4845,27 +4844,7 @@ console.log(obj2.value) // 9223372036854776000(错误)
 
 4. 在methods里边定义del()方法实现删除逻辑
 
-   ```js
-   // 删除文章
-   del (id) {
-     this.$confirm('确认要删除该数据么?', '删除', {
-       confirmButtonText: '确定',
-       cancelButtonText: '取消',
-       type: 'warning'
-     }).then(() => {
-       let pro = this.$http.delete(`/articles/${id}`)
-       pro
-         .then(result => {
-           this.$message.success('文章删除成功!')
-         	// 更新删除的文章
-           this.getArticleList()
-         })
-         .catch(err => {
-           return this.$message.error('删除文章错误：' + err)
-         })
-     }).catch(() => { })
-   },
-   ```
+   
 
 
 `注意`：
