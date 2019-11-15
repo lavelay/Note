@@ -4853,6 +4853,938 @@ console.log(obj2.value) // 9223372036854776000(错误)
 
 
 
+# 修改文章
+
+1. 创建articleedit/articleedit.vue组件，  内容可以全盘复制**添加文章**组件的
+
+   注意替换字眼
+
+   > 发布/添加-->修改
+   >
+   > addForm-->editForm
+   >
+   > ArticleAdd-->ArticleEdit
+   >
+   > addarticle-->editarticle
+
+   
+   
+2. 创建路由，要求传递被修改文章aid参数 
+
+   ```js
+   { 
+     path: '/articleedit/:aid', 
+     name: 'articleedit', 
+     component: () => import('@/views/articleedit') 
+   }
+   ```
+
+3. 给文章列表页面的 修改 按钮设置单击事件，其会进行路由跳转，注意传递id参数
+
+   ```html
+   <template slot-scope="stData">
+     <el-button type="primary" size="mini" 
+                @click="$router.push(`/articleedit/${stData.row.id}`)">修改</el-button>
+     <el-button type="danger" size="mini" @click="del(stData.row.id)">删除</el-button>
+   </template>
+   ```
+
+
+
+
+## 展示修改文章内容
+
+`步骤`：
+
+1. 为了获得aid路由参数比较方便，可以通过computed计算属性做封装
+
+   ```js
+     computed: {
+       // 被修改文章id
+       aid () {
+         return this.$route.params.aid
+       }
+     },
+   ```
+
+   > 之前获得文章id参数： this.$route.params.aid
+   >
+   > 计算属性封装后： this.aid
+
+2. articleedit/index.vue中声明 getArticleByAid()的methods方法，根据aid获得被修改文章并赋予给editForm成员
+
+   ```js
+   // 根据id获得文章信息
+   getArticleByAid () {
+     let pro = this.$http.get(`/articles/${this.aid}`)
+     pro
+       .then(result => {
+       if (result.data.message === 'OK') {
+         // 把文章赋予给editForm里边
+         this.editForm = result.data.data
+       }
+   
+     })
+       .catch(err => {
+       return this.$message.error('获得文章失败！：' + err)
+     })
+   },
+   ```
+
+   
+
+3. 在created中调用 getArticleByAid()方法
+
+   ```js
+   created () {
+     this.getChannelList() // 获得频道
+     this.getArticleByAid() // 获得指定文章
+   },
+   ```
+
+现在 点击 修改按钮，修改页面已经可以把被修改文章显示出来了(表单中各个表单域的v-model都是事先准备好的)
+
+
+
+
+
+## 修改文章，存储入库
+
+`实现`：
+
+在editarticle()方法中 [对应添加文章的addarticle方法] ，把之前的post请求改为**put**修改的请求，同时在请求地址中把**aid**设置好
+
+```js
+  // 修改文章
+  // flag=true  是存入草稿
+  // flag=false  正式发布
+  editarticle (flag) {
+    // 表单校验
+    this.$refs.editFormRef.validate(valid => {
+      if (valid) {
+        // 表单校验成功
+        // get:获取操作
+          // post:添加操作
+          // put：修改操作
+          // delete：删除操作
+        let pro = this.$http.put(`/articles/${this.aid}`, this.editForm, { params: { draft: flag } })
+        pro
+          .then(result => {
+            if (result.data.message === 'OK') {
+              this.$message.success('修改文章成功！')
+              // 跳转到列表页面
+              this.$router.push('/article')
+            }
+          })
+          .catch(err => {
+            return this.$message.error('修改文章失败！：' + err)
+          })
+      }
+    })
+  },
+```
+
+
+
+## 创建独立组件
+
+`步骤`：
+
+1. 创建组件文件src/components/channel.vue，内容如下
+
+   通过**添加文章组件**把频道相关的4部分(el-select/channelList/created/getChannelList())内容复制过来
+
+   具体内容有：**el-select组件**、data成员(**chid**、**channelList**)、**getChannelList()方法**、**created**、
+
+   ​					**props**[cid]、**watch**监听器[cid、chid]
+
+   ```vue
+   <template>
+     <el-select v-model="chid" placeholder="请选择" clearable>
+       <el-option v-for="item in channelList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+     </el-select>
+   </template>
+   
+   <script>
+   // 当前子组件拥有名称为slt的事件(是父组件给声明的)
+   // 对chid做监听(watch/change)，有变化，就调用slt事件，并把chid传递给父组件
+   export default {
+     name: 'ChannelCom',
+     // 接收父组件传递过来的数据信息
+     // props:[xx,xx,xx]
+     // props:{
+     //   xx:{
+     //     type:Number/Object/Array/Boolean, 类型限制
+     //     default:0 // 给设置默认值
+     //   }
+     //   xx:{}
+     // }
+     props: {
+       // 接收父给子传递的频道信息
+       cid: {
+         default: 0 // 设置默认值
+       }
+     },
+     watch: {
+       // 对cid做监听，使得cid的信息被赋予给chid使用
+       cid: function (newV, oldV) {
+         this.chid = newV
+       },
+       // 对chid做监听
+       chid: function (newV, oldV) {
+         // 调用自己的slt方法
+         this.$emit('slt', this.chid)
+       }
+     },
+     data () {
+       return {
+         chid: '', // 记录当前选中的频道信息
+         channelList: [] // 频道列表
+       }
+     },
+     created () {
+       // 获得频道列表
+       this.getChannelList()
+     },
+     methods: {
+       // 获得频道
+       getChannelList () {
+         let pro = this.$http.get('/channels')
+         pro
+           .then(result => {
+             // console.log(result) // config 【data】 request headers  status statusText
+             if (result.data.message === 'OK') {
+               // 把获得好的频道给与channelList成员
+               this.channelList = result.data.data.channels
+             }
+           })
+           .catch(err => {
+             return this.$message.error('获得频道错误:' + err)
+           })
+       }
+     }
+   }
+   </script>
+   
+   <style lang="less" scoped>
+   </style>
+   ```
+
+`注意`：
+
+1. 给独立组件的el-select设置自己的**v-model="chid" ** 的属性值 和 data chid:'' 成员
+
+    
+
+## 添加文章应用
+
+`步骤`：	
+
+1. **添加文章**的组件views/articleadd/articleadd.vue中
+
+   **去除**之前的频道相关内容(el-select、channelList成员、getChannelList()、created调用等)
+
+   A.应用频道独立组件：
+
+   ```html
+   <el-form-item label="频道" prop="channel_id">
+     <channel-com @slt="selectHandler"></channel-com>
+   </el-form-item>
+   ```
+   
+> @slt是给channel-com组件声明的事件，名称为slt，selectHandler是事件响应方法，需要在当前组件(父组件)methods中声明好
+   
+B.引入注册频道
+   
+```js
+   // 引入频道公共组件
+   import ChannelCom from '@/components/channel.vue'
+   …………
+     components: {
+   		// 注册频道独立组件
+       ChannelCom
+     },
+   ```
+   
+   C. 设置频道methods事件方法
+
+   ```js
+// 频道组件方法，获得子组件传递过来的频道id并赋予给channel_id成员
+   // val:子组件给传递过来的频道信息
+   selectHandler (val) {
+     this.addForm.channel_id = val
+   },
+   ```
+
+`注意`：
+
+​	@slt="selectHandler",不要设置()括号
+
+
+
+
+## 文章列表应用
+
+1. **文章列表**的组件views/article/index.vue中
+
+   去除之前的频道相关内容(el-select、channelList成员、getChannelList()、created相关等)
+
+   A.应用频道独立组件：
+
+   ```html
+   <el-form-item label="频道列表：">
+     <channel-com @slt="selectHandler"></channel-com>
+   </el-form-item>
+   ```
+   
+B.引入注册频道
+   
+```js
+   // 引入频道公共组件
+   import ChannelCom from '@/components/channel.vue'
+   …………
+   
+     components: {
+   		// 注册频道独立组件
+       ChannelCom
+     },
+   ```
+   
+   C. 设置频道methods事件方法
+
+   ```js
+// 频道组件方法，获得子组件传递过来的频道id并赋予给channel_id成员
+       selectHandler (val) {
+         this.searchForm.channel_id = val
+       },
+   ```
+   
+   > 注意：上边是给searchForm的channel_id填充信息
+
+## 修改文章应用
+
+1. **修改文章**的组件views/articleedit/articleedit.vue中
+
+   去除之前的频道相关内容(el-select、channelList成员、getChannelList()方法、created相关等)
+
+   A.应用频道独立组件：
+
+   ```html
+   <el-form-item label="频道" prop="channel_id">
+     <channel-com @slt="selectHandler" :cid="editForm.channel_id"
+                  ></channel-com>
+   </el-form-item>
+   ```
+   
+> :cid 是给子组件传递的信息，是当前被修改文章拥有的频道id，这样子组件就会把默认的频道选中显示了
+   
+B. 另外需要在channel.vue组件中给cid设置**watch监听器**  和 **props**接收cid属性
+   
+```js
+     props: {
+       // cid的值有类型 和 默认值 修饰
+       cid: {
+         // type: Number, // Object Array
+         default: 0 // 设置默认值
+       }
+     },
+   	watch: {
+       // 监听父组件是否有传递cid信息过来，有的话，就接收赋予给chid，使得频道有默认显示项目
+       cid: function (newV, oldV) {
+         this.chid = newV
+       }
+     },
+   ```
+   
+   
+
+   C.引入注册频道
+
+   ```js
+// 引入频道公共组件
+   import ChannelCom from '@/components/channel.vue'
+   …………
+   
+     components: {
+   		// 注册频道独立组件
+       ChannelCom
+     },
+   ```
+   
+   D. 设置频道methods事件方法
+   
+```js
+   selectHandler (val) {
+  this.editForm.channel_id = val
+   },
+   ```
+   
+   > 注意：表单名称为editForm
+
+`应用到的技术`：
+
+1. 父组件给子组件传值
+2. 子组件给父组件传值
+3. watch监听器
+
+
+
+props使用说明： https://vue.docschina.org/v2/api/#props 
+
+两种方式：数组和对象
+
+```js
+// 简单语法
+Vue.component('props-demo-simple', {
+  props: ['size', 'myMessage']
+})
+
+// 对象语法，提供校验
+Vue.component('props-demo-advanced', {
+  props: {
+    // 检测类型
+    height: Number,
+    // 检测类型 + 其他验证
+    age: {
+      type: Number,
+      default: 0,
+      required: true,
+      validator: function (value) {
+        return value >= 0
+      }
+    }
+  }
+})
+```
+
+
+
+`注意`：
+
+​	文章 添加、修改、列表 各个页面中都需要定义 channel-com组件的事件响应方法**selectHandler**，但是它们调用的表单名称不一样，分别是：**addForm**、**editForm**、**searchForm**
+
+
+
+## 文章列表检索优化(已经完成)
+
+`步骤`：
+
+1. 给searchForm做watch深度监听，条件变化就重新获得文章列表
+
+   ```js
+     watch: {
+       // 给searchForm做深度监听
+       searchForm: {
+         handler: function (newV, oldV) {
+           // 内部成员有变化，就根据变化的条件重新检视数据
+           this.getArticleList()
+         },
+         deep: true
+       },
+     }
+   ```
+   
+2. 把之前关于检索的各个getArticleList()方法调用都删除掉(包括分页)
+
+由于之前已经给searchForm做了深度监听更新数据机制，现在频道即使独立出去使用，也不影响文章筛选功能
+
+
+
+
+
+# 组件传值
+
+父组件可以  引入、使用 子组件，从业务上看，该父组件有可能对子组件有**个性化**需求，为了体现组件的**灵活多变**，可以通过**传值**实现
+
+例如
+
+​	父组件多次使用按钮组件，每次要求按钮的文字显示不同颜色，就可以通过传值实现
+
+`语法`：
+
+父组件要在子组件标签上通过**属性值**方式传值
+
+```html
+<子组件标签 name=value name=value name=value></子组件标签>
+```
+
+子组件接收并应用值，具体通过props接收
+
+```html
+<!--在模板中应用传递来的数据-->
+<input :style="{color:xx}">
+
+<script>
+  export default {
+    // 通过props接收父传递过来的数据,注意各个名称需要使用单引号圈选
+    // 具体有两种方式：
+    props:['xx','xx','xx'],
+    props:{
+      xx:{
+        type:类型限制
+        default:默认值
+      }
+    }
+  }
+</script>
+```
+
+
+
+## 子给父传递
+
+`步骤`：
+
+1. 父组件 向子组件 传递一个事件，本身声明事件的methods方法
+
+2. 子组件 调用 父组件 传递过来的事件，并传递相关的数据
+
+3. 父组件 通过事件方法参数获得子组件传递过来的数据并使用
+
+
+
+**`父组件操作语法`**：
+
+父组件通过**@符号**向子组件传递一个<font color=red>事件方法</font>
+
+```
+<子组件 @func1="show"></子组件>
+...
+methods:{
+	show(arg1,arg2){xxxx}
+}
+```
+
+其中
+
+​	func1为事件的名称，给子组件触发使用
+
+​	show为该事件的执行函数，在父组件内部的methods中定义好
+
+​	在事件中可以通过形参(arg1、arg2)接收子组件出来过来的数据 并做近一步处理
+
+
+
+**`子组件操作`**：
+
+子组件中，使用<font color=red>this.$emit()</font>调用 父组件中的方法
+
+```js
+$emit:使得子组件调用 自己的事件方法(父组件给声明的)
+this.$emit('func1', 数据, 数据)
+this:当前子组件对象(组件实例)
+func1:是父组件给子组件声明的事件方法，通过第2、3位置设置给父组件传递的数据
+```
+
+从第二个位置开始传递实参数据，其可以被父组件methods方法的形参所接受
+
+$emit(名称，数据，数据……) 是组件调用自己方法的固定方式，第一个参数是被调用方法的名称，后续参数都是给方法传递的实参信息
+
+
+
+# 账户管理
+
+1. 创建组件 account/account.vue
+
+   ```vue
+   <template>
+       <div>账户管理</div>
+   </template>
+   
+   <script>
+   export default {
+     name: 'Account'
+   }
+   </script>
+   
+   <style lang="less" scoped>
+   </style>
+   ```
+   
+2. 创建路由
+
+   ```js
+   { 
+     path: '/account', 
+     name: 'account', 
+     component: () => import('@/views/account/account') 
+   },
+   ```
+   
+3. 配置左侧菜单导航 /account
+
+   ```html
+   <el-menu-item index="/account" :style="{width:isCollapse?'65px':'200px'}">
+     <i class="el-icon-location"></i>
+     <span slot="title">账户管理</span>
+   </el-menu-item>
+   ```
+   
+
+
+
+## 创建页面基本结构
+
+`相关代码`：
+
+模板部分：
+
+```html
+<template>
+  <!--卡片区-->
+  <el-card class="box-card">
+    <!--命名插槽，头部内容设置-->
+    <div slot="header" class="clearfix">
+      <span>账户信息</span>
+    </div>
+    <!--匿名插槽，卡片主体内容-->
+    <div class="text item cardbody">
+      <div id="lt">
+        <el-form ref="accountFormRef" :model="accountForm" label-width="100px">
+          <el-form-item label="用户名：">
+            <el-input v-model="accountForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="手机号码：">
+            <el-input v-model="accountForm.mobile" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱：">
+            <el-input v-model="accountForm.email"></el-input>
+          </el-form-item>
+          <el-form-item label="简介：">
+            <el-input type="textarea" v-model="accountForm.intro"></el-input>
+          </el-form-item>
+          <el-form-item label="简介：">
+            <el-button type="primary" @click="upAccount()">更新账户</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div id="rt">头像展示区域</div>
+    </div>
+  </el-card>
+</template>
+
+```
+
+> 注意：给手机号码设置disabled，禁用设置
+
+组件实例部分：
+
+```html
+<script>
+export default {
+  name: 'Account',
+  data () {
+    return {
+      accountForm: {
+        // 各个成员来自api参考【2.4 编辑用户资料】
+        id: '', // id
+        name: '', // 名称
+        mobile: '', // 手机号码
+        email: '', // 邮箱
+        intro: '' // 简介
+      }
+    }
+  }
+}
+</script>
+```
+
+
+
+## 获得当前账户信息并显示
+
+`步骤`：
+
+1. 创建methods方法 getAccountInfo()，通过axios获得账户信息 并赋予给  editForm成员
+
+   ```js
+       // 获得账户基本信息
+       getAccountInfo () {
+         let pro = this.$http.get('/user/profile')
+         pro
+           .then(result => {
+             if (result.data.message === 'OK') {
+               // 把获得账户的信息赋予给accountForm
+               this.accountForm = result.data.data
+             }
+           })
+           .catch(err => {
+             return this.$message.error('获得账户失败：' + err)
+           })
+       }
+     }
+   ```
+   
+
+   
+2. 在created中调用 getAccountInfo() 方法
+
+   ```js
+     created () {
+       // 获取账户信息
+       this.getAccountInfo()
+     },
+   ```
+   
+
+
+
+## 表单校验
+
+`步骤`：
+
+1. 给el-form设置 :rules="accountFormRules" 属性
+
+   ```html
+   <el-form ref="accountFormRef" :model="accountForm" label-width="100px"
+            :rules="accountFormRules">
+   ```
+   
+
+   
+2. 给各个表单域项目配置prop 
+
+   ```html
+   <el-form-item label="用户名：" prop="name">
+   
+   <el-form-item label="邮箱：" prop="email">
+   ```
+   
+
+   
+3. 在data中配置具体校验规则
+
+   ```js
+   // 表单校验
+   accountFormRules: {
+     name: [
+       { required: true, message: '名字必填' },
+       // 后端要求title长度介于1-7个字符
+       {
+         min: 1,
+         max: 7,
+         message: '名字长度介于1-7个字符之间'
+       }
+     ],
+     email: [
+       { required: true, message: '邮箱必填' },
+       { type: 'email', message: '邮箱格式不正确' }
+     ],
+       /*
+     mobile: [
+       { required: true, message: '手机号码必填' },
+       { pattern: /^1[35789]\d{9}$/, message: '手机号码格式不对' }
+     ]
+     */
+   }
+   ```
+
+`注意`：
+
+​	**服务器端**有如下验证规则：
+
+​	账户名字：名字长度：1-7个字符之间
+
+​	邮箱：@符号前边要求是1-12个字符之间
+
+
+
+## 修改账户存储入库
+
+`步骤`：
+
+1. 创建 “修改账户” 按钮 并设置 单击事件 editAccount
+
+   ```html
+   <el-button type="primary" @click="editAccount()">更新账户</el-button>
+   ```
+   
+
+   
+2. 在methods中声明成员  editAccount()方法，axios传递表单数据给服务器端存储
+
+   ```js
+       // 更新账户，收集并存储数据到服务器端
+       editAccount () {
+         // 表单校验
+         this.$refs.accountFormRef.validate(valid => {
+           if (valid) {
+             // axios行动了
+             // get/post/put/delete
+             // put: 修改，修改全部表单
+             // patch：修改，修改部分项目
+             let pro = this.$http.patch('/user/profile', this.accountForm)
+             pro
+               .then(result => {
+                 if (result.data.message === 'OK') {
+                // 提示成功
+                   this.$message.success('修改账号信息成功')
+              	}
+               })
+               .catch(err => {
+                 return this.$message.error('修改失败：' + err)
+               })
+           }
+         })
+       },
+   ```
+   
+
+
+
+## 上传头像
+
+回顾：
+
+```
+附件上传
+<form id="fm">
+<input type="file" name="mypic">
+<button onclick="send()">提交</button>
+
+<script>
+FormData表单数据对象 h5
+
+var ff = document.getElementById('fm')
+var fd = new FormData(ff) // 根据指定的表单制作表单数据对象(数据中有上传的附件信息)
+// fd既有普通表单域信息，还有上传的文件信息
+axios.post(url, fd)
+```
+
+
+
+### el-upload组件介绍
+
+el-upload上传组件说明：
+
+```html
+<el-upload
+  action="https://jsonplaceholder.typicode.com/posts/"  // 接收附件的服务器端地址
+  :show-file-list="false" // 上传好的图片不要通过列表形式呈现
+  :on-success="handleAvatarSuccess"  // 图片上传成功后的回调处理
+  :http-request="httpRequest" // 自定义上传行为，有了此属性，那么 action 和 on-success 都成摆设了
+>
+  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+</el-upload>
+```
+
+> 上述el-upload上传图片组件内部给集成了ajax，请求方式为**post**，会自动带着被上传的附件到达服务器端存储，由于我们的api接口要求是 **patch**方式请求，故组件的默认请求不能使用，要通过 **http-request**自定义上传行为，其会覆盖默认行为，这样形式上 action和 on-success可以不定义，但是action属性是必须的，应用上留空即可
+
+
+
+### 应用
+
+`步骤`：
+
+1. 应用el-upload组件标签
+
+   ```html
+   <div id="rt">
+          <!--
+             class="avatar-uploader" // 自定义组件样式
+             action="https://jsonplaceholder.typicode.com/posts/" // 上传附件服务器端地址
+             :show-file-list="false" // 图片是否是列表展示
+             :on-success="handleAvatarSuccess" // 图片上传成功后的回调处理
+             :before-upload="beforeAvatarUpload" // 图片上传前的回调处理
+             :http-request="httpRequest" // 自定义上传行为，此时action和on-success无效了，action是必须项目，留空即可
+           -->
+           <el-upload
+             action=""
+             :show-file-list="false"
+             :http-request="httpRequest"
+           >
+           <!--判断是否有图像并展示，否则展示+号-->
+             <img v-if="accountForm.photo" :src="accountForm.photo" class="avatar" width="200" height="200">
+             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+           </el-upload>
+   </div>
+   ```
+   
+> 给el-upload声明http-request属性 并设置methods的httpRequest方法，表示自定义上传行为
+   
+2. 在methods中创建httpRequest()方法，实现上传
+
+   ```js
+   // 自定义上传头像行为
+   // resource参数：是一个对象，里边有当前正在上传的图片信息(resource.file)
+   httpRequest (resource) {
+     // 1. FormData表单数据对象收集表单信息，即上传附件信息
+     let fd = new FormData()
+     // 把图片的信息添加给fd对象
+     // fd.append(名称，值)
+     fd.append('photo', resource.file) // 文件已经被fd保存好了
+   
+     // 2. axios带着附件到达服务器端存储
+     let pro = this.$http.patch('/user/photo', fd)
+     pro
+       .then(result => {
+         if (result.data.message === 'OK') {
+           // 把服务器端返回的新的头像获得到，并更新给accountForm.photo成员里边
+           // result.data.data.photo:头像完整请求地址信息
+           this.accountForm.photo = result.data.data.photo
+           this.$message.success('头像更新成功！')
+         }
+       })
+       .catch(err => {
+         return this.$message.error('头像更新失败：' + err)
+       })
+   },
+   ```
+
+
+
+### FormData回顾
+
+FormData表单数据对象介绍
+
+1.  FormData 是 Html5 新加进来的一个类,可以模拟表单数据 
+2.  可以使用 JQuery 的 $.Ajax 结合 FormData 异步上传二进制文件 
+3.  可以先通过 new 关键字创建一个空的 FormData 对象，然后使用 append() 方法向该对象里添加字段 
+4.  也可以 new 的同时直接传入表单对象，从而创建有值的FormData对象 
+
+FormData在普通表单域中的应用：
+
+```html
+<form id="upload" method="post" action="">
+  <input type="text" name="username" value=""/>
+  <input type="password" name="paw" value=""/>
+  <input type="button" onclick="send()" value="提交"/>
+</form>
+```
+
+```js
+function send(){
+  //获取一个form表单对象
+  let fm = document.getElementById("upload");
+  //用这个表单对象来初始化FormData对象
+  let fd = new FormData(fm);
+	// 现在fd里边已经拥有form表单里边全部的数据了，调用axios即可完成传递给服务器端功能
+  axios.post(url, fd)
+}
+```
+
+FormData传递上传文件
+
+```js
+  //创建一个空的FormData对象
+  let fd = new FormData();
+	// fd可以通过调用append()方法给自己添加成员信息
+  // 语法：fd.append(name,value)
+  // append():既可以添加普通表单域信息，也可以添加文件表单域信息
+	fd.append(myfile,文件对象信息)
+	// 通过axios把上传文件传递给服务器端
+  axios.post(url, fd)
+```
+
+结论：
+
+1. FormData既可以创建一个拥有指定form表单的对象，也可以创建一个空对象
+2. 调用append() 实现给个体数据添加
+3. FormData可以实现文件上传
+
+ 
+
 ## [vue-resource 实现 get, post, jsonp请求](https://github.com/pagekit/vue-resource)
 
 除了 vue-resource 之外，还可以使用 `axios` 的第三方包实现实现数据的请求
