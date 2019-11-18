@@ -6109,7 +6109,7 @@ export default {
    ```
    
 > sessionStorage没有响应式，这样做可以模拟响应式
-   
+
 5. 在  首页home  的created生命周期中，bus对象 通过**$on**声明事件方法**upAccountName**和**upAccountPhoto**，以便让account的bus来调用进行数据更新
 
    ```js
@@ -6158,49 +6158,11 @@ export default {
              this.$message.success('上传头像成功')
            	// bus通过$emit调用自己的相关方法更新   首页home  的头像信息
              bus.$emit('upAccountPhoto', result.data.data.photo)
-   ```
+```
 
 
 
 # 素材管理
-
-`步骤`：
-
-1. 创建组件：material/material.vue
-
-   ```vue
-   <template>
-       <div>素材管理</div>
-   </template>
-   
-   <script>
-   export default {
-     name: 'Material'
-   }
-   </script>
-   
-   <style lang="less" scoped>
-   </style>
-   ```
-   
-2. 创建路由：/materail
-
-   ```js
-   { path: '/material', 
-     name: 'material', 
-     component: () => import('@/views/material/material.vue') },
-   ```
-   
-
-   
-3. home里边创建导航：素材管理---->/material
-
-   ```html
-   <el-menu-item index="/material">素材管理</el-menu-item>
-   ```
-   
-
-
 
 ## 绘制素材列表结构
 
@@ -6429,9 +6391,9 @@ export default {
    ```
    
 > addForm.cover.images[item-1]  是显示对应的封面图片效果，如果不做选择，默认是没有的
-   
 
-   
+
+
 2. 绘制选择框对应的css样式(参考 项目笔记)
 
    ```css
@@ -6644,9 +6606,9 @@ export default {
    ```
    
 > 通过 ul/li/img 标签对imageList素材图片做遍历展示
-   
 
-   
+
+
 6. 绘制图片列表展示的相关html代码对应的css样式
 
    ```css
@@ -6686,7 +6648,7 @@ export default {
    ```
    
 > 注意 clkImage后边没有括号
-   
+
 2. 在methods中 定义  clkImage事件方法设置选中项目的语法高亮标志
 
    ```js
@@ -6715,7 +6677,7 @@ export default {
    ```
    
 > 把遍历的item当做序号传递给事件方法，值是从1开始的，接收后要做-1减一操作
-   
+
 3. methods方法 showDialog()中要接收序号并赋予给xu成员，注意要减一操作
 
    ```js
@@ -6826,11 +6788,8 @@ export default {
    
 3. 给el-dialog设置@close="clearImage" 事件, 使得任何 方式关闭对话框，都会对已经选取素材的状态进行清除
 
-   ```html
-   <el-dialog title="素材图片" :visible.sync="dialogVisible" width="60%" 
-              @close="clearImage">
-   ```
    
+
 
 
 ## [vue-resource 实现 get, post, jsonp请求](https://github.com/pagekit/vue-resource)
@@ -6950,8 +6909,6 @@ jsonpInfo() { // JSONP形式从服务器获取数据
 
 
 ## [Vue中的动画](https://cn.vuejs.org/v2/guide/transitions.html)
-
-为什么要有动画：动画能够提高用户的体验，帮助用户更好的理解页面中的功能；
 
 ### 使用过渡类名
 
@@ -7150,6 +7107,912 @@ module.exports = {
 webpack和webpack-dev-server在脚手架创建的项目里边已经被**封装**了，具体可以通过如下路径名找到
 
 [node_modules\@vue\cli-service\lib\commands\serve.js]()
+
+
+
+# 发布文章封面处理
+
+## 记录选择框序号
+
+`步骤`：
+
+1. data创建xu成员
+
+   ```js
+   // 记录被单击选择框的序号信息
+   xu: 0,  // 0:第一个    1:第二个   2:第三个
+   ```
+
+   
+
+2. 给选择框单击事件传递序号信息  @click="showDialog(item)"
+
+   ```html
+   <li class="uploadbox" v-for="item in covernum" :key="item" 
+       @click="showDialog(item)">
+   ```
+
+   > 把遍历的item当做序号传递给事件方法，值是从1开始的，接收后要做-1减一操作
+
+3. methods方法 showDialog()中要接收序号并赋予给xu成员，注意要减一操作
+
+   ```js
+       // 展示对话框逻辑
+       // n：代表第n个选择框被单击到了(值为1/2/3)
+       showDialog (n) {
+         // 更新xu成员,0/1/2分别代表选择框序号
+         this.xu = n - 1
+         this.dialogVisible = true // 开启对话框
+       },
+   ```
+
+## 记录选中的图片
+
+`步骤`：
+
+1. 给data声明 materialUrl成员
+
+```js
+   materialUrl: '', // 选中的素材图片的路径名地址信息
+```
+
+2. 在clkImage方法中，把当前被单击选中的img标签的src属性值赋予给materialUrl成员
+
+   ```js
+       // 素材图片选取操作
+       clkImage (evt) {
+         let lis = document.querySelectorAll('.image-box')
+         for (var i = 0; i < lis.length; i++) {
+           lis[i].style.border = ''
+         }
+         evt.target.parentNode.style.border = '3px solid red'
+         // 把当前选中图片的src地址信息赋予给meterialUrl成员
+         this.materialUrl = evt.target.src
+       },
+   ```
+
+   
+
+## 确定选取素材图片
+
+`步骤`：
+
+1. 给对话框**确定按钮**设置事件  @click="imageOK"
+
+   ```html
+   <el-button type="primary" @click="imageOK">确 定</el-button>
+   ```
+
+   
+
+2. 在methods方法中声明imageOK,并把选择好的图片地址materialUrl赋予给添加文章表单的成员 
+
+   ```js
+   // 素材图片选取好，点击“对话框”确定按钮后，记录素材图片
+   imageOK () {
+     if (this.materialUrl) {
+    		// 给添加文章的表单域成员cover.image增加素材图片请求地址信息
+       this.addForm.cover.images[this.xu] = this.materialUrl
+       this.dialogVisible = false // 关闭对话框
+     } else {
+       this.$message.error('咋地，一个都没有相中！')
+     }
+   },
+   ```
+
+`注意`：
+
+​	如果用户没有选择图片，那么单击确定按钮是没有动作的，相反要提示“咋地，一个都没有相中！”
+
+
+
+## 后续优化
+
+在对话框中选中一个图片，但是没有单击”确定“按钮就把对话框关闭了，此时再次打开对话框，发现之前选中的图片还是选中状态，并且materialUrl也是保存上一次选中图片的路径名信息，这样做不合适，设计一个清除操作，每次打开对话框都是一个初始化状态。
+
+步骤：
+
+1. 制作一个methods方法，清除之前选择素材图片的痕迹
+
+   ```js
+       // 恢复出厂设置
+       clearImage () {
+         // 清除border选中高亮效果
+         let lis = document.querySelectorAll('.image-box')
+         for (var i = 0; i < lis.length; i++) {
+           lis[i].style.border = ''
+         }
+         // 清除选中图片materialUrl地址
+         this.materialUrl = ''
+       },
+   ```
+
+   
+
+2. 素材选中 后要调用**clearImage**方法，使得之前选取的标记被清除
+
+   ```js
+       // 素材图片选取操作
+       clkImage (evt) {
+         // 清除之前选择图片的状态信息
+         this.clearImage()
+         evt.target.parentNode.style.border = '3px solid red'
+         // 把当前选中图片的src地址信息赋予给meterialUrl成员
+         this.materialUrl = evt.target.src
+       },
+   ```
+   
+
+   
+3. 给el-dialog设置@close="clearImage" 事件, 使得任何 方式关闭对话框，都会对已经选取素材的状态进行清除
+
+   ```html
+   <el-dialog title="素材图片" :visible.sync="dialogVisible" width="60%" 
+              @close="clearImage">
+   ```
+   
+或者，给showDialog设置clearImage也可以
+   
+```js
+   // 封面，打开对话框逻辑
+   // n:自然数的选择框号码1、2、3
+   showDialog (n) {
+     // 对xu成员进行更新
+     this.xu = n - 1
+     this.dialogVisible = true // 开启对话框
+     this.clearImage()
+   },
+   ```
+   
+
+
+
+
+# nprogress加载进度条
+
+什么是nprogress:
+
+项目每个路由执行的时候，在顶部显示一个进度条，明确告知用于程序正在执行，提高用户体验
+
+进度条库是前端中常见的库之一
+
+nprogress是轻量级的ajax进度条应用，灵感来自Google, YouTube, and Medium。
+
+纳米级的进度条。 具有逼真的动画涓涓细流来说服你的用户，something is happen！
+
+
+
+参考官网
+
+[http://ricostacruz.com/nprogress/](http://ricostacruz.com/nprogress/)
+
+[https://www.npmjs.com/package/nprogress](https://www.npmjs.com/package/nprogress)
+
+[参考学习网站](https://www.cnblogs.com/y114113/p/6289629.html)
+
+
+
+主要使用方法：
+
+```
+NProgress.start() - 显示进度条,稍微增加【显示】
+NProgress.set(0.4) - 设置百分比【显示】
+NProgress.inc() - 显示进度条,稍微增加【显示】
+NProgress.done() - 完成进度(进度条消失)【关闭】
+```
+
+
+
+`项目应用步骤`：
+
+1. 安装 
+
+   ```bash
+   yarn add nprogress
+   ```
+   
+
+   
+2. 引入  在router路由文件中对 js和css文件做引入
+
+   ```js
+   // 引入nprogress相关的js和css文件
+   import NProgress from 'nprogress'
+   import 'nprogress/nprogress.css'
+   ```
+   
+
+   
+3. 使用  在router路由中做具体配置
+
+   在 **前置**路由守卫 处开启进度条    beforeEach()
+
+   ```js
+     // 开启进度条
+     NProgress.inc()
+   ```
+   
+在 **后置**路由守卫 处关闭进度条  afterEach()
+   
+```js
+     // 完成进度条显示了
+     NProgress.done()
+   ```
+   
+   > 路由除了有前置路由守卫，还有后置路由守卫，就是路由执行完毕(页面加载好了)要做一些事情
+
+
+
+`注意`：
+
+如果对进度条的**样式**有修改的需要，可以操作如下文件达成：
+
+node_modules\nprogress\nprogress.css
+
+
+
+# echarts
+
+​	商业级数据图表，它是一个纯JavaScript的图表库，兼容绝大部分的浏览器，底层依赖轻量级的canvas类库ZRender，提供直观，生动，可交互，可高度个性化定制的数据可视化图表。创新的拖拽重计算、数据视图、值域漫游等特性大大增强了用户体验，赋予了用户对数据进行挖掘、整合的能力。
+
+
+
+echarts是百度公司开发，[参考官网](http://echarts.baidu.com/)
+
+
+
+## 绘制简单图表
+
+`步骤`：
+
+1. 安装echarts功能包
+
+   ```js
+   yarn add echarts
+   ```
+   
+
+   
+2. 创建路由、导航
+
+   ```js
+   { path: '/fans', name: 'fans', component: () => import('@/views/fans/fans.vue') },
+   ```
+   
+```html
+   <el-menu-item index="/fans" :style="{width:isCollapse?'65px':'200px'}">
+     <i class="el-icon-location"></i>
+     <span slot="title">粉丝管理</span>
+   </el-menu-item>
+   ```
+   
+   
+
+3. 创建组件src/views/fans/fans.vue文件，设置el-card卡片区、图表显示的div占位符
+
+4. 引入echarts     import echarts from 'echarts'
+
+5. 制作methods方法paintPic,内部实例化echarts对象并进行图像制作
+
+6. 在**mounted**中调用 paintPic  方法执行
+
+   > 因为mounted中 关于页面元素都已经渲染好了
+
+```vue
+<template>
+  <!--卡片区-->
+  <el-card class="box-card">
+    <!--命名插槽，头部内容设置-->
+    <div slot="header" class="clearfix">
+      <span>粉丝统计</span>
+    </div>
+    <!--匿名插槽，卡片主体内容-->
+    <div class="text item">
+      <div id="main" style="width:600px;height:400px"></div>
+    </div>
+  </el-card>
+</template>
+
+<script>
+// 引入echarts
+import echarts from 'echarts'
+
+export default {
+  name: 'Fans',
+  mounted () {
+    this.paintPic()
+  },
+  methods: {
+    paintPic () {
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById('main'))
+      // 绘制图表
+      myChart.setOption({
+        title: {
+          text: 'ECharts 入门示例'
+        },
+        tooltip: {},
+        xAxis: {
+          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+        },
+        yAxis: {},
+        series: [{
+          name: '销量',
+          type: 'bar',
+          data: [5, 20, 36, 10, 10, 20]
+        }]
+      })
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+</style>
+```
+
+
+
+`注意`：
+
+​	要通过**mounted**调用paintPic()方法，此时页面元素已经被Vue解析和渲染完毕，可以正常获得到div元素用于绘制图表
+
+
+
+## 绘制其他效果图表
+
+根据业务需要，不同业务数据使用不同类型的图表来表现有时会更合适
+
+下边，我们根据官网例子提示做一个饼图效果
+
+其他代码不动，methods的paintPic()方法更改为如下：
+
+```js
+paintPic () {
+  // 基于准备好的dom，初始化echarts实例
+  var myChart = echarts.init(document.getElementById('main'))
+  // 绘制图表
+  myChart.setOption({
+    title: {
+      text: '某站点用户访问来源',
+      subtext: '纯属虚构',
+      x: 'center'
+    },
+    tooltip: {
+      trigger: 'item',
+      formatter: '{a} <br/>{b} : {c} ({d}%)'
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+      data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+    },
+    series: [
+      {
+        name: '访问来源',
+        type: 'pie',
+        radius: '55%',
+        center: ['50%', '60%'],
+        data: [
+          { value: 335, name: '直接访问' },
+          { value: 310, name: '邮件营销' },
+          { value: 234, name: '联盟广告' },
+          { value: 135, name: '视频广告' },
+          { value: 1548, name: '搜索引擎' }
+        ],
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          }
+        }
+      }
+    ]
+  })
+}
+```
+
+
+
+`注意`：
+
+​	我们的服务器端关于粉丝统计数据不能正常返回，因此案例不能做开发展示，在真实案例中是这样的，数据都会返回，样子是option选项类型的参数 (如果不是，要手动修改为option类型的)，然后在axios成功回调里边再次调用setOption()方法，参数会覆盖之前旧的参数
+
+```js
+let pro = axios(url,xxx)
+pro
+	.then(result=>{
+  	myChart.setOption(服务器端返回的数据)  // 根据服务器端返回的数据绘制图标
+	})
+```
+
+
+
+# 项目打包
+
+`什么是`：
+
+​	项目开发是通过**import**这样的模块化技术完成的，而import代码在浏览器中不能直接运行
+
+​	项目开发是通过**vue单文件组件**方式开发完成的，浏览器也不能直接运行vue这样的文件
+
+​	项目开发是通过less进行css样式控制的
+
+​	项目开发是通过elementui组件库开发
+
+​	项目开发是通过es6/es7等高级js技术完成的
+
+​	……
+
+​	基于以上若干，项目发布之前需要做打包处理，就是把import代码变为浏览器可以识别的代码，把vue单文件组件代码也解析称为浏览器可以识别的，less变为css、elementui变为具体的html标签、es6/es7变为es5兼容性更强的代码，这个过程是“**打包**”
+
+
+
+打包完毕，生成的应用程序文件只有一个，名称为index.html，网站所有请求都需要执行该文件，就称为**单页面应用程序项目(spa)**，当然这个index.html文件会引入许多js、css等文件
+
+
+
+## 打包
+
+在项目根目录执行如下指令：
+
+```js
+npm run build   // 物理打包
+或
+.\node_modules\.bin\vue-cli-service build --report  // 打包 同时 要生成详情报告
+```
+
+> 以上两个指令打包完毕，会在根目录生成**dist**目录，内部都是打包好的文件
+>
+> 执行第二种打包指令，会在dist里边生成**report.html**文件，并且支持直接访问，就可以看到各个打包内容部分的占比情况
+
+
+
+给项目做打包操作，生成许多js、css、img、字体库文件
+
+其中的css文件：
+
+1. 每个**vue组件**文件内部的css都要独立打包到具体的文件中
+2. global.css要打包到指定文件
+3. 富文本编辑器的css样式打包到指定文件
+4. elementui组件库的css样式打包值指定文件
+
+其中的js文件：
+
+1. 每个**vue组件**文件内部的js都要独立打包到具体的文件中
+2. node_modules内部核心的项目级的js被独立打包(vue)
+3. 富文本编辑器的js内容单独打包
+4. vue内容也给单独打包
+
+`注意`：
+
+​	把项目中各个文件中console.log()的输出内容都屏蔽掉
+
+
+
+## 优化介绍
+
+查看各个项目打包后的内容占比：
+
+执行指令：
+
+```bash
+.\node_modules\.bin\vue-cli-service build --report
+```
+
+之后浏览器执行运行打包好的report.html文件
+
+
+
+优化介绍：
+
+对项目的打包文件做体积减少操作，**用到东西就打包，不用的就舍弃**，再者有些模块能通过第3方提供就直接使用，总之 要把打包文件的体积做到最小
+
+好处：
+
+1. 节省网络带宽，节省money
+2. 首屏数据加载快、增强用户体验
+
+
+
+## 优化处理(externals)
+
+`什么是externals优化`：
+
+​	互联网有许多公司已经对公共的模块文件(axios、vue、echarts、nprogress、vue-router)做了提供，我们要直接拿过来使用，这样自己不用准备了，项目打包时也不用引入了，就使得打包文件体积减少
+
+配置使用第三方公司网络资源`步骤`：
+
+1. 做vue.config.js文件配置
+
+   ```js
+   module.exports = {
+     lintOnSave: true, // 文件保存时就做eslint规范检测
+     devServer: {// 实时保存、编译的配置段
+       open: true, // 自动开启浏览器
+       port: 12306, // 服务运行端口
+       host: '127.0.0.1' // 运行服务的主机名
+     },
+     configureWebpack: config => {
+       // 配置 externals
+       // 防止将某些 import 的包(package)打包到 bundle 中，
+       // 而是在运行时(runtime)再去从外部获取这些扩展依赖
+       config.externals = {
+         // 模块名(from后边的名字): 构造函数名称(文件内部提供的全局变量名字)
+         vue: 'Vue',
+         axios: 'axios',
+         'vue-router': 'VueRouter',
+         echarts: 'echarts',
+         nprogress: 'NProgress',
+       }
+     }
+   }
+   ```
+   
+> 上述配置：
+   >
+   > devServer说明： https://cli.vuejs.org/zh/config/#devserver 
+   >
+   > configureWebpack说明： https://cli.vuejs.org/zh/config/#configurewebpack 
+   
+2. 打开public/index.html文件(项目主模板文件)，做第三方资源的引入配置
+
+   第三方资源提供网址：<https://www.bootcdn.cn/> (其他的也有，这个比较稳定)
+
+   ```html
+   <!DOCTYPE html>
+   <html lang="en">
+     <head>
+       <meta charset="utf-8" />
+       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+       <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+       <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+       <title>topline</title>
+       <!-- -引入第3方网站提供的静态资源- -->
+       <script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+       <script src="https://cdn.bootcss.com/vue/2.6.10/vue.runtime.min.js"></script>
+       <script src="https://cdn.bootcss.com/vue-router/3.1.3/vue-router.min.js"></script>
+       <script src="https://cdn.bootcss.com/echarts/4.3.0/echarts.min.js"></script>
+       <script src="https://cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+     </head>
+     <body>
+       <div id="app"></div>
+     </body>
+   </html>
+   ```
+
+
+
+以上两个步骤配置完毕
+
+1. (物理打包时)项目中再import引入相关的资源，就不会走本身的，转而执行第三方的
+
+2. import等语句不要删除了，因为开发时候npm run serve还需要呢
+
+     
+
+
+`注意`：
+
+1. 项目内部的import引入各个资源的代码不用变动
+2. 第三方网站并不会提供全部的公共资源(提供哪个就用哪个)
+
+
+
+现在再次执行命令(.\node_modules\.bin\vue-cli-service build --report)做打包操作，发现主js文件较比之前变小了：
+
+> 注意：上图打包文件的名称较比之前会有变化
+
+
+
+现在的report.html文件中已经没有第三方提供的资源内容：
+
+
+
+## 优化处理(ElementUI)
+
+给elementui组件库 做 **完全按需引入**优化，具体给 **组件** 和 **事件方法** 都做按需引入
+
+
+
+`步骤`：
+
+1. 在main.js文件中  把 elementui的**引入** 和 **注册**都屏蔽掉
+
+2. 创建utils/element.js文件做elementui的按需引入
+
+   ```js
+   // 导入vue
+   import Vue from 'vue'
+   // 按需导入需要的组件
+   import {
+     DatePicker,
+     Dropdown,
+     DropdownMenu,
+     DropdownItem,
+     Pagination,
+     Dialog,
+     Menu,
+     Submenu,
+     MenuItem,
+     Input,
+     Radio,
+     RadioGroup,
+     RadioButton,
+     Checkbox,
+     Select,
+     Option,
+     Button,
+     Table,
+     TableColumn,
+     Form,
+     FormItem,
+     Tag,
+     Icon,
+     Upload,
+     Card,
+     Container,
+     Header,
+     Aside,
+     Main,
+     MessageBox,
+     Message
+   } from 'element-ui'
+   // 注册组件
+   Vue.use(DatePicker)
+   Vue.use(Dropdown)
+   Vue.use(DropdownMenu)
+   Vue.use(DropdownItem)
+   Vue.use(Pagination)
+   Vue.use(Dialog)
+   Vue.use(Menu)
+   Vue.use(Submenu)
+   Vue.use(MenuItem)
+   Vue.use(Input)
+   Vue.use(Radio)
+   Vue.use(RadioGroup)
+   Vue.use(RadioButton)
+   Vue.use(Checkbox)
+   Vue.use(Select)
+   Vue.use(Option)
+   Vue.use(Button)
+   Vue.use(Table)
+   Vue.use(TableColumn)
+   Vue.use(Form)
+   Vue.use(FormItem)
+   Vue.use(Tag)
+   Vue.use(Icon)
+   Vue.use(Upload)
+   Vue.use(Card)
+   Vue.use(Container)
+   Vue.use(Header)
+   Vue.use(Aside)
+   Vue.use(Main)
+   // 注册方法
+   Vue.prototype.$confirm = MessageBox.confirm
+   Vue.prototype.$message = Message
+   ```
+   
+   
+
+3. 在main.js文件中引入 element.js
+
+   ```js
+   // 引入element.js
+   import '@/utils/element.js'
+   ```
+
+
+
+# 部署运行
+
+`步骤`：
+
+1. 在桌面创建prorun目录
+
+2. 把dist打包文件复制给prorun目录
+
+3. 给prorun目录执行  yarn  -y  init  生成 package.json文件
+
+4. 给prorun目录执行 yarn  add express  安装需要的依赖包
+
+5. 给prorun目录 创建  app.js文件 ，内容如下：
+
+   ```js
+   // 通过express创建一个http服务
+   // 引入express
+   var express = require('express')
+   
+   // 创建express实例化对象
+   var app = express()
+   
+   // 设置dist目录被托管(运行内部的文件)
+   app.use(express.static('./dist'))
+   
+   // 创建http服务
+   app.listen(16677,function(){
+     console.log('项目已经运行，具体在\n\nhttp://127.0.0.1:16677')
+   })
+   ```
+   
+6. 执行命令  node  app.js  运行项目
+
+现在项目就可以执行了
+
+`注意`：
+
+​	项目必须通过**http协议**被部署运行
+
+# ascyn和await
+
+`什么是`：
+
+​	async 和 await 是**es7**技术，可以简化 Promise 操作，提高 Promise 代码的 阅读性 和 理解性；
+
+​	async和await结合起来，可以使得异步调用不返回Promise对象，而直接把then<font color="red">回调函数的第一个形参result</font>给返回出来，使得代码更节俭，提高开发效率，也可以保证异步调用的<font color=red>顺序</font>执行。
+
+`作用`：
+
+1. 替代then()
+2. 保证各个异步调用**顺序**执行
+
+`好处`：
+
+1. 代码更节省、结构更清晰、便于阅读和理解
+2. 提高开发效率
+
+
+
+## 应用
+
+`语法`：
+
+```js
+async function xxx(){
+  let rst = await yyy()
+}
+```
+
+> xxx函数嵌套调用yyy函数，yyy会返回一个promise对象
+>
+> 在xxx前边设置async，在yyy前边设置await
+>
+> rst：就是then方法  **回调函数实参的形参**，即 下述代码的result
+>
+> function xxx(){
+>
+> ​	let pro = yyy()
+>
+> ​	pro
+>
+> ​		.then(result=>{xxx})	
+>
+> }
+
+
+
+`应用`：
+
+目前获取频道的代码结构：
+
+```js
+// 获得频道列表数据
+getChannelList () {
+  let pro = this.$http.get('/channels')
+  pro
+    .then(result => {
+      if (result.data.message === 'OK') {
+        // 把获得的频道信息赋予给channelList成员
+        this.channelList = result.data.data.channels
+      }
+    })
+    .catch(err => {
+      return this.$message.error('获得频道错误：' + err)
+    })
+}
+```
+
+async和await介入应用
+
+```js
+// 获得频道列表数据
+async getChannelList () {
+  let rst = await this.$http.get('/channels')
+  // 现在的rst就是then里边的result结果
+  this.channelList = rst.data.data.channels
+}
+```
+
+
+
+## 错误处理
+
+如果axios请求过程中发生错误，可以通过异常机制  try、catch 加以处理，语法为：
+
+>  try、catch是 javascript语言本身技术
+
+```js
+try{
+  // 放置有可能产生错误的代码
+  aaaa
+  bbbb
+  cccc
+}catch(err){
+  // 对try内部的错误进行捕捉处理
+  // err:是具体错误对象
+  dddd
+}
+eeee
+
+try、catch使用情形分析：
+1. 没有任何错误，那么执行： a   b   c   e
+2. try中的b有错误，那么执行：  a   d   e
+
+特点：
+	try内部：  如果有错误，错误后续代码不执行
+  无论是否有错误，try/catch后续代码都会运行，其可以保证流程是"完整"的
+  如果try或catch内部有return，就另当别论了
+```
+
+> try/catch根据实际情况进行使用
+>
+> 如果没有必要也可以不设置，使得项目代码更简洁、运行速度更快
+
+
+
+`应用`：
+
+```js
+// 获得使用的真实频道列表数据
+async getChannelList () {
+  try {
+    var pro = await this.$http.get('/channelsrrrrrrrr')
+    this.channelList = pro.data.data.channels
+  } catch (err) {
+    return this.$message.error('获得频道列表失败！' + err)
+  }
+}
+```
+
+`注意`：
+
+​	try/catch可以保证项目代码"**完整**"运行，但要设置return就不保证完整了
+
+
+
+## async和await应用其他
+
+
+
+```javascript
+var obj = {
+  async getInfo(){
+    await getXXXX()
+    await getXXXX()
+  }
+}
+或
+function ffff(){
+    // async需要设置到Promise对象的外层最近function的前边位置
+  getInfo(async function(){
+ 		await getXXXX()
+    //console.log(getXXXX())
+  })
+}
+或
+async function XXXX(){
+  await getXXXX()
+}
+```
+
+注意：
+
+1. async需要设置到Promise对象外边**最近**的function前边位置
+2. await必须结合async一并使用
+3. async可以独立修饰函数使用，返回值是Promise对象(了解)
+4. 一个async可以对应**多个**await，并且各个await**顺序**执行
+5. await 后面可以跟任何的JS 表达式(字符串、数值。。)，但是修饰 **Promise对象** 更有意义
 
 
 

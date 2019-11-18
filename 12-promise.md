@@ -5,9 +5,9 @@ Promise是一个构造器(俗称构造函数)，用来创建Promise类型的对�
 ### 格式
 
 ```js
-var p = new Promise((ok,err)=>{
-  // 某个条件下，执行ok()
-	// 某个条件下，执行err()
+var p = new Promise((resolve,reject)=>{
+  // 某个条件下，执行resolve()
+	// 某个条件下，执行reject()
 });
 ```
 
