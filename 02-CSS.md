@@ -1,9 +1,9 @@
 ### link和@import区别
 
-    （1）link属于XHTML标签，页面被加载的时，link会同时被加载
+    （1）link属于XHTML标签，页面被加载时，link会同时被加载，无兼容问题
     		定义：链入一个文档，通过rel属性声明链入文档与当前文档之间的关系
-    （2）@import是CSS提供的，只用于加载CSS，@import引用的CSS会等到页面被加载完再加载;
-    （3）@import是CSS2.1 提出的，只在IE5以上才能被识别，而link是XHTML标签，无兼容问题;
+    （2）@import是CSS提供的，只用于加载CSS，@import引用的CSS会等到页面被加载完再加载
+    （3）@import是CSS2.1 提出的，只在IE5以上才能被识别
     （4）link支持用javascript改变样式，@import不支持
 
 

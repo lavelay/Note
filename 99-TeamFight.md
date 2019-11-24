@@ -354,10 +354,6 @@ yapi是   高效、易用、功能强大  的数据接口管理平台
 
 2. 组长
 
-   1. 创建远程仓库
-
-   2. 拉取成员进入仓库????
-
    3. 上传本地代码(hmmm_frontend)到远程仓库(默认是master分支)
 
       部署hmmm_frontend
@@ -392,13 +388,755 @@ yapi是   高效、易用、功能强大  的数据接口管理平台
 
 
 
-在自己的分支上开发各自分配的功能
+5. git常用操作
 
-- 基础题库
-- 精选题库
-- 试题审核
-- 组题列表
-- 学科管理
-- 目录管理
-- 标签管理
-- 面试技巧
+   ```bash
+   git add .
+   git commit -m 'xxx'
+   git clone 远程仓库地址	 // 同一个项目执行一次
+   git remote add 别名  远程仓库地址  // 给远程仓库设置访问别名
+   git pull 远程仓库地址/别名 远程分支名<:本地分支名>  // 更新， 同一个项目频繁执行
+   git push 远程仓库地址/别名  分支  // 给远程仓库进行推送
+   ```
+   
+8. vue全家桶
+
+   VueCli  +  vue-router + Vuex + axios + devtools +组件库(element-ui) 等与vue有关系的技术的统称
+
+
+
+## 基础题库搜索框
+
+`步骤`：
+
+1. 绘制相关的el-row   el-col  el-select/el-option   el-input
+
+   ```html
+   <el-card class="box-card">
+     <el-row>
+       ……
+       <el-col :span="6">标签:
+         <el-select placeholder="请选择" v-model="searchForm.tags" style="width:135px">
+         </el-select>
+       </el-col>
+     </el-row>
+   
+     <el-row :gutter="10">
+       <el-col :span="6">城市：
+         <el-select placeholder="请选择" v-model="searchForm.province" style="width:102px">
+         </el-select>
+         <el-select placeholder="请选择" v-model="searchForm.city" style="width:102px">
+         </el-select>
+   
+       </el-col>
+       <el-col :span="6">关键字：
+         <el-input type="text" placeholder="请输入关键字" 
+                   v-model="searchForm.keyword" style="width:160px"></el-input>
+       </el-col>
+       <el-col :span="6">题目备注：
+         <el-input type="text" placeholder="请输入备注" 
+                   v-model="searchForm.remarks" style="width:160px"></el-input>
+       </el-col>
+       <el-col :span="6">企业简称：
+         <el-input type="text" placeholder="请输入简称" 
+                   v-model="searchForm.shortName" style="width:150px"></el-input>
+       </el-col>
+     </el-row>
+   
+     <el-row :gutter="10">
+       <el-col :span="6">方向：
+         <el-select placeholder="请选择" v-model="searchForm.direction" style="width:135px">
+         </el-select>
+       </el-col>
+       <el-col :span="6">录入人：
+         <el-select placeholder="请选择" v-model="searchForm.creatorID" style="width:135px">
+         </el-select>
+       </el-col>
+       <el-col :span="6">二级目录：
+         <el-select placeholder="请选择" v-model="searchForm.catalogID" style="width:135px">
+         </el-select>
+       </el-col>
+       <el-col :span="6">
+         <el-button size="mini">清除</el-button>
+         <el-button type="primary" size="mini">搜索</el-button>
+       </el-col>
+     </el-row>
+   </el-card>
+   ```
+
+   
+
+2. 绘制相关的组件实例data的searchForm的各个成员
+
+   ```js
+         // 搜索表单数据对象
+         searchForm: {
+           subjectID: '', // 科学
+           difficulty: '', // 难度
+           questionType: '', // 试题类型
+           tags: '', // 标签
+           province: '', // 省份
+           city: '', // 城市
+           keyword: '', // 关键字
+           remarks: '', // 备注
+           shortname: '', // 企业简称
+           direction: '', // 方向
+           creatorID: '', // 录入人
+           catalogID: '' // 二级目录
+         }
+   ```
+
+
+
+## 标签下拉列表
+
+1. 制作data成员tagsList
+
+   ```js
+   tagsList: [], // 标签
+   ```
+
+2. import导入获取标签数据 的simple(tagsSimple)方法
+
+   ```js
+   import {simple as tagsSimple} from '@/api/hmmm/tags' // 获取标签信息方法导入
+   ```
+
+3. 给methods声明getTagsList()方法，调用tagsSimple获得标签数据，并赋予给tagsList
+
+   ```js
+   // 获得 标签 列表数据
+   async getTagsList() {
+     var rst = await tagsSimple() // Promise对象 变为 dt了
+     this.tagsList = rst.data
+   },
+   ```
+
+4. 在created中调用getTagsList方法
+
+   ```js
+   created(){
+     // 获得标签信息
+     this.getTagsList()
+   }
+   ```
+
+5. 模板中通过el-option把tagsList数据信息以下拉列表形式展示出来
+
+   ```html
+   <el-option 
+              v-for="item in tagsList" 
+              :key="item.value" 
+              :label="item.label" 
+              :value="item.value">
+   </el-option>
+   ```
+
+
+`注意`：
+
+​	各个表单域(下拉列表/输入框/文本域)标签需要设置**v-model**属性，避免不能设置信息
+
+
+
+## 录入人下拉列表
+
+`步骤`：
+
+1. 制作data成员creatorIDList
+
+   ```js
+   creatorIDList: [], // 录入人
+   ```
+   
+
+   
+2. import导入获取标签数据 的simple(usersSimple)方法(api/base/users.js)
+
+   ```js
+   import {simple as usersSimple} from '@/api/base/users' // 获取录入人信息方法导入
+   ```
+   
+
+   
+3. 给methods声明getCreatorIDList()方法，调用usersSimple获得标签数据，并赋予给creatorIDList
+
+   ```js
+   // 获得 录入人 列表数据
+   async getCreatorIDList() {
+     var rst = await usersSimple()
+     this.creatorIDList = rst.data
+   },
+   ```
+   
+
+   
+4. 在created中调用getcreatorIDList方法
+
+   ```js
+   created(){
+     // 获得录入人信息
+     this.getCreatorIDList()
+   }
+   ```
+   
+
+   
+5. 模板中通过el-option把creatorIDsList数据信息以下拉列表形式展示出来
+
+   ```html
+   <el-option 
+              v-for="item in creatorIDList" 
+              :key="item.id" 
+              :label="item.username" 
+              :value="item.id">
+   </el-option>
+   ```
+   
+
+`注意`：
+
+1. 录入人的返回信息是**id**和**username**字段，不同于其他项目是value/label
+2. 录入人的名称，在api程序接口里边为users，在yapi数据接口里边称为creatorID
+
+
+
+## 二级目录下拉列表
+
+`步骤`：
+
+1. 制作data成员catalogIDList
+
+   ```js
+   catalogIDList: [], // 二级目录
+   ```
+   
+
+   
+2. import导入获取标签数据 的simple(directorysSimple)方法(api/hmmm/directorys.js)
+
+   ```js
+   import{simple as directorysSimple}from '@/api/hmmm/directorys' // 获取二级目录信息方法导入
+   ```
+   
+
+   
+3. 给methods声明getCatalogIDList()方法，调用directorysSimple获得标签数据，并赋予给catalogIDList
+
+   ```js
+   // 获得 录入人 列表数据
+   async getCatalogIDList() {
+     var rst = await directorysSimple()
+     this.catalogIDList = rst.data
+   },
+   ```
+   
+
+   
+4. 在created中调用getCatalogIDList方法
+
+   ```js
+   created(){
+     // 获得 二级目录 信息
+     this.getCatalogIDList()
+   }
+   ```
+   
+
+   
+5. 模板中通过el-option把catalogIDList数据信息以下拉列表形式展示出来
+
+   ```html
+   <el-option 
+              v-for="item in catalogIDList" 
+              :key="item.value" 
+              :label="item.label" 
+              :value="item.value">
+   </el-option>
+   ```
+
+
+
+`注意`：
+
+​	二级目录的名称，在api程序接口里边为directorys，在yapi数据接口里边称为catalogID
+
+
+
+
+## 方向下拉列表
+
+`步骤`：
+
+1. import导入方向数据，并起别名 {direction as directionList}  (api/hmmm/drection.js)
+
+   ```js
+   import { direction as directionList } from '@/api/hmmm/constants'
+   ```
+   
+2. data中给做**简易成员赋值**方式制作directionList
+
+   ```js
+   directionList, // 方向
+   ```
+   
+3. 模板中el-option遍历展示 directionList
+
+   ```html
+   <el-option 
+              v-for="item in directionList" 
+              :key="item" 
+              :value="item" 
+              :label="item">
+   </el-option>
+   ```
+
+
+
+`注意`：
+
+​	方向信息就是一个**普通数组**，直接对应item做应用即可	
+
+
+
+## 城市
+
+`步骤`：
+
+1. import引入 citys.js的两个方法 provinces/citys 两个方法
+
+   ```js
+   import {provinces, citys} from '@/api/hmmm/citys' // 获取 省份/城市 信息方法导入
+   ```
+   
+
+   
+2. 在methods中，简易成员赋值声明 provinces 方法
+
+   ```js
+   // 获得 省份 信息，简易成员赋值
+   provinces, // provinces:provinces
+   ```
+   
+
+   
+3. 模板中 el-option 直接对 provinces方法做遍历，设置下拉列表信息
+
+   ```html
+   <el-option 
+             v-for="item in provinces()" 
+             :key="item" 
+             :label="item" 
+             :value="item">
+   </el-option>
+   ```
+   
+
+
+`注意`：
+
+​	v-for遍历，既可以遍历data成员，也可以遍历methods方法，但是要给方法后边设置() 括号
+
+
+
+## 区县
+
+`步骤`：
+
+1. 设置data成员 cityList
+
+   ```js
+   cityList: [], // 区县信息
+   ```
+   
+
+   
+2. 给**城市**设置change内容改变事件  @change="getCitys"
+
+   ```html
+   <el-select @change="getCitys(searchForm.province)" v-model="searchForm.province">
+   ```
+   
+
+   
+3. 在methods中，设置getCitys(pname代表当前选中省份)方法，调用citys()获取对应的城市信息并赋予给cityList
+
+   ```js
+   // 获得 城市 信息
+   // 这个pname形参就代表被选中的省份信息
+   getCitys(pname) {
+     this.searchForm.city = '' // 清除之前选取好的城市
+     this.cityList = citys(pname)
+   },
+   ```
+   
+
+   
+4. 模板中遍历cityList展示省份对应的城市信息
+
+   ```html
+   <el-option 
+              v-for="item in cityList" 
+              :key="item" 
+              :label="item" 
+              :value="item">
+   </el-option>
+   ```
+
+
+
+## 基础题库数据列表
+
+`步骤`：
+
+1. 制作data成员questionList
+
+   ```js
+   questionsList: [], // 基础题库列表信息
+   ```
+   
+
+   
+2. import导入list方法(api/hmmm/questions.js)
+
+   ```js
+   import {list} from '@/api/hmmm/questions' // 基础题库相关api导入
+   ```
+   
+
+   
+3. 制作methods方法getQuesionList()，调用api接口list，获得题库列表数据赋予给 questionList成员
+
+   ```js
+   // 获得基础题库列表信息
+   async getQuestionsList() {
+     var rst = await list()
+     // 把获得好的题库列表信息赋予给 questionList 成员
+     this.questionsList = rst.data.items
+   },
+   ```
+   
+
+   
+4. created中调用   getQuesionsList()
+
+   ```js
+   created(){
+     // 获得 基础题库 列表信息
+     this.getQuestionsList()
+   }
+   ```
+   
+
+   
+5. 绘制el-table/el-table-column 展示各个试题信息
+
+   ```html
+   <el-table :data="questionsList" style="width:100%">
+     <el-table-column label="序号" type="index"></el-table-column>
+     <el-table-column label="试题编号" prop="number"></el-table-column>
+     <el-table-column label="学科" prop="subject"></el-table-column>
+     <el-table-column label="题型" prop="questionType"></el-table-column>
+     <el-table-column label="题干" prop="question"></el-table-column>
+     <el-table-column label="录入时间" prop="addDate" width="170"></el-table-column>
+     <el-table-column label="难度" prop="difficulty" ></el-table-column>
+     <el-table-column label="录入人" prop="creator"></el-table-column>
+     <el-table-column label="操作" width="200">
+       <template slot-scope="stData">
+         <a href="#">预览</a>
+         <a href="#">修改</a>
+         <a href="#">删除</a>
+         <a href="#">加入精选</a>
+       </template>
+     </el-table-column>
+   </el-table>
+   ```
+
+
+
+6. 调整样式
+
+   给el-row和el-table设置样式
+
+   ```html
+   <style scoped>
+   .el-row {
+     margin-bottom: 10px;
+   }
+   .el-table {
+     margin-top: 20px;
+   }
+   </style>
+   ```
+   
+
+
+
+## 题型数字转汉字
+
+`步骤`：
+
+0. 把mysql中“题型hm_questions表的questionType字段”信息都更改为数字的 1/2/3
+
+1. 给题型 el-table-column设置 :formatter属性
+
+   ```html
+   <el-table-column label="题型" :formatter="questionTypeFMT" ></el-table-column>
+   ```
+   
+
+   
+2. 在methods方法中生成 formatter对应的方法，实现当前列内容的转化操作
+
+   ```js
+   // 对"题型"数据进行二次修饰
+   // row: 代表每条记录信息(stData.row.xx)
+   // column: 代表列的信息(一般不使用)
+   // cellValue: 当前正在处理的目标列的内容(与row.questionType一致)
+   // index: 0/1/2.. 序号信息
+   questionTypeFMT(row, column, cellValue, index) {
+     // console.log(index)
+     // return 返回的信息会去覆盖当前的column列的内容
+     return this.questionTypeList[cellValue - 1].label
+   },
+   ```
+
+`注意`：
+
+​	el-table-column组件可以通过  **formatter**  属性对当前列的信息做格式转换等修饰操作
+
+
+
+## 难度数字转汉字
+
+`步骤`：
+
+0. 把mysql中“难度hm_questions 的difficulty字段”信息都更改为数字的 1/2/3
+
+1. 给题型 el-table-column设置 :formatter属性
+
+   ```html
+   <el-table-column label="难度" prop="difficulty"  :formatter="difficultyFMT">
+   ```
+   
+
+   
+2. 在methods方法中生成 formatter对应的方法，实现当前列内容的转化操作
+
+   ```js
+   // 难度数字转汉字
+   difficultyFMT(row, column, cellValue) {
+     return this.difficultyList[cellValue - 1]['label']
+   },
+   ```
+
+
+
+## 时间格式化
+
+`实现`：
+
+通过**作用域插槽**方式获取每行的时间信息，并结合过滤器做信息格式转变
+
+```html
+<el-table-column label="录入时间" width="170">
+  <!--table表格column中获取数据信息，要使用 作用域插槽 形式-->
+  <span slot-scope="stData">{{stData.row.addDate | parseTimeByString}}</span>
+</el-table-column>
+```
+
+`注意`：
+
+​	时间变为格式化样子，可以通过**:formatter**实现，但是需要额外编辑methods方法，**过滤器**已经封装好直接使用更方便
+
+
+
+## 搜索数据
+
+`步骤`：
+
+1. 制作watch监听器，对searchForm表单对象进行深度监听，发现搜索表单数据由变化，就重新获得试题列表信息
+
+   ```js
+   watch: {
+     searchForm: {
+       handler: function(newV, oldV) {
+         // 重新获得试题
+         this.getQuestionsList()
+       },
+       deep: true
+     }
+   },
+   ```
+   
+2. 在获得试题列表的methods方法中，设置searchForm参数，作为获得试题列表信息的筛选条件
+
+   ```js
+   async getQuestionsList() {
+     // 给list传递数据检索的条件信息
+     var rst = await list(this.searchForm)
+     this.questionsList = rst.data.items
+   }
+   ```
+
+
+`注意`：
+
+​	目前只有**关键字**(题干)一个项目支持搜索，其他的都是摆设
+
+
+
+## 题库删除
+
+`步骤`：
+
+1. 给删除按钮设置@click.prevent="del(stData.row)" 单击事件
+
+   ```html
+   <!--如下超链接a标签单击后，click和href都执行了
+   我们需要只执行click，不要执行href
+   处理：使用事件修饰符
+   @click.prevent: 只执行事件，标签的默认动作不走
+   // prevent:阻止浏览器默认动作(a有动作、form表单有动作)
+   
+   @click.native: 使得事件直接作用到组件的html标签身上
+   -->
+   <a href="#" @click.prevent="del(stData.row)">删除</a>
+   ```
+   
+> prevent：阻止a标签默认跳转执行
+   
+2. import引入remove接口方法， api/hmmm/questions.js
+
+   ```js
+   import { list, remove } from '@/api/hmmm/questions' // 基础题库相关api导入
+   ```
+   
+
+   
+3. 在methods中制作del方法，实现数据参数操作
+
+   ```js
+   // 删除题库
+   del(question) {
+     this.$confirm('确认要删除此试题么?', '删除', {
+       confirmButtonText: '确定',
+       cancelButtonText: '取消',
+       type: 'warning'
+     }).then(async () => {
+       // await:保证数据删除完毕，再做刷新
+       await remove(question)
+       // 页面刷新
+       this.getQuestionsList()
+     }).catch(() => { })
+   },
+   ```
+   
+
+
+`注意`：
+
+1. 要把被删除的"**整个**"记录对象当做参数传递使用(非id)
+2. @click.prevent 设置**事件修饰符**，阻止浏览器默认动作 （即阻止a标签超链接动作）
+3. asycn和await保障数据删除完毕，再做更新
+
+
+
+## 插件
+
+​	通过独立的模块把“Vue实例”的各个成员给设置好，待需要使用之时，快速配置部署，这个模块就是“插件”
+
+官网：[https://vue.docschina.org/v2/guide/plugins.html#%E7%BC%96%E5%86%99%E6%8F%92%E4%BB%B6](https://vue.docschina.org/v2/guide/plugins.html#编写插件)
+
+​	各个插件都可以给Vue声明许多成员，形成独立模块，需要的时候就引入使用，方便程序的开发、维护	
+
+
+
+声明插件
+
+```js
+// MyPlugin.js
+export default {
+  install(obj){
+    obj.prototype.xx = yy  // 声明全局属性，类似data
+    obj.prototype.$xx = ()=>{}  // 声明全局方法，类似methods
+    obj.filter('timeFT',function(origin){ }) // 声明全局过滤器
+    obj.component(xx,yy)  // 声明全局组件
+    obj.directive(xx,yy)  // 声明全局指令
+    ……
+  }
+}
+```
+
+> obj 是自定义名字，代表 "Vue 构造函数" 
+>
+> 可以通过插件完成 data、methods、directive、filter、component等全局成员的声明
+
+
+
+使用插件
+
+```js
+import MyPlugin from './MyPlugin'
+Vue.use(MyPlugin)    // 本质：MyPlugin.install(Vue)
+或 
+Vue.use(MyPlugin, { someOption: true })
+
+new Vue({
+  // ...组件选项
+})
+```
+
+> 使用插件需要在 new  Vue()之前
+
+
+
+应用：
+
+创建插件src/MyPlugin.js
+
+```js
+// 声明一个插件，内部有两个组件(分页、表格)
+export default {
+  // 对象有名称为install的成员，是方法，install是固定的，不能该
+  // obj:固定代表"Vue对象"
+  install: function(obj) {
+    // 普通组件声明
+    obj.component('it-table', {
+      template: `
+        <table>
+          <tr><td>序号</td><td>名称</td></tr>
+          <tr><td>1001</td><td>奔驰</td></tr>
+          <tr><td>1002</td><td>宝马</td></tr>
+        </table>
+      `
+    })
+    obj.component('it-page', {
+      template: `
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+        </ul>
+      `
+    })
+  }
+}
+```
+
+main.js中引入、注册插件：
+
+```js
+// 自定义插件引入和使用
+import mypu from '@/MyPlugin.js'
+Vue.use(mypu) // 本质是内部的install方法得到执行了
+```
+
+
+
+具体组件中使用插件提供的组件：
+
+```html
+<it-table></it-table>
+<it-page></it-page>
+```
