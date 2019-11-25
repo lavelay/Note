@@ -1005,7 +1005,7 @@ yapi是   高效、易用、功能强大  的数据接口管理平台
    ```
    
 > prevent：阻止a标签默认跳转执行
-   
+
 2. import引入remove接口方法， api/hmmm/questions.js
 
    ```js
@@ -1089,8 +1089,6 @@ new Vue({
 
 > 使用插件需要在 new  Vue()之前
 
-
-
 应用：
 
 创建插件src/MyPlugin.js
@@ -1132,11 +1130,796 @@ import mypu from '@/MyPlugin.js'
 Vue.use(mypu) // 本质是内部的install方法得到执行了
 ```
 
-
-
 具体组件中使用插件提供的组件：
 
 ```html
 <it-table></it-table>
 <it-page></it-page>
 ```
+
+
+
+# 题库数据增加
+
+## 设置新增按钮
+
+给 试题列表 设置 “新增”和 “批量导入”按钮
+
+制作相关按钮
+
+```html
+<el-row>
+  <el-col>
+    <el-button type="primary" size="mini" @click="$router.push('/questions/new')">
+      新增试题
+    </el-button>
+    <el-button type="danger" size="mini">
+      批量导入
+    </el-button>
+  </el-col>
+</el-row>
+```
+
+
+
+## 绘制简单表单域元素
+
+`目标`：
+
+​	添加题库 绘制简单(学科、目录、企业、城市、方向)表单域元素  和  相关data成员
+
+`步骤`：
+
+1. 绘制相关的el-form   el-select
+
+   > 在src/module-hmmm/pages/questions-new.vue中设置
+
+   ```html
+   <el-card class="box-card">
+     <el-form ref="addFormRef" :model="addForm" label-width="120px">
+       <!--:model作用：可以使得el-form针对表单的全部信息进行收集，固定属性-->
+       <el-form-item label="学科：">
+         <el-select v-model="addForm.subjectID">
+         </el-select>
+       </el-form-item>
+       <el-form-item label="目录：">
+         <el-select v-model="addForm.catalogID">
+         </el-select>
+       </el-form-item>
+       <el-form-item label="企业：">
+         <el-select v-model="addForm.enterpriseID">
+         </el-select>
+       </el-form-item>
+       <el-form-item label="城市：">
+         <el-select v-model="addForm.province" @change="getCitys(addForm.province)">
+         </el-select>
+         <el-select v-model="addForm.city">
+         </el-select>
+       </el-form-item>
+       <el-form-item label="方向：">
+         <el-select v-model="addForm.direction">
+         </el-select>
+       </el-form-item>
+     </el-form>
+   </el-card>
+   ```
+
+   
+
+2. 制作组件实例data的addForm的各个成员
+
+   ```js
+   // 添加试题 表单数据对象
+   addForm: {
+     subjectID: '', // 学科
+     catalogID: '', // 二级目录
+     enterpriseID: '', // 企业
+     city: '', // 区县
+     province: '', // 城市
+     direction: '', // 方向
+   }
+   ```
+
+
+
+## 学科、目录、城市、方向表单域绘制
+
+1. 制作data成员
+
+   ```js
+   subjectIDList: [], // 学科
+   catalogIDList: [], // 二级目录
+   cityList: [], // 区县信息
+   directionList, // 方向(简易成员赋值)
+   ```
+   
+2. import导入获取标签数据 的simple(别名subjectsSimple)方法
+
+   ```js
+   import { simple as subjectsSimple } from '@/api/hmmm/subjects' // 学科
+   import { simple as directorysSimple } from '@/api/hmmm/directorys' // 二级目录
+   import { provinces, citys } from '@/api/hmmm/citys' // 城市和区县
+   // 常量(方向)
+   import { direction as directionList } from '@/api/hmmm/constants'
+   ```
+   
+3. 给methods声明getSubjectIDList()方法，调用subjectsSimple获得标签数据，并赋予给subjectIDList
+
+   ```js
+   provinces, // 获得城市的方法(简易成员赋值)
+   // 学科 列表信息
+   async getSubjectIDList() {
+     var rst = await subjectsSimple()
+     this.subjectIDList = rst.data
+   },
+   // 目录 列表信息
+   async getCatalogIDList() {
+     var rst = await directorysSimple()
+     this.catalogIDList = rst.data
+   },
+   // 获得 区县 信息
+   // 这个pname形参就代表被选中的省份信息
+   getCitys(pname) {
+     this.addForm.city = '' // 清除之前选取好的城市
+     this.cityList = citys(pname)
+   }
+   ```
+   
+4. 在created中调用getSubjectIDList方法
+
+   ```js
+   created() {
+     this.getSubjectIDList() // 学科
+     this.getCatalogIDList() // 二级目录
+   }
+   ```
+   
+5. 模板中通过el-option把List相关数据信息展示出来
+
+   ```html
+   <el-form-item label="学科：">
+     <el-select v-model="addForm.subjectID">
+       <el-option
+                  v-for="item in subjectIDList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+               ></el-option>
+     </el-select>
+   </el-form-item>
+   <el-form-item label="目录：">
+     <el-select v-model="addForm.catalogID">
+       <el-option
+                  v-for="item in catalogIDList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+               ></el-option>
+     </el-select>
+   </el-form-item>
+   <el-form-item label="企业：">
+     <el-select v-model="addForm.enterpriseID">
+     </el-select>
+   </el-form-item>
+   <el-form-item label="城市：">
+     <el-select v-model="addForm.province" @change="getCitys(addForm.province)">
+       <el-option v-for="item in provinces()" :key="item" :label="item" :value="item">
+       </el-option>
+     </el-select>
+     <el-select v-model="addForm.city">
+       <el-option 
+                  v-for="item in cityList" 
+                  :key="item" 
+                  :label="item" 
+                  :value="item"></el-option>
+     </el-select>
+   </el-form-item>
+   <el-form-item label="方向：">
+     <el-select v-model="addForm.direction">
+       <el-option v-for="item in directionList" :key="item" :value="item" :label="item">
+       </el-option>
+     </el-select>
+   </el-form-item>
+   ```
+   
+
+
+## 企业表单域绘制
+
+`步骤`：
+
+1. 制作data成员enterpriseIDList
+
+   ```js
+   enterpriseIDList: [], // 企业
+   ```
+   
+
+   
+2. import导入获取标签数据 的list(companysList)方法(api/hmmm/companys.js)
+
+   ```js
+   import { list } from '@/api/hmmm/companys' // 企业
+   ```
+   
+
+   
+3. 给methods声明getEnterpriseIDList()方法，调用companysList获得标签数据，并赋予给enterpriseIDList
+
+   ```js
+   // 获得 企业 列表信息
+   async getEnterpriseIDList() {
+     var rst = await List()
+     this.enterpriseIDList = rst.data.items
+   }
+   ```
+   
+
+   
+4. 在created中调用getEnterpriseIDList方法
+
+   ```js
+   this.getEnterpriseIDList() // 获得企业
+   ```
+   
+
+   
+5. 模板中通过el-option把catalogIDList数据信息以下拉列表形式展示出来
+
+   ```html
+   <el-form-item label="企业：">
+     <el-select v-model="addForm.enterpriseID">
+       <el-option
+                  v-for="item in enterpriseIDList"
+                  :key="item.id"
+                  :label="item.shortName"
+                  :value="item.id"
+               ></el-option>
+     </el-select>
+   </el-form-item>
+   ```
+   
+
+
+`注意`：
+
+1. 获得回来的数据信息需要调用**items**获得  this.enterpriseIDList = rst.data.items
+
+2. 数据遍历要走 **id**和**shortName**关键字段
+
+
+
+## 题型表单域绘制(单选按钮)
+
+`步骤`：
+
+1. import导入获取标签数据 的questionType常量 并设置别名questionTypeList
+
+   ```js
+   import {
+     questionType as questionTypeList
+   } from '@/api/hmmm/constants'
+   ```
+   
+2. 制作data成员
+
+   ```js
+   questionTypeList, // 题型 (简易成员赋值)
+   addForm:{
+     questionType: '1', // 默认“单选” 题型 项目被选中(要求是字符串)
+   }
+   ```
+
+
+
+3. 模板中通过  el-radio-group 和 el-radio  组件对questionTypeList数据做遍历展示
+
+   ```html
+   <el-form-item label="题型：">
+     <el-radio-group v-model="addForm.questionType">
+       <el-radio 
+                 v-for="item in questionTypeList" 
+                 :key="item.value" 
+                 :label=" item.value+'' ">
+         {{item.label}}
+       </el-radio>
+     </el-radio-group>
+   </el-form-item>
+   ```
+
+
+
+`注意`：
+
+1. el-radio-group对多个radio进行分组，并利用v-model**设置或接收**选中的项目
+2. el-radio真实起作用的value数据信息要通过**label**属性定义
+3. 服务器端要求题型的信息为**String**，所以设置 item.value+''
+
+
+
+## 难度表单域绘制(单选按钮)
+
+`步骤`：
+
+1. import导入获取标签数据 的 difficulty 常量 并设置别名 difficultyList
+
+   ```js
+   import {
+     difficulty as difficultyList
+   } from '@/api/hmmm/constants'
+   ```
+   
+2. 制作data成员
+
+   ```js
+   difficultyList, // 难度 简易成员赋值
+   addForm:{
+     difficulty: '1', // 默认 难度 第一个项目被选中(要求是字符串)
+   }
+   ```
+   
+3. 模板中通过el-radio组件对 difficultyList 数据做遍历展示
+
+   ```html
+   <el-form-item label="难度：">
+     <el-radio-group v-model="addForm.difficulty">
+       <el-radio v-for="item in difficultyList" :key="item.value" :label=" item.value+'' ">
+         {{item.label}}
+       </el-radio>
+     </el-radio-group>
+   </el-form-item>
+   ```
+
+
+
+`注意`：
+
+1. el-radio-group对多个radio进行分组，并利用v-model**设置或接收**选中的项目
+2. el-radio真实起作用的数据信息要通过**label**属性定义
+3. 服务器端要求难度的信息为String，所以设置 **item.value+''**
+
+
+
+## 普通文本域和文本框绘制
+
+`步骤`：
+
+1. 制作各个表单域
+
+```html
+<el-form-item label="题干：">
+  <el-input type="textarea" v-model="addForm.question"></el-input>
+</el-form-item>
+<el-form-item label="答案：">
+  <el-input type="textarea" v-model="addForm.answer"></el-input>
+</el-form-item>
+<el-form-item label="备注：">
+  <el-input type="textarea" v-model="addForm.remarks"></el-input>
+</el-form-item>
+<el-form-item label="标签：">
+  <el-input type="text" v-model="addForm.tags"></el-input>
+</el-form-item>
+<el-form-item>
+  <el-button type="primary">提交</el-button>
+</el-form-item>
+```
+
+2. 给data制作表单对象成员
+
+```js
+addForm:{
+  question: '', // 题干
+  answer: '', // 答案
+  remarks: '', // 备注
+  tags: '', // 标签
+  videoURL: 'http://www.xxx.com' // 解析视频
+}
+```
+
+`注意`：
+
+videoURL字段是必填的项目，信息固定即可
+
+
+
+## 试题选项(单选按钮)制作
+
+`步骤`：
+
+1. 声明data成员
+
+   ```js
+   // 感知被被选中的项目的值，是中间成员，需要通过watch转变为isRight
+   singleSelect: '', 
+   
+   addForm:{
+     // 选项表单数据对象部分
+     options: [
+       // {code: '编号ABCD', title: '当前项目文字答案', 
+       //   img: '当前项目图片答案', isRight: boolean表明当前项目是否是答案},
+       { code: 'A', title: '', img: '', isRight: false },
+       { code: 'B', title: '', img: '', isRight: false },
+       { code: 'C', title: '', img: '', isRight: false },
+       { code: 'D', title: '', img: '', isRight: false }
+     ]
+   }
+   ```
+   
+
+   
+2. 绘制4组单选按钮，各个单选按钮有label属性，取值分别为 0/1/2/3
+
+   ```html
+   <el-form-item label="选项：">
+     <el-radio v-model="singleSelect" :label="0">
+       A: <el-input type="text" v-model="addForm.options[0]['title']"></el-input>
+     </el-radio><br />
+     <el-radio v-model="singleSelect" :label="1">
+       B: <el-input type="text" v-model="addForm.options[1]['title']"></el-input>
+     </el-radio><br />
+     <el-radio v-model="singleSelect" :label="2">
+       C: <el-input type="text" v-model="addForm.options[2]['title']"></el-input>
+     </el-radio><br />
+     <el-radio v-model="singleSelect" :label="3">
+       D: <el-input type="text" v-model="addForm.options[3]['title']"></el-input>
+     </el-radio>
+   </el-form-item>
+   ```
+   
+> 使得各个单选按钮的el-input输入框直接与title成员联系
+   
+3. 创建**watch监听器**，监听singleSelect，根据值情况设置对应项目的isRight为true
+
+   ```js
+   // watch监听器
+   watch: {
+     // 监听选项选中要把isRight的值做设置操作
+     singleSelect(newval) {
+       // 要使得全部的isRight变为false
+       // newval代表的当前项目的isRight变为true
+       for (var i = 0; i < 4; i++) {
+         this.addForm.options[i].isRight = false
+       }
+       this.addForm.options[newval].isRight = true
+     }
+   }
+   ```
+
+
+
+## 实现试题添加
+
+`步骤`：
+
+1. 给添加按钮，并设置事件 @click="addQuestion()"
+
+   ```html
+   <el-button type="primary" @click="addQuestion()">提交</el-button>
+   ```
+   
+2. import导入api接口，questions.js---》add
+
+   ```js
+   import { add } from '@/api/hmmm/questions' // 试题
+   ```
+   
+3. 制作methods方法addQuestion，调用add(this.addForm)方法实现数据添加
+
+   ```js
+   // 收集表单数据，完成添加操作
+   async addQuestion() {
+     // 注意：要使得数据完成添加后，再做列表页面重定向操作
+     await add(this.addForm) // 添加数据
+     this.$message.success('添加数据成功')
+     this.$router.push('/questions/list')// 路由重定向跳转
+   },
+   ```
+   
+
+
+`注意`：
+
+1. addQuestion要使用async和await保证数据完成添加，再做页面跳转，显示列表
+2. 数据添加，如果服务器端返回**422**错误，这表示表单域数据类型不正确，可通过浏览器firebug查看调试
+
+
+
+## 单选、多选、简答 切换
+
+`步骤`：
+
+1. 声明data成员控制显示
+
+```js
+radioShow: true, // 默认显示单选项目
+allShow: true, // 单选或多选默认显示一个
+```
+
+> radioShow:true   显示单选
+>
+> radioShow:false  显示多选
+>
+> allShow:true 单选或多选显示一个
+>
+> allShow:false 单选和多选都不显示
+
+2. 通过监听器设置切换动作
+
+```js
+  watch: {
+    // 对题型进行监听
+    'addForm.questionType': function(newval) {
+      // console.log(newval)
+      if (Number(newval) === 1) {
+        // newval=1 单选
+        this.radioShow = true
+        this.allShow = true
+      } else if (Number(newval) === 2) {
+        // newval=2 多选
+        this.radioShow = false
+        this.allShow = true
+      } else {
+        // newval=3 简答
+        this.allShow = false
+      }
+    }
+  }
+```
+
+
+
+3. 制作 复选框项目组，并和   单选框项目组 做判断显示
+
+```html
+<el-form-item label="选项：" v-if="allShow">
+  <template v-if="radioShow">
+    <!--单选选项组-->
+    <el-radio :label="0" v-model="singleSelect">A.
+      <el-input type="text" v-model="addForm.options[0].title"></el-input>
+    </el-radio>
+    <br>
+    <el-radio :label="1" v-model="singleSelect">B.
+      <el-input type="text" v-model="addForm.options[1].title"></el-input>
+    </el-radio>
+    <br>
+    <el-radio :label="2" v-model="singleSelect">C.
+      <el-input type="text" v-model="addForm.options[2].title"></el-input>
+    </el-radio>
+    <br>
+    <el-radio :label="3" v-model="singleSelect">D.
+      <el-input type="text" v-model="addForm.options[3].title"></el-input>
+    </el-radio>
+  </template>
+
+  <template v-else>
+    <!--多选选项组-->
+    <!--复选框的v-model直接对isRight进行绑定，
+而单选框不能对isRight绑定，如果绑定了它们就是4个不同的单选按钮，
+造成结果是多个单选项目都可以被选中了，这与业务是相违背的-->
+    <el-checkbox v-model="addForm.options[0].isRight">A.
+      <el-input type="text" v-model="addForm.options[0].title"></el-input>
+    </el-checkbox>
+    <br>
+    <el-checkbox v-model="addForm.options[1].isRight">B.
+      <el-input type="text" v-model="addForm.options[1].title"></el-input>
+    </el-checkbox>
+    <br>
+    <el-checkbox v-model="addForm.options[2].isRight">C.
+      <el-input type="text" v-model="addForm.options[2].title"></el-input>
+    </el-checkbox>
+    <br>
+    <el-checkbox v-model="addForm.options[3].isRight">D.
+      <el-input type="text" v-model="addForm.options[3].title"></el-input>
+    </el-checkbox>
+  </template>
+</el-form-item>
+```
+
+
+
+
+`注意`：
+
+单选按钮组 是通过**singleSelect** 接收被选中项目，而 复选框组 是直接通过data子成员**isRight**接收
+
+
+
+# 题库数据分页
+
+> 在questions.vue中进行
+
+`步骤`：
+
+1. 编辑分页组件，及各个相关属性
+
+   ```html
+   <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page="searchForm.page"
+                  :page-sizes="[5, 10, 15, 20]"
+                  :page-size="searchForm.pagesize"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="tot"
+                  >
+   </el-pagination>
+   ```
+   
+> searchForm.page：当前页码
+   >
+   > searchForm.pagesize：每页显示条数
+   >
+   > searchForm.tot：总记录条数
+   
+2. 在methods方法中添加分页的两个成员，分别感知 页码、条数 变化后的处理
+
+   ```js
+   // 每页条数变化的处理
+   handleSizeChange(val) {
+     this.searchForm.pagesize = val
+   },
+   // 当前页码变化的回调处理
+   handleCurrentChange(val) {
+     this.searchForm.page = val
+   }
+   ```
+   
+> 由于watch对searchForm做深度监听， 条数、页码变化后不用this.getQuestionsList()获得新数据
+   
+3. 在data成员searchForm中声明3个成员：page、pagesize、tot
+
+   ```js
+   tot: 0, // 数据总条数
+   searchForm: {
+     page: 1, // 默认获取第1页数据
+     pagesize: 5, // 默认每页获得4条数据
+   }
+   ```
+   
+> tot与searchForm没有关系，故定义到外边也可以
+   
+4. 在getQuestionsList()方法中，把获得的总记录条数赋予给tot成员
+
+   ```js
+   async getQuestionsList() {
+     var rst = await list(this.searchForm)
+     this.questionsList = rst.data.items
+     // 获得数据总条数并赋予给searchForm.tot成员
+     this.tot = rst.data.counts
+   }
+   ```
+   
+5. 样式
+
+   ```css
+   .el-pagination{
+     margin-top:15px;
+   }
+   ```
+   
+
+
+
+# 多语言切换
+
+`步骤`：
+
+1. 在 src/lang/en.js 和 src/lang/zh.js 文件中配置语言信息
+
+   ```js
+   // en.js:
+     question: {
+       'newadd': 'NewAdd',
+       'manyadd': 'ManyAdd'
+     },
+     
+   // zh.js:
+     question: {
+       'newadd': '新增试题',
+       'manyadd': '批量导入'
+     }
+   ```
+   
+
+   
+2. 在具体业务组件中使用语言
+
+   语法：
+
+   ```
+   {{ $t( 语言名称 ) }}
+   ```
+   
+```html
+   <el-button type="primary" size="mini" @click="$router.push('/questions/new')">
+     {{ $t('question.newadd') }}
+   </el-button>
+   <el-button type="danger" size="mini">{{ $t('question.manyadd') }}</el-button>
+   ```
+   
+
+`注意`：
+
+​	elementui组件库的各个组件""多语言""默认也有配置好
+
+
+
+## 一般项目多语言切换实现(了解)
+
+`步骤`：
+
+1. 安装i18n( internationalization )语言包
+
+```
+yarn add vue-i18n  // 黑马面面项目已经安装了，不用重复执行
+```
+
+2. 在main.js中进行如下配置：
+
+```js
+import Vue from 'vue'
+import App from './App'
+
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+// 1) 引入elementui默认提供的语言包
+import enLocale from 'element-ui/lib/locale/lang/en'
+import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+// 2) 引入i18n的模块
+import VueI18n from 'vue-i18n'
+// 3) Vue对i18n进行注册
+Vue.use(VueI18n) // 注册完毕在组件中就可以使用$t()语法，本质是函数调用
+                 // 本质是给Vue创建methods方法 Vue.prototype.$t = xxx
+Vue.use(ElementUI)
+
+// 4) 对全部(elementui和自定义的)的语言进行收集，并存储到"messages对象"中
+const messages = {
+  en: {
+    first: 'main', // 自定义语言包
+    second: 'success',
+    ...enLocale // elementui语言包 与 自定义语言包合并(英文)
+  },
+  zh: {
+    first: '主要',
+    second: '成功',
+    ...zhLocale // elementui语言包 与 自定义语言包合并(中文)
+  }
+}
+// 5) 实例化i18n对象，并初始化配置默认语言 和 全部语言集
+const i18n = new VueI18n({
+  locale: 'zh', // 配置默认语言
+  messages, // 全部语言集合
+})
+// 6) ElementUI对语言包进行注册，使得ElementUI可以使用各种语言
+Vue.use(ElementUI, {
+  i18n: (key, value) => i18n.t(key, value)
+})
+
+new Vue({
+  // 7) 挂载语言包
+  i18n,
+  render:h=>h(App)
+}).$mount('#app')
+```
+
+3. 应用，在模板中使用语言包的各种语言，例如：
+
+```html
+<el-button type="primary">{{$t('first')}}按钮</el-button>
+<el-button type="success">{{$t('second')}}按钮</el-button>
+```
+
+
+
+# 文章修改状态
+
+需要对api接口进行调整如下articles.js：
+
+```js
+export const state = data =>
+  createAPI(`/articles/${data.id}/${data.state}`, 'post', data)
+```
+
+> 设置为 ${data.state}
+
+
