@@ -18,22 +18,6 @@
 
 8. **数据接口**[地址、数据] 联调  -- **禅道**(https://www.zentao.net/)管理
 
-    
-
-## 项目描述
-
-针对目前大量学员在培训完之后直接去面试企业的通过率低的问题，公司研发了**黑马面面**小程序，学员在空闲时间可以通过查看企业真实面试题，也可以通过刷题寻找自己的短板进行补充，新版本提供模拟面试功能，用户可以通过微信小程序进入模拟面试模块，完成定向企业面试和自由组题模式
-
-前端项目：
-
-​	前台项目：微信小程序、电脑端、手机app
-
-​	后台项目：黑马头条项目、黑马面面
-
-后端项目：nodejs+mysql数据库开发的接口项目
-
-​	都是API数据即可
-
 
 
 ## 安装后端项目
@@ -66,15 +50,6 @@ npm stop
 ```
 
 接口地址：http://127.0.0.1:7001
-
-
-
-`注意`：
-
-1. 后端数据接口项目启动后，有许多系统服务，不能关闭
-2. 项目的上级各个目录名称不要使用"中文"或其他特殊符号，只使用英文、数字或中横线即可
-3. 不要执行yarn安装全部依赖包有问题，相反复制、粘贴老师的node-modules目录做应用
-4. npm start  与 stop 需要配对使用，不要重复start
 
 
 
@@ -175,22 +150,6 @@ npm start
 - 接口文档：https://mock.boxuegu.com/project/113/interface/api[恢复版]
 - 学员yapi应用：<http://yapi.demo.qunar.com/>
 - 原型图：[http://czpm.itcast.cn/黑马面面/V2.0/](http://czpm.itcast.cn/%E9%BB%91%E9%A9%AC%E9%9D%A2%E9%9D%A2/V2.0/)
-
-
-
-## 路由分析
-
-暂时全部路由如下：
-
-```
-src\router\index.js    // main.js中直引
-src\module-manage\router\index.js  // main.js中通过use()插件方式引入
-src\module-hmmm\router\index.js  // main.js中通过 use()插件方式引入
-```
-
-`注意`：
-
-​	虽然路由分为3个文件组成，系统执行的时候会把它们合并到一起
 
 
 
@@ -348,31 +307,13 @@ yapi是   高效、易用、功能强大  的数据接口管理平台
 
 ## 分配任务
 
-`步骤`：
+git push 远程仓库地址   分支(master)
 
-1. git远程仓库：	http://github.com
+4. 创建新git分支并切换进入( git checkout -b xxx )，与普通成员一样做具体业务功能开发
 
-2. 组长
+   > git  remote add 别名  远程仓库地址   // 给远程仓库设置访问别名
 
-   3. 上传本地代码(hmmm_frontend)到远程仓库(默认是master分支)
 
-      部署hmmm_frontend
-
-      git init  // 注意，如果当前项目没有git版本库，请先初始化(git init)
-
-      git add .
-
-      git commit -m '提交日志'
-
-      git push 远程仓库地址   分支(master)
-
-      
-
-   4. 创建新git分支并切换进入( git checkout -b xxx )，与普通成员一样做具体业务功能开发
-
-      > git  remote add 别名  远程仓库地址   // 给远程仓库设置访问别名
-
-   
 
 3. 普通成员
 
@@ -1567,7 +1508,7 @@ videoURL字段是必填的项目，信息固定即可
    ```
    
 > 使得各个单选按钮的el-input输入框直接与title成员联系
-   
+
 3. 创建**watch监听器**，监听singleSelect，根据值情况设置对应项目的isRight为true
 
    ```js
@@ -1750,7 +1691,7 @@ allShow: true, // 单选或多选默认显示一个
    > searchForm.pagesize：每页显示条数
    >
    > searchForm.tot：总记录条数
-   
+
 2. 在methods方法中添加分页的两个成员，分别感知 页码、条数 变化后的处理
 
    ```js
@@ -1765,7 +1706,7 @@ allShow: true, // 单选或多选默认显示一个
    ```
    
 > 由于watch对searchForm做深度监听， 条数、页码变化后不用this.getQuestionsList()获得新数据
-   
+
 3. 在data成员searchForm中声明3个成员：page、pagesize、tot
 
    ```js
@@ -1777,7 +1718,7 @@ allShow: true, // 单选或多选默认显示一个
    ```
    
 > tot与searchForm没有关系，故定义到外边也可以
-   
+
 4. 在getQuestionsList()方法中，把获得的总记录条数赋予给tot成员
 
    ```js
@@ -1835,8 +1776,8 @@ allShow: true, // 单选或多选默认显示一个
      {{ $t('question.newadd') }}
    </el-button>
    <el-button type="danger" size="mini">{{ $t('question.manyadd') }}</el-button>
-   ```
-   
+```
+
 
 `注意`：
 

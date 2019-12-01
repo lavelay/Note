@@ -6372,425 +6372,6 @@ export default {
    
 
 
-# 发布文章封面处理
-
-`步骤`：
-
-1. 在添加文章 封面处绘制html标签代码
-
-   在封面单选按钮组(el-radio-group)标签后边设置如下代码
-
-   ```html
-   <ul>
-     <li class="uploadbox" v-for="item in 3" :key="item">
-       <span>点击图标选择图片</span>
-       <img v-if="addForm.cover.images[item-1]" :src="addForm.cover.images[item-1]" alt="" />
-       <div v-else class="el-icon-picture-outline"></div>
-     </li>
-   </ul>
-   ```
-   
-> addForm.cover.images[item-1]  是显示对应的封面图片效果，如果不做选择，默认是没有的
-
-
-
-2. 绘制选择框对应的css样式(参考 项目笔记)
-
-   ```css
-   // 文章封面选择框样式
-   .uploadbox {
-     list-style: none;
-     width: 200px;
-     height: 200px;
-     margin: 10px;
-     float: left;
-     cursor: pointer;
-     border: 1px solid #eee;
-     span {
-       width: 200px;
-       height: 50px;
-       line-height: 50px;
-       display: block;
-       text-align: center;
-     }
-     div {
-       width: 200px;
-       height: 150px;
-       font-size: 100px;
-       display: flex;
-       justify-content: center;
-       align-items: center;
-       background-color: #fff;
-     }
-     img{
-       width: 200px;
-       height: 150px;
-     }
-   }
-   ```
-   
-
-
-
-
-## 选取框与单选按钮联系
-
-`步骤`：
-
-1. 通过computed设计covernum成员，
-
-   该成员在type大于0情况下与type保持一致，其他情况都为0
-
-```js
-  computed: {
-    // 设计当前图片"选择框"个数
-    covernum () {
-      if (this.addForm.cover.type > 0) {
-        return this.addForm.cover.type
-      }
-      return 0
-    }
-  }
-```
-
-2. 模板中直接根据covernum做  选择框 显示
-
-   ```html
-   <li class="uploadbox" v-for="item in covernum" :key="item">
-     <span>点击图标选择图片</span>
-     <img v-if="addForm.cover.images[item-1]" :src="addForm.cover.images[item-1]" alt>
-     <div v-else class="el-icon-picture-outline"></div>
-   </li>
-   ```
-   
-
-
-## 展示素材图片对话框
-
-对话框组件el-dialog解读：
-
-```html
-<el-dialog
-  title="提示"
-  :visible.sync="dialogVisible"
-  width="60%"
-  >
-  <!--匿名插槽体现-->
-  <span>这是一段信息</span>
-  <!--命名插槽体现-->
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-  </span>
-</el-dialog>
-```
-
-> :visible.sync="true/false"  限制当前对话框 显示true或隐藏false
->
-> width:设置对话框宽度
-
-
-
-`展示对话框步骤`：
-
-1. 添加文章组件中，与card卡片主体内容并列的后边绘制el-dialog组件内容
-
-   ```html
-   <el-dialog
-              title="素材图片"
-              :visible.sync="dialogVisible"
-              width="60%"
-              >
-     <span>这是展示图片素材框框</span>
-     <span slot="footer" class="dialog-footer">
-       <el-button @click="dialogVisible = false">取 消</el-button>
-       <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-     </span>
-   </el-dialog>
-   ```
-   
-
-   
-2. data创建dialogVisible成员，默认值为false，控制是否开启对话框
-
-   ```js
-   dialogVisible: false, // 素材对话框是否启用
-   ```
-   
-
-   
-3. 给“选择框”的li标签设置事件 @click="showDialog()"
-
-   ```html
-   <li class="uploadbox" v-for="item in covernum" :key="item" 
-       @click="showDialog()">
-   ```
-   
-
-   
-4. 在methods里边创建showDialog()方法，展示对话框
-
-   ```js
-       // 展示对话框逻辑
-       showDialog () {
-         this.dialogVisible = true // 打开dialog对话框
-       },
-   ```
-   
-
-
-
-## 展示素材图片列表
-
-`步骤`：
-
-1. 创建data成员 imageList,用于接收图片列表信息
-
-2. 创建data成员 querycdt(collect:false/page:1/per_page:12) 设定获取图片列表的条件
-
-   ```js
-   	imageList: [], // 素材图片列表
-     // 获取素材图片的条件参数
-     querycdt: {
-       collect: false, // 非收藏图片
-       page: 1,
-       per_page: 12
-     },
-   ```
-   
-
-   
-3. 给methods创建 getImageList()方法，获取真实图片信息，完毕赋予给 imageList
-
-   ```js
-   // 获取素材图片列表
-   getImageList () {
-     let pro = this.$http.get('/user/images', { params: this.querycdt })
-     pro
-       .then(result => {
-         if (result.data.message === 'OK') {
-           this.imageList = result.data.data.results
-         }
-       })
-       .catch(err => {
-         return this.$message.error('获得素材图片列表错误:' + err)
-       })
-   },
-   ```
-   
-4. 在created中调用 getImageList()方法 获取真实图片展示
-
-   ```js
-     created () {
-       this.getImageList() // 获得供选取的素材图片
-     },
-   ```
-   
-
-   
-5. 在dialog对话框中  绘制图片列表展示的相关html代码
-
-   ```html
-   <el-dialog title="素材图片" :visible.sync="dialogVisible" width="60%" @close="clearImage">
-     <!--后添加的用于展示素材图片的标签-->
-     <ul>
-       <li class="image-box" v-for="item in imageList" :key="item.id">
-         <img :src="item.url" alt="没有图片">
-       </li>
-     </ul>
-     <span slot="footer" class="dialog-footer">
-       <el-button @click="dialogVisible = false">取 消</el-button>
-       <el-button type="primary" @click="imageOK">确 定</el-button>
-     </span>
-   </el-dialog>
-   ```
-   
-> 通过 ul/li/img 标签对imageList素材图片做遍历展示
-
-
-
-6. 绘制图片列表展示的相关html代码对应的css样式
-
-   ```css
-   // 对话框素材图片列表相关css样式
-   .image-box {
-     list-style: none;
-     width: 200px;
-     height: 140px;
-     background-color: #fff;
-     margin: 10px;
-     float: left;
-     border: 1px solid #eee;
-     cursor:pointer;
-     box-sizing:border-box;
-     img {
-       width: 100%;
-       height: 100%;
-     }
-   }
-   ```
-   
-
-
-
-## 选中素材图片高亮设置
-
-`步骤`：
-
-1. 给素材图片img标签设置@click="clkImage"事件
-
-   ```html
-         <ul>
-           <li class="image-box" v-for="item in imageList" :key="item.id">
-             <img :src="item.url" alt="没有图片" @click="clkImage" >
-           </li>
-         </ul>
-   ```
-   
-> 注意 clkImage后边没有括号
-
-2. 在methods中 定义  clkImage事件方法设置选中项目的语法高亮标志
-
-   ```js
-       // 素材图片被选中，设置高亮标志
-       clkImage (evt) {
-         // 其他项目要做清除border操作
-         let lis = document.querySelectorAll('.image-box')
-         for (var i = 0; i < lis.length; i++) {
-           lis[i].style.border = ''
-         }
-         // console.log(evt) // MouseEvent 鼠标事件对象
-         // evt.target // 被点击图片(img)的dom对象
-         // evt.target.parentNode // 找到img的父级，即li标签
-         // 给li设置border边框，高亮效果
-         evt.target.parentNode.style.border = '4px solid red'
-       },
-   ```
-
-   
-
-2. 给选择框单击事件传递序号信息  @click="showDialog(item)"
-
-   ```html
-   <li class="uploadbox" v-for="item in covernum" :key="item" 
-       @click="showDialog(item)">
-   ```
-   
-> 把遍历的item当做序号传递给事件方法，值是从1开始的，接收后要做-1减一操作
-
-3. methods方法 showDialog()中要接收序号并赋予给xu成员，注意要减一操作
-
-   ```js
-       // 展示对话框逻辑
-       // n：代表第n个选择框被单击到了(值为1/2/3)
-       showDialog (n) {
-         // 更新xu成员
-         this.xu = n - 1
-         this.dialogVisible = true // 开启对话框
-       },
-   ```
-
-## 记录选中的图片
-
-`步骤`：
-
-1. 给data声明 materialUrl成员
-
-```js
-   materialUrl: '', // 选中的素材图片的路径名地址信息
-```
-
-2. 在clkImage方法中，把当前被单击选中的img标签的src属性值赋予给materialUrl成员
-
-   ```js
-       // 素材图片选取操作
-       clkImage (evt) {
-         let lis = document.querySelectorAll('.image-box')
-         for (var i = 0; i < lis.length; i++) {
-           lis[i].style.border = ''
-         }
-         evt.target.parentNode.style.border = '3px solid red'
-         // 把当前选中图片的src地址信息赋予给meterialUrl成员
-         this.materialUrl = evt.target.src
-       },
-   ```
-   
-
-
-## 确定选取素材图片
-
-`步骤`：
-
-1. 给对话框**确定按钮**设置事件  @click="imageOK"
-
-   ```html
-   <el-button type="primary" @click="imageOK">确 定</el-button>
-   ```
-   
-
-   
-2. 在methods方法中声明imageOK,并把选择好的图片地址materialUrl赋予给添加文章表单的成员 
-
-   ```js
-   // 素材图片选取好，点击“对话框”确定按钮后，记录素材图片
-   imageOK () {
-     if (this.materialUrl) {
-    // 给添加文章的表单域成员cover.image增加素材图片请求地址信息
-       this.addForm.cover.images[this.xu] = this.materialUrl
-       this.dialogVisible = false // 关闭对话框
-     } else {
-       this.$message.error('咋地，不挑一个再走啊')
-     }
-   },
-   ```
-
-`注意`：
-
-​	如果用户没有选择图片，那么单击确定按钮式没有动作的，相反要提示“咋地，不挑一个再走啊”
-
-
-
-## 后续优化
-
-在对话框中选中一个图片，但是没有单击”确定“按钮就把对话框关闭了，此时再次打开对话框，发现之前选中的图片还是选中状态，并且materialUrl也是保存上一次选中图片的路径名信息，这样做不合适，设计一个清除操作，每次打开对话框都是一个初始化状态。
-
-步骤：
-
-1. 制作一个methods方法，清除之前选择素材图片的痕迹
-
-   ```js
-       // 清除之前选择素材图片的痕迹(边框高亮、图片路径名)
-       clearImage () {
-         let lis = document.querySelectorAll('.image-box')
-         for (var i = 0; i < lis.length; i++) {
-           lis[i].style.border = ''
-         }
-         this.materialUrl = '' // 清除图片路径名
-       },
-   ```
-   
-
-   
-2. 素材选中 后要调用**clearImage**方法，使得之前选取的标记被清除
-
-   ```js
-       // 素材图片选取操作
-       clkImage (evt) {
-         // 清除之前选择图片的状态信息
-         this.clearImage()
-         evt.target.parentNode.style.border = '3px solid red'
-         // 把当前选中图片的src地址信息赋予给meterialUrl成员
-         this.materialUrl = evt.target.src
-       },
-   ```
-   
-
-   
-3. 给el-dialog设置@close="clearImage" 事件, 使得任何 方式关闭对话框，都会对已经选取素材的状态进行清除
-
-   
-
-
 
 ## [vue-resource 实现 get, post, jsonp请求](https://github.com/pagekit/vue-resource)
 
@@ -7251,8 +6832,9 @@ webpack和webpack-dev-server在脚手架创建的项目里边已经被**封装**
               @close="clearImage">
    ```
    
+
 或者，给showDialog设置clearImage也可以
-   
+
 ```js
    // 封面，打开对话框逻辑
    // n:自然数的选择框号码1、2、3
@@ -7262,8 +6844,8 @@ webpack和webpack-dev-server在脚手架创建的项目里边已经被**封装**
      this.dialogVisible = true // 开启对话框
      this.clearImage()
    },
-   ```
-   
+```
+
 
 
 
@@ -7332,13 +6914,14 @@ NProgress.done() - 完成进度(进度条消失)【关闭】
      NProgress.inc()
    ```
    
+
 在 **后置**路由守卫 处关闭进度条  afterEach()
-   
+
 ```js
      // 完成进度条显示了
      NProgress.done()
-   ```
-   
+```
+
    > 路由除了有前置路由守卫，还有后置路由守卫，就是路由执行完毕(页面加载好了)要做一些事情
 
 
@@ -7384,8 +6967,8 @@ echarts是百度公司开发，[参考官网](http://echarts.baidu.com/)
      <i class="el-icon-location"></i>
      <span slot="title">粉丝管理</span>
    </el-menu-item>
-   ```
-   
+```
+
    
 
 3. 创建组件src/views/fans/fans.vue文件，设置el-card卡片区、图表显示的div占位符
@@ -7655,7 +7238,7 @@ npm run build   // 物理打包
    > devServer说明： https://cli.vuejs.org/zh/config/#devserver 
    >
    > configureWebpack说明： https://cli.vuejs.org/zh/config/#configurewebpack 
-   
+
 2. 打开public/index.html文件(项目主模板文件)，做第三方资源的引入配置
 
    第三方资源提供网址：<https://www.bootcdn.cn/> (其他的也有，这个比较稳定)
