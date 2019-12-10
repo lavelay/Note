@@ -732,7 +732,7 @@ CREATE TABLE IF NOT EXISTS `student` (
 
 ![1566377317686](Image/MySQL.assets/1566377317686.png)
 
-# 数据库
+
 
 > 数据库是用来存储数据的一个工具(软件)
 
