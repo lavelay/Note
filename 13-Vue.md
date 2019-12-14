@@ -1659,24 +1659,25 @@ var vm = new Vue({……})
 
 ```js
 {	
-	"Create vue template": {
-		"prefix": "vuec",
-		"body": [
-		 "<template>",
-		 "  <div>$1</div>",
-		 "</template>",
-		 "",
-		 "<script>",
-		 "  export default {",
-		 "}",
-		 "</script>",
-		 "",
-		 "<style lang=\"less\" scoped>",
-		 "</style>",
-		 "",
-		],
-		"description": "Create vue template"
-	}
+	  "Create vue template": {
+    "prefix": "vuec",
+    "body": [
+      "<template>",
+      "  <div></div>",
+      "</template>",
+      "",
+      "<script>",
+      "export default {",
+      "  name:'$1'",
+      "}",
+      "</script>",
+      "",
+      "<style lang=\"less\" scoped>",
+      "</style>",
+      "",
+    ],
+    "description": "Create vue template"
+  }
 }
 ```
 
