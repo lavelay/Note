@@ -1,9 +1,3 @@
-## vue-介绍
-
-Vue.js (view)是一套构建用户界面的前端<font color=red>框架</font>技术
-
-Vue只关注**视图**（页面）层的开发，文档非常丰富、易于上手，流行度高，拥抱经典的web技术、早起灵感来源于angular
-
 Vue.js 不支持 IE8 及其以下版本
 
 
@@ -124,41 +118,6 @@ data: {
 
 
 
-## v-for和key
-
-1. 迭代数组
-
-```js
-  <li v-for="(item, i) in list">
-  索引：{{i}} --- 姓名：{{item.name}} --- 年龄：{{item.age}}
-	</li>
-```
-
-2. 迭代对象中的属性
-
-```js
-	<!-- 循环遍历对象身上的属性 -->
-    <div v-for="(val, key, i) in userInfo">{{val}} --- {{key}} --- {{i}}</div>
-```
-
-3. 迭代数字
-
-```js
-<p v-for="i in 10">这是第 {{i}} 个P标签</p>
-```
-
-4. key属性
-
-```js
- //		v-for 循环的时候，key 属性只能使用 number或string -->
-  //  key 在使用的时候，必须使用 v-bind 属性绑定的形式，指定 key 的值 -->
-    <p v-for="item in list" :key="item.id">
-      <input type="checkbox">{{item.id}} --- {{item.name}}
-    </p>
-```
-
-
-
 ## v-if和v-show
 
 > v-if 有更高的切换消耗    每次都会重新删除或创建元素 
@@ -176,46 +135,6 @@ data: {
 1. 有声明()，也有传递实参，形参就代表被传递的实参
 2. 没有声明()，第一个形参就是**事件对象**
 3. 有声明(),但是没有传递实参，形参就是**undefined**
-
-#### 事件绑定-访问data成员
-
-根据业务需要，事件在执行过程中需要对Vue实例的data数据进行操作，通过<font color=red>this关键字</font>实现，
-
-this代表Vue实例对象，并且针对data或methods成员都可以直接进行调用
-
-#### 事件绑定-this是谁
-
-在Vue实例内部包括不限于methods方法中，this关键字 是对象，具体与 new Vue() 是一样的
-
-> this ===  vm 
-
-并且其可以对 **data** 和 **methods**成员进行直接访问
-
-
-
-### v-model
-
-v-model是vue中 唯一实现 <font color=red>双向数据绑定</font>  指令
-
-v-bind<font color=red>单向</font>数据绑定，只是使得vue的数据渲染给页面元素，页面对数据进行修改，vue不会感知到
-
-v-model<font color=red>双向</font>数据绑定，数据从vue里边渲染给页面，页面对其进行修改，Vue内部会立即感知
-
-```html
-<标签 v-model="data成员"></标签>
-```
-
-2. v-model只针对**value属性**可以绑定，因此经常用在form表单标签中，例如input(输入框、单选按钮、复选框)/select(下拉列表)/textarea(文本域)
-
-3. v-model只能绑定**data成员**，不能设置其他表达式，否则错误
-
-   > 例如 
-   >
-   > v-model="score+100"  错误
-   >
-   > v-model="120"  错误
-   >
-   > v-model="score" 正确的
 
 
 
@@ -284,7 +203,7 @@ data成员变化了，页面上用到的地方就重新渲染，达成简易双�
 
 
 
-#### 其他表单域使用(自学)
+#### 其他表单域使用
 
 - 绑定多行文本框
 
@@ -538,66 +457,7 @@ vscode编辑器：设置--->User snippets---->html.json，配置如下内容
 
 
 
-## vue指令-v-if&v-else
-
-在Vue中，v-if 、v-else-if 和 v-else 三个指令结合可以实现多路<font color=red>分支</font>结构
-
-- v-if可以**单独**使用，形成单路分支结构
-- v-if  和 v-else 也可以合作使用，实现**双路**分支结构
-- v-if  、v-else-if 和 v-else 也可以合作使用，实现**多路**分支结构
-
-`语法`：
-
-```html
-<标签 v-if="true/false"></标签>
-<标签 v-else-if="true/false"></标签>
-<标签 v-else-if="true/false"></标签>
-<标签 v-else></标签>
-```
-
-> 以上4个标签只分支结构，最终只会走一个，第一个为true的那个标签会执行  或 执行else标签
-
-判断品牌信息是否存在，并显示对应内容
-
-```html
-<table v-if="brandList.length>0">
-  ……
-</table>
-<table v-else>
-  <tr><td colspan="100">没有任何记录！</td></tr>
-</table>
-```
-
-
-
 ## computed计算属性应用
-
-```js
-new Vue({
-  computed:{
-    属性名称:function(){
-      // 业务表达式实现，可以通过this操作data成员
-      return  返回结果
-    }
-  }
-})
-```
-
-`使用`：
-
-形式上，如何应用data成员，就如何应用计算属性
-
-```js
-{{ computed计算属性名称 }}
-```
-
-`特点`：
-
-1. 计算属性关联的data如果发生变化，会重新编译执行 获得 并 使用 对应新结果，即响应式
-
-2. 计算属性内部可以使用this关键字，与Vue对象等效
-
-3. 每个计算属性都需要通过return关键字返回处理结果
 
 `与methods方法的区别`：
 
@@ -682,27 +542,7 @@ console.log('%c%s','color:red', '你好')
 
 ## 生命周期
 
-从Vue实例创建、运行、到销毁期间，总是伴随着各种各样的事件，这些事件，统称为生命周期！
-
-[生命周期钩子](https://cn.vuejs.org/v2/api/#选项-生命周期钩子)：就是生命周期事件的别名而已；
-
-生命周期钩子 = 生命周期函数 = 生命周期事件
-
-生命周期分为3个阶段，分别是[创建]()、[运行]()、[销毁]()
-
 ### 创建阶段分析
-
-创建阶段一共有4个方法，它们与 el、data都是并列关系的
-
-```js
-new Vue({
-  beforeCreate(){   },
-  created(){  },
-  
-  beforeMount(){   },
-	mounted(){  },
-})
-```
 
 > beforeCreate：此时Vue对象刚创建好，没有任何成员，data、methods等都没有呢，只有this
 >
@@ -867,15 +707,11 @@ axios.interceptors.response.use(function (response) {
 
    
 
-## vue-组件(重要)
+## vue-组件
 
 `什么是`：
 
 ​	组件是拥有一定功能许多html标签的集合体
-
-`好处`：
-
-答：模板中为了实现一个效果(例如分页)，需要绘制**20**个html标签，现在使用组件了，相同的功能就只绘制**一个**组件标签就达成了，明显提升开发速度
 
 ### 区分大小写
 
@@ -900,14 +736,6 @@ new Vue({
 2. template设置的各个html标签需要有<font color=red>唯一的根元素</font>节点，上例为ul
 
 3. 组件名称建议是 xx-yy 的格式
-
-
-
-```html
-<组件名称></组件名称>
-```
-
-> 组件形式上 就是html标签
 
 
 
@@ -1168,17 +996,6 @@ vue create my-project
    >
    > open:true  项目运行的时候，会**自动**打开浏览器并呈现效果
 
-4. 在终端中执行命令
-
-   ```
-    npm  run  serve
-   ```
-
-   > 上述命令需要在项目根目录下运行(01-pro目录下)
-   >
-   > serve:指令标志是package.json文件配置好了
-
-> 现在项目可以运行了，并且有实时加载的效果，业务文件随时改变，浏览器随时查看到对应效果
 
 
 
@@ -1470,50 +1287,6 @@ new Vue({
 3. style标签:设置css样式，作用给template内部的html标签使用
 4. script和style如果不需要，可以不设置，template必须要写
 
-
-
-### 私有注册应用
-
-`私有方式注册语法`：
-
-```js
-new Vue({
-  components:{
-		组件名称: 组件模块,
-		组件名称: 组件模块,
-		组件名称: 组件模块,
-	}
-})
-```
-
-小结：
-
-1. 单文件组件，每个组件都有3个部分（template/script/style）
-2. template 是固定标签，内部要求有**唯一根元素**
-3. script  导出一个对象     对象成员可以参考Vue实例
-4. style 设置样式
-5. 组件需要被main.js文件 引入、注册，之后index.html应用
-
-
-
-### 全局注册介绍
-
-`注册`：
-
-```js
-import 组件模块  from  'xxx.vue'       // .vue后缀可以不设置，系统已经准备好了
-
-// 全局方式声明组件
-Vue.component(组件名称, 组件模块)
-Vue.component(组件名称, 组件模块)
-
-var vm = new Vue({……})
-```
-
-`注意`：
-
-​	组件注册的代码需要在new Vue()上边
-
 ​	
 
 ### scoped属性
@@ -1762,11 +1535,6 @@ new Vue({
 
 1. 实现了前后端**分离模式**(目前最好的开发模式)开发，各司其职；提高了开发效率；
 2. 用户体验好，页面部分内容发生变化只需要更新局部即可(非刷新整个页面)；
-
-`缺点`：
-
-1. 对SEO(搜索引擎)不是很友好，网站从开始到结束始终访问一个程序文件，造成搜索引擎不给检索， 但是有解决方案，再者后台系统应用本身对seo不做要求
-2. 每次应用运行时，需要一次性把全部的html、js、css等内容加载进来，因此会造成页面一开始请求速度较慢的问题(首页较慢，后续页面正常)
 
 
 
@@ -2509,36 +2277,6 @@ Vue.use(ElementUI);
 `注意`：
 
 1. 自己slot插槽定义的数据，只能是自己的slot-scope接收使用
-
-
-
-# 起步
-
-2. import有两种使用方法
-   1. import xx from ''   模块化导入
-   2. import()  函数调用 ，引入一个文件进来
-
-
-
-## 项目-git初始化
-
-1. 在本地项目中给远程仓库连接地址设置“别名”
-
-   ```
-   git remote add top87 https://gitee.com/sunshuhua/topline87.git
-   ```
-
-3. 把当前初始化好的项目文件的master分支做push，推送给远程仓库
-
-   ```
-   git push top86 master
-   ```
-
-4. 现在给git创建login分支并切换过来
-
-   ```
-   git checkout -b login  // git branch  login   &  git checkout login
-   ```
 
 
 
