@@ -1,31 +1,3 @@
-# 登录模块
-
-登录（login页面，点击登录按钮触发）：
-
-- 填写账号密码时有自然校验：  data中设置loginFormRules对每一项设置校验规则  prop绑定到对应表单中
-
-
-- 根据Element-ui中的表单验证方法validate，发送数据接口到后端进行验证。
-
-  - 校验失败，返回提示消息：登录失败。
-
-  - 校验成功：
-
-    - 使用window.sessionStorage.setItem()存储返回的token信息。
-
-    - 使用编程式导航：this.$router.push('/home')跳转至主页
-
-      ​
-
-# 退出
-
-退出（home页，点击退出按钮触发）
-
-- this.$confirm().then().catch() ，confirm()中问用户是否确认退出，如果确认退出，then()方法中，使用window.sessionStorage.removeItem('token')将存储在本地缓存中的token值删除掉。
-- then()方法中同时使用编程式导航this.$router.push('/login')跳转至登录页面。
-
-
-
 # 路由守卫
 
 router.js中不仅配置路由模块，并且使用路由守卫检测用户是否处于登录状态

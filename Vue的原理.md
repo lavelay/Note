@@ -1,15 +1,3 @@
-Vue的原理
-
-input和change事件的区别
-
-- input触发条件：输入框字符发生变化
-- change触发条件：输入框失去焦点
-- v-model的原理
-  - 本质上是语法糖
-    - 属性绑定和事件绑定
-    - 默认事件是input
-    - 可以使用lazy修饰符转化change事件
-
 ```
 <input type="text" v-model='uname'>
 <input type="text" v-model.lazy='uname'>

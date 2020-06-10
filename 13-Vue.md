@@ -1895,10 +1895,6 @@ sessionStorage：敏感账号一次性登录
 
 # ElementUI
 
-`ElementUI官网`：
-
- https://element.eleme.cn/#/zh-CN 
-
 ## 安装
 
 ```
@@ -6216,16 +6212,6 @@ jsonpInfo() { // JSONP形式从服务器获取数据
 }
 ```
 
-## 配置本地数据库和数据接口API
-
-1. 先解压安装 `PHPStudy`;
-2. 解压安装 `Navicat` 这个数据库可视化工具，并激活；
-3. 打开 `Navicat` 工具，新建空白数据库，名为 `dtcmsdb4`;
-4. 双击新建的数据库，连接上这个空白数据库，在新建的数据库上`右键` -> `运行SQL文件`，选择并执行 `dtcmsdb4.sql` 这个数据库脚本文件；如果执行不报错，则数据库导入完成；
-5. 进入文件夹 `vuecms3_nodejsapi` 内部，执行 `npm i` 安装所有的依赖项；
-6. 先确保本机安装了 `nodemon`, 没有安装，则运行 `npm i nodemon -g` 进行全局安装，安装完毕后，进入到 `vuecms3_nodejsapi`目录 -> `src`目录 -> 双击运行 `start.bat`
-7. 如果API启动失败，请检查 PHPStudy 是否正常开启，同时，检查 `app.js` 中第 `14行` 中数据库连接配置字符串是否正确；PHPStudy 中默认的 用户名是root，默认的密码也是root
-
 
 
 ## [Vue中的动画](https://cn.vuejs.org/v2/guide/transitions.html)
@@ -6587,8 +6573,6 @@ webpack和webpack-dev-server在脚手架创建的项目里边已经被**封装**
 
 
 
-
-
 # nprogress加载进度条
 
 什么是nprogress:
@@ -6673,53 +6657,6 @@ node_modules\nprogress\nprogress.css
 
 
 
-# echarts
-
-​	商业级数据图表，它是一个纯JavaScript的图表库，兼容绝大部分的浏览器，底层依赖轻量级的canvas类库ZRender，提供直观，生动，可交互，可高度个性化定制的数据可视化图表。创新的拖拽重计算、数据视图、值域漫游等特性大大增强了用户体验，赋予了用户对数据进行挖掘、整合的能力。
-
-
-
-echarts是百度公司开发，[参考官网](http://echarts.baidu.com/)
-
-
-
-## 绘制简单图表
-
-`步骤`：
-
-1. 安装echarts功能包
-
-   ```js
-   yarn add echarts
-   ```
-   
-
-   
-2. 创建路由、导航
-
-   ```js
-   { path: '/fans', name: 'fans', component: () => import('@/views/fans/fans.vue') },
-   ```
-   
-```html
-   <el-menu-item index="/fans" :style="{width:isCollapse?'65px':'200px'}">
-     <i class="el-icon-location"></i>
-     <span slot="title">粉丝管理</span>
-   </el-menu-item>
-```
-
-   
-
-3. 创建组件src/views/fans/fans.vue文件，设置el-card卡片区、图表显示的div占位符
-
-4. 引入echarts     import echarts from 'echarts'
-
-5. 制作methods方法paintPic,内部实例化echarts对象并进行图像制作
-
-6. 在**mounted**中调用 paintPic  方法执行
-
-   > 因为mounted中 关于页面元素都已经渲染好了
-
 ```vue
 <template>
   <!--卡片区-->
@@ -6779,67 +6716,9 @@ export default {
 
 ​	要通过**mounted**调用paintPic()方法，此时页面元素已经被Vue解析和渲染完毕，可以正常获得到div元素用于绘制图表
 
-
-
-## 绘制其他效果图表
-
-根据业务需要，不同业务数据使用不同类型的图表来表现有时会更合适
-
-下边，我们根据官网例子提示做一个饼图效果
-
-其他代码不动，methods的paintPic()方法更改为如下：
-
-```js
-paintPic () {
-  // 基于准备好的dom，初始化echarts实例
-  var myChart = echarts.init(document.getElementById('main'))
-  // 绘制图表
-  myChart.setOption({
-    title: {
-      text: '某站点用户访问来源',
-      subtext: '纯属虚构',
-      x: 'center'
-    },
-    tooltip: {
-      trigger: 'item',
-      formatter: '{a} <br/>{b} : {c} ({d}%)'
-    },
-    legend: {
-      orient: 'vertical',
-      left: 'left',
-      data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
-    },
-    series: [
-      {
-        name: '访问来源',
-        type: 'pie',
-        radius: '55%',
-        center: ['50%', '60%'],
-        data: [
-          { value: 335, name: '直接访问' },
-          { value: 310, name: '邮件营销' },
-          { value: 234, name: '联盟广告' },
-          { value: 135, name: '视频广告' },
-          { value: 1548, name: '搜索引擎' }
-        ],
-        itemStyle: {
-          emphasis: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        }
-      }
-    ]
-  })
-}
-```
-
-
-
 `注意`：
 
-​	我们的服务器端关于粉丝统计数据不能正常返回，因此案例不能做开发展示，在真实案例中是这样的，数据都会返回，样子是option选项类型的参数 (如果不是，要手动修改为option类型的)，然后在axios成功回调里边再次调用setOption()方法，参数会覆盖之前旧的参数
+​	在axios成功回调里边再次调用setOption()方法，参数会覆盖之前旧的参数
 
 ```js
 let pro = axios(url,xxx)
@@ -7168,56 +7047,6 @@ npm run build   // 物理打包
 
 # ascyn和await
 
-`什么是`：
-
-​	async 和 await 是**es7**技术，可以简化 Promise 操作，提高 Promise 代码的 阅读性 和 理解性；
-
-​	async和await结合起来，可以使得异步调用不返回Promise对象，而直接把then<font color="red">回调函数的第一个形参result</font>给返回出来，使得代码更节俭，提高开发效率，也可以保证异步调用的<font color=red>顺序</font>执行。
-
-`作用`：
-
-1. 替代then()
-2. 保证各个异步调用**顺序**执行
-
-`好处`：
-
-1. 代码更节省、结构更清晰、便于阅读和理解
-2. 提高开发效率
-
-
-
-## 应用
-
-`语法`：
-
-```js
-async function xxx(){
-  let rst = await yyy()
-}
-```
-
-> xxx函数嵌套调用yyy函数，yyy会返回一个promise对象
->
-> 在xxx前边设置async，在yyy前边设置await
->
-> rst：就是then方法  **回调函数实参的形参**，即 下述代码的result
->
-> function xxx(){
->
-> ​	let pro = yyy()
->
-> ​	pro
->
-> ​		.then(result=>{xxx})	
->
-> }
-
-
-
-`应用`：
-
-目前获取频道的代码结构：
-
 ```js
 // 获得频道列表数据
 getChannelList () {
@@ -7513,11 +7342,9 @@ watch:{
 ## 相关文章
 
 2. [npm](https://www.npmjs.com/)
-3. [饿了么组件库](http://element-cn.eleme.io/#/zh-CN)
 4. [webpack打包](https://webpack.docschina.org/)
 5. [babel下一代javascript编译器](https://babel.docschina.org/)
 6. [bootcdn免费提供静态内容支持](https://www.bootcdn.cn/)
-7. [鸟哥帮助官网](http://www.runoob.com)
 8. [JavaScript 指南](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide)
 9. [印记中文(深入挖掘国外前端新领域，为中国 Web 前端开发人员提供优质文档！)](https://docschina.org/)
 10. [Vue.js双向绑定的实现原理](http://www.cnblogs.com/kidney/p/6052935.html)

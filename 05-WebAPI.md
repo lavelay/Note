@@ -14,7 +14,7 @@ document.documentElement.clientHeight || document.body.clientHeight
 element.classList   设置多个样式
 - 添加类 element.classList.add('类名1','类名2','类名3')
 - 移除类 element.classList.remove('类名1','类名2','类名3')
-- 切换类 element.classList.toggle('类名')  :元素存在该属性删除该属性，不存在该属性添加该属性       
+- 切换类 element.classList.toggle('类名')  :元素存在该属性删除该属性，不存在该属性添加该属性   
 ```
 
 

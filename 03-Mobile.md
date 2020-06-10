@@ -73,8 +73,6 @@ animation : move 4s steps(5) forwards;
 
     
 
-
-
 ### 物理像素&物理像素比
 
 - 物理像素点指的是屏幕显示的最小颗粒，是物理真实存在的，这是出厂时就设置好的
@@ -103,9 +101,6 @@ animation : move 4s steps(5) forwards;
       /* 三个方向同时写的简写 */
       transform: translate3d(100px,100px,100px);
    ```
-  ```
-
-  ```
   
 - transform-style 控制子元素是否开启三维立体环境
   - transform-style : flat; 不开启  默认
@@ -122,8 +117,6 @@ animation : move 4s steps(5) forwards;
   ```
   
   
-
-
 
 ### 图片格式
 
@@ -215,18 +208,6 @@ em相对于父元素的字体大小，rem相对于html元素的字体大小，re
     <link rel="stylesheet" href="index1.css" media="screen and (min-width:320px)">
     <link rel="stylesheet" href="index2.css" media="screen and (min-width:640px)">
     ```
-
-
-
-
-### Less
-
-> less(leaner style sheets)是一门css拓展语言，也称css预处理器，在现有css语法上加入了程序式语言的特性，引入了变量，运算以及函数等功能，大大简化了css的编写，降低了css的维护成本。用更少的代码做更多的事。 
-
-- 运算
-  - 运算符中间左右用空格隔开1px + 5
-  - 对于两个不同单位的值之间的运算，运算结果的值取第一个值的单位
-  - 如果两个值之间只有一个值有单位，则运算结果就取该单位
 
 
 

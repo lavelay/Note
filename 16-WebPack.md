@@ -27,8 +27,6 @@ WebPack
 1. spa(single program application单页面应用程序项目)项目(后台项目、手机移动端)，spa项目页面请求数量小于500个
 2. vue、react、angular都要使用
 
-
-
 `注意`：
 
 ​	像sohu、腾讯、163等cms(content manager system内容管理系统)等复杂、多页面系统不适合通过webpack开发
@@ -2407,15 +2405,10 @@ yarn与npm针对各个指令的执行
 
 相关文章
 
-1. [vue.js 2.x 官网-国内](https://vue.docschina.org/)   或  [vue.js2.X 官网-国外](http://cn.vuejs.org)
 2. [npm](https://www.npmjs.com/)
-3. [饿了么组件库](http://element-cn.eleme.io/#/zh-CN)
-4. [github](https://github.com/)
 5. [webpack打包](https://webpack.docschina.org/)
 6. [babel下一代javascript编译器](https://babel.docschina.org/)
 7. [bootcdn免费提供静态内容支持](https://www.bootcdn.cn/)
-8. [w3c帮助官网](http://www.w3school.com.cn)
-9. [鸟哥帮助官网](http://www.runoob.com)
 10. [JavaScript 指南](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide)
 11. [印记中文(深入挖掘国外前端新领域，为中国 Web 前端开发人员提供优质文档！)](https://docschina.org/)
 12. [js 里面的键盘事件对应的键码](http://www.cnblogs.com/wuhua1/p/6686237.html)

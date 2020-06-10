@@ -1,4 +1,4 @@
-# Vue路由传参的几种方式
+Vue路由传参的几种方式
 
 vue路由传参是指嵌套路由时父路由向子路由传递参数，否则操作无效。传参方式可以划分为params传参和query传参，params传参又可以分为url中显示参数和不显示参数两种方式。
 
@@ -175,7 +175,7 @@ export default new Router({
 })
 ```
 
-- **在父路由组件上使用router-link进行路由导航，使用   <router-link :to="{name:'home',params:{id:001}}>    形式传递参数。****注意   ': to= ' 前面的冒号，childOne.vue组件修改如下：**
+- **在父路由组件上使用router-link进行路由导航，使用   <router-link :to="{name:'home',params:{id:001}}>    形式传递参数。**** 注意   ': to= ' 前面的冒号，childOne.vue组件修改如下：**
 
   ```html
   
@@ -237,7 +237,7 @@ export default new Router({
 
 ```
 
-**修改路由导航** **<router-link :to="{path:'/one/log',query:{num:123}}"> ，****childOne.vue 文件修改如下**
+**修改路由导航** **<router-link :to="{path:'/one/log',query:{num:123}}"> ，** **childOne.vue 文件修改如下**
 
 ```html
 
