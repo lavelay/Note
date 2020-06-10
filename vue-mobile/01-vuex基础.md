@@ -582,23 +582,3 @@ created () {
 ```js
  <div class="item" v-if="item">
 ```
-
-
-
-### 回顾
-
-vuex核心知识：
-
-- state  申明数据
-  - mapState  生成计算属性
-- mutations 修改数据
-  - mapMutations 生成methods函数
-- actions 获取数据
-  - mapActions 生成methods函数
-
-- 组件中调用mutations
-  - this.$store.commit('函数名称','传参')
-- 组件中调用actions
-  - this.$store.dispatch('函数名称','传参')
-
-案例
