@@ -37,8 +37,6 @@ ReactDOM.render(title, root)
 
 ## 1.3 React脚手架
 
-![](images/脚手架.png)
-
 - 初始化项目，命令： npx create-react-app my-pro
 - 启动项目，在项目根目录执行命令： npm start
 
@@ -67,10 +65,6 @@ ReactDOM.render(myh1,document.getElementById('root'))
 
 # JSX的使用
 
-## 2.1 概述
-
-<img src="/images/createElement的问题.png" style="zoom: 200%;" />
-
 #### JSX产生的原因
 
 由于通过createElement()方法创建的React元素有一些问题，代码比较繁琐，结构不直观，无法一眼看出描述的结构，不优雅，用户体验不爽
@@ -98,8 +92,6 @@ JSX是JavaScript XML 的简写，表示在JavaScript代码中写HTML格式的代
 - 推荐：使用 小括号包裹JSX，从而避免JS中换行的问题
 
 ## 2.4 JSX语法
-
-#### 3.3 样式处理
 
 ##### 行内样式 -style
 
@@ -141,8 +133,6 @@ import './css/index.css'
 - **约定1：**函数名称必须以大写字母开头
 - **约定2：**函数组件必须有返回值，表示该组件的结构
 - 如果返回值为null，表示不渲染任何内容
-
-#### 示例demo
 
 编写函数组件
 
@@ -194,8 +184,6 @@ class Teacher extends Person{
 - 约定3：类组件必须提供 render 方法
 - 约定4：render方法中必须要有return返回值
 
-#### 示例demo
-
 创建class类，继承React.Component，在里面提供render方法，在return里面返回内容
 
 ```react
@@ -214,40 +202,7 @@ class Hello extends React.Component{
 ReactDOM.render(<Hello />,document.getElementById('root'))
 ```
 
-### 4.4 抽离成单独的J
 
-- 思考：项目中组件多了之后，该如何组织这些组件？
-- 选择一：将所有的组件放在同一个JS文件中
-- 选择二：将每个组件放到单独的JS文件中
-- **组件作为一个独立的个体，一般都会放到一个单独的JS文件中**
-
-#### 示例demo
-
-- 创建Hello.js
-- 在Hello.js 中导入React，创建组件，在Hello.js中导出
-
-```react
-// 1 每个组件必须导入 react
-import React from 'react'
-// 2 写一个组件
-class Header extends React.Component{
-
-    // 必须有render
-    render(){
-       return <div>我是头部导出的</div>
-    }
- }
- 
-// 3 导出组件
-export default Header
-```
-
-- 在index.js中导入Hello组件，渲染到页面
-
-```react
-import Header from './zujian/Header'
-ReactDOM.render(<Header />,document.getElementById('root'))
-```
 
 ## React事件处理
 
@@ -263,8 +218,6 @@ ReactDOM.render(<Header />,document.getElementById('root'))
     }
 }
 ```
-
-
 
 ### 支持的事件
 
@@ -506,8 +459,6 @@ class App extends React.Component {
 
 ## 3.2 组件的props
 
-![](/images/props-设置.png)
-
 - 接收数据：函数组件通过 参数 props接收数据，类组件通过 this.props接收数据
 
   - 函数组件获取
@@ -529,7 +480,7 @@ class App extends React.Component {
 
 ![](/images/类组件注意点.png)
 
-## 3.3 组件通讯的三种方式（★★★）
+## 3.3 组件通讯的三种方式
 
 ### 4.1父组件传递数据给子组件
 
@@ -560,38 +511,31 @@ class App extends React.Component {
 
 
 
-## 5.2 Context（★★★）
+## 5.2 Context
 
 如果出现层级比较多的情况下（例如：爷爷传递数据给孙子），我们会使用Context来进行传递
 
 作用： 跨组件传递数据
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/跨级通信.png)
-
 ### 使用步骤
 
 - 在组件外面 调用 `React.createContext()` 创建 Provider(提供数据) 和 Consumer(获取数据) 两个组件
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/创建Context.png)
+![](/images/创建Context.png)
 
 - 使用Provider 组件作为父节点
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/provider.png)
+![](/images/provider.png)
 
 - 设置value属性，表示要传递的数据
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/设置value属性.png)
+![](/images/设置value属性.png)
 
 - 哪一层想要接收数据，就用Consumer进行包裹，在里面回调函数中的参数就是传递过来的值
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/Comsumer.png)
+![](/images/Comsumer.png)
 
-### 小结
 
-- 如果两个组件相隔层级比较多，可以使用Context实现组件通讯
-- Context提供了两个组件：Provider 和 Consumer
-- Provider组件： 用来提供数据
-- Consumer组件： 用来获取数据
 
 ## props进阶
 
@@ -600,22 +544,22 @@ class App extends React.Component {
 - children属性： 表示组件标签的子节点，当组件标签有子节点时，props就会有该属性
 - children属性与普通的props一样，值可以使任意值（文本、react元素、组件、甚至是函数）
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/props-children.png)
+![](/images/props-children.png)
 
 
 
-### 6.2 props校验（★★★）
+### 6.2 props校验
 
 - 对于组件来说，props是外来的，无法保证组件使用者传入什么格式的数据，简单来说就是组件调用者可能不知道组件封装着需要什么样的数据
 - 如果传入的数据不对，可能会导致报错
 - 关键问题：组件的使用者不知道需要传递什么样的数据
 - props校验：允许在创建组件的时候，指定props的类型、格式等
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/props-校验.png)
+![](/images/props-校验.png)
 
 - 作用：捕获使用组件时因为props导致的错误，给出明确的错误提示，增加组件的健壮性
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/props-错误提示.png)
+![](/images/props-错误提示.png)
 
 #### 使用步骤
 
@@ -624,7 +568,7 @@ class App extends React.Component {
 - 使用`组件名.propTypes={}` 来给组件的props添加校验规则
 - 校验规则通过PropTypes对象来指定
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/propsTypes.png)
+![](images/propsTypes.png)
 
 
 
@@ -636,54 +580,19 @@ class App extends React.Component {
 - 特定结构的对象： `shape({})`
 - 更多的[约束规则](<https://zh-hans.reactjs.org/docs/typechecking-with-proptypes.html#proptypes>)
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/props-约束规则.png)
+![](/images/props-约束规则.png)
 
 ### 6.3 props的默认值
 
 - 场景：分页组件 -> 每页显示条数
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/props默认值.png)
+![](/images/props默认值.png)
 
-# 组件生命周期（★★★）
+# 组件生命周期
 
-## 目标
+![](/images/创建时-函数执行顺序.png)
 
-- 说出组件生命周期对应的钩子函数
-- 钩子函数调用的时机
-
-## 概述
-
-意义：组件的生命周期有助于理解组件的运行方式，完成更复杂的组件功能、分析组件错误原因等
-
-组件的生命周期： 组件从被创建到挂载到页面中运行，再到组件不在时卸载的过程
-
-生命周期的每个阶段总是伴随着一些方法调用，这些方法就是生命周期的钩子函数
-
-构造函数的作用：为开发人员在不同阶段操作组件提供了实际
-
-## 1.1 生命周期阶段
-
-演示  一个 
-
-```
-<div>
-	<h2>数据是:  {count}</h2>
-	<button>要+1哦</button>
-</div>
-```
-
-
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/生命周期.png)
-
-### 创建时（挂载阶段）
-
-- 执行时机：组件创建时（页面加载时）
-- 执行顺序
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/创建时-函数执行顺序.png)
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/创建时-函数的作用.png)
+![](/images/创建时-函数的作用.png)
 
 ### 更新时
 
@@ -693,9 +602,9 @@ class App extends React.Component {
 
 执行顺序：
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/更新时.png)
+![](/images/更新时.png)
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/更新时-函数作用.png)
+![](/images/更新时-函数作用.png)
 
 componentDidUpdate(preProps)  preProps 更新之前的老props
 
@@ -705,17 +614,9 @@ componentDidUpdate(preProps)  preProps 更新之前的老props
 
 作用：用来做清理操作
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/卸载时.png)
+![](/images/卸载时.png)
 
 ### 1.2 不常用的钩子函数
-
-#### 旧版的生命周期钩子函数
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/旧版生命周期函数.png)
-
-#### 新版完整生命周期钩子函数
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-02/笔记/images/新版生命周期函数.png)
 
 ##### `getDerivedStateFromProps()`
 
@@ -732,112 +633,9 @@ componentDidUpdate(preProps)  preProps 更新之前的老props
 - **`getSnapshotBeforeUpdate()`** 在最近一次渲染输出（提交到 DOM 节点）之前调用。它使得组件能在发生更改之前从 DOM 中捕获一些信息（例如，滚动位置）。此生命周期的任何返回值将作为参数传递给 **`componentDidUpdate()`**
 - 此用法并不常见，但它可能出现在 UI 处理中，如需要以特殊方式处理滚动位置的聊天线程等
 
-# 组件生命周期（★★★）
-
-## 目标
-
-- 说出组件生命周期对应的钩子函数
-- 钩子函数调用的时机
-
-## 概述
-
-意义：组件的生命周期有助于理解组件的运行方式，完成更复杂的组件功能、分析组件错误原因等
-
-组件的生命周期： 组件从被创建到挂载到页面中运行，再到组件不在时卸载的过程
-
-生命周期的每个阶段总是伴随着一些方法调用，这些方法就是生命周期的钩子函数
-
-构造函数的作用：为开发人员在不同阶段操作组件提供了实际
-
-## 1.1 生命周期阶段
-
-演示  一个 
-
-```
-<div>
-	<h2>数据是:  {count}</h2>
-	<button>要+1哦</button>
-</div>
-```
 
 
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/生命周期.png)
-
-### 创建时（挂载阶段）
-
-- 执行时机：组件创建时（页面加载时）
-- 执行顺序
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/创建时-函数执行顺序.png)
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/创建时-函数的作用.png)
-
-### 更新时
-
-执行时机：`setState()、 forceUpdate()、 组件接收到新的props`
-
-说明：以上三者任意一种变化，组件就会重新渲染
-
-执行顺序：
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/更新时.png)
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/更新时-函数作用.png)
-
-componentDidUpdate(preProps)  preProps 更新之前的老props
-
-### 卸载时
-
-执行时机：组件从页面中消失
-
-作用：用来做清理操作
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/卸载时.png)
-
-### 1.2 不常用的钩子函数
-
-#### 旧版的生命周期钩子函数
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/旧版生命周期函数.png)
-
-#### 新版完整生命周期钩子函数
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/新版生命周期函数.png)
-
-##### `getDerivedStateFromProps()`
-
-- **`getDerivedStateFromProps`** 会在调用 render 方法之前调用，并且在初始挂载及后续更新时都会被调用。它应返回一个对象来更新 state，如果返回 null 则不更新任何内容
-- 不管原因是什么，都会在*每次*渲染前触发此方法
-
-##### `shouldComponentUpdate()`
-
-- 根据 **`shouldComponentUpdate()`** 的返回值，判断 React 组件的输出是否受当前 state 或 props 更改的影响。默认行为是 state 每次发生变化组件都会重新渲染
-- 当 props 或 state 发生变化时，**`shouldComponentUpdate()`** 会在渲染执行之前被调用。返回值默认为 true
-
-##### `getSnapshotBeforeUpdate()`
-
-- **`getSnapshotBeforeUpdate()`** 在最近一次渲染输出（提交到 DOM 节点）之前调用。它使得组件能在发生更改之前从 DOM 中捕获一些信息（例如，滚动位置）。此生命周期的任何返回值将作为参数传递给 **`componentDidUpdate()`**
-- 此用法并不常见，但它可能出现在 UI 处理中，如需要以特殊方式处理滚动位置的聊天线程等
-
-# render-props模式 -就是父传子类似（★★★）
-
-## 目标
-
-- 知道render-props模式有什么作用
-- 能够说出render-props的使用步骤
-
-## 2.1 React组件复用概述
-
-- 思考：如果两个组件中的部分功能相似或相同，该如何处理？
-- 处理方式：复用相似的功能
-- 复用什么？
-  - state
-  - 操作state的方法
-- 两种方式：
-  - render props模式
-  - 高阶组件（HOC）
-- 注意： 这两种方式不是新的API，而是利用React自身特点的编码技巧，演化而成的固定模式
+# render-props模式 -就是父传子类似
 
 ## 思路分析--类似父传子props接收
 
@@ -858,15 +656,7 @@ componentDidUpdate(preProps)  preProps 更新之前的老props
         </p>
       )}
  </Mouse>
-
-
 ```
-
-
-
-
-
-
 
 - 思路：将要复用的state和操作state的方法封装到一个组件中
 
@@ -874,13 +664,13 @@ componentDidUpdate(preProps)  preProps 更新之前的老props
 
   - 在使用组件时，添加一个值为函数的prop，通过函数参数来获取
 
-    ![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/render-props-01.png)
+    ![](/images/render-props-01.png)
 
 - 如何渲染到任意的UI
 
   - 使用该函数的返回值作为要渲染的UI内容
 
-    ![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/render-props-02.png)
+    ![](/images/render-props-02.png)
 
 ## 使用步骤
 
@@ -888,7 +678,7 @@ componentDidUpdate(preProps)  preProps 更新之前的老props
 - 将要复用的状态作为 props.render(state)方法的参数，暴露到组件外部
 - 使用props.render() 的返回值作为要渲染的内容
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/render-props模式-01.png)
+![](/images/render-props模式-01.png)
 
 #### 示例demo
 
@@ -938,28 +728,13 @@ ReactDOM.render(<App />,document.getElementById('root'))
 
 ![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/render-props-children模式.png)
 
-# 高阶组件 （★★★）
-
-## 目标
-
-- 知道高阶组件的作用
-- 能够说出高阶的使用步骤
-
-## 概述
-
-- 目的：实现状态逻辑复用
-- 采用 包装模式
-- 手机：获取保护功能
-- 手机壳：提供保护功能
-- 高阶组件就相当于手机壳，通过包装组件，增强组件功能
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/手机壳.png)
+# 高阶组件
 
 ## 3.1 思路分析
 
 - 高阶组件(HOC、Higher-Order Component) 是一个函数，接收要包装的组件，返回增强后的组件
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/高阶组件-函数.png)
+![](/images/高阶组件-函数.png)
 
 - 高阶组件内部创建了一个类组件，在这个类组件中提供复用的状态逻辑代码，通过prop将复用的状态传递给被包装组件`WrappedComponent`
 
@@ -997,30 +772,11 @@ const WithA(类组件) = abc(ComponentA)
 const WithB(类组件) = abc(ComponentB)
 ```
 
-```react
 
-```
-
-
-
-## 小结
-
-- 组件通讯是构建React应用必不可少的一环
-- props的灵活性让组件更加强大
-- 状态提升是React组件的常用模式
-- 组件生命周期有助于理解组件的运行过程
-- 钩子函数让开发者可以在特定的时机执行某些功能
-- `render props` 模式和高阶组件都可以实现组件状态逻辑的复用
-- 组件极简模型： `(state,props) => UI`
 
 # 4React原理说明
 
-## 目标
-
-- 能够知道`setState()`更新数据是异步的
-- 能够知道JSX语法的转化过程
-
-## `4.1 setState()`说明 （★★★）
+## `4.1 setState()`说明
 
 ### 更新数据-异步的
 
@@ -1034,7 +790,6 @@ const WithB(类组件) = abc(ComponentB)
 this.setState({
   xx:123
 })
-
 ```
 
 
@@ -1045,7 +800,7 @@ this.setState({
 - 参数state： 表示最新的state
 - 参数props： 表示最新的props
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/推荐语法.png)
+![](/images/推荐语法.png)
 
 
 
@@ -1065,12 +820,6 @@ this.setState({
 ![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/语法糖.png)
 
 # React原理揭秘
-
-## 目标
-
-- 能够说出React组件的更新机制
-- 能够对组件进行性能优化
-- 能够说出虚拟DOM和DIff算法
 
 ## 1.1 组件更新机制-演示组件更新案例
 
@@ -1245,241 +994,11 @@ class NumberBox extends React.Component {
 
 ![](/images/更新后的虚拟DOM对象.png)
 
-## 小结
-
-- 工作角度：应用第一，原理第二
-- 原理有助于更好的理解React的自身运行机制
-- setState() 异步更新数据
-- 父组件更新导致子组件更新，纯组件提升性能
-- 思路清晰简单为前提，虚拟DOM和Diff保效率（渲染变化的组件）
-- 虚拟DOM -> state + JSX
-- 虚拟DOM最大的特点是 脱离了浏览器的束缚，也就是意味着只要是能支持js的地方都可以用到react，所以为什么说react是可以进行跨平台的开发
-
-# React原理揭秘
-
-## 目标
-
-- 能够说出React组件的更新机制
-- 能够对组件进行性能优化
-- 能够说出虚拟DOM和DIff算法
-
-## 1.1 组件更新机制-演示组件更新案例
-
-- setState() 的两个作用
-  - 修改state
-  - 更新组件
-
-- 过程：父组件重新渲染时，也会重新渲染子组件，但只会渲染当前组件子树（当前组件以其所有子组件）
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/组件更新.png)
-
-## 组件性能优化
-
-### 1.2 减轻state
-
-- 减轻state：只存储跟组件渲染相关的数据（比如：count/ 列表数据 /loading等）
-- 注意：不用做渲染的数据   固定死的数据   不要放在state中
-- 对于这种需要在多个方法中用到的数据，应该放到this中
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/减轻state.png)
-
-### 避免不必要的重新渲染
-
-- 组件更新机制：父组件更新会引起子组件也被更新，这种思路很清晰
-- 问题：子组件没有任何变化时也会重新渲染
-- 如果避免不必要的重新渲染？
-- 解决方式：使用钩子函数 shouldComponentUpdate(nextProps, nextState)
-  - 在这个函数中，nextProps和nextState是最新的状态以及属性
-- 作用：这个函数有返回值，如果返回true，代表需要重新渲染，如果返回false，代表不需要重新渲染
-- 触发时机：更新阶段的钩子函数，组件重新渲染前执行(shouldComponentUpdate => render)
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/shouldComponentUpdata.png)
-
-#### 随机数案例
-
-需求：随机生成数字，显示在页面，如果生成的数字与当前显示的数字相同，那么就不需要更新UI，反之更新UI。
-
-利用nextState参数来判断当前组件是否需要更新
-
-```react
-class App extends React.Component {
-    state = {
-        number: 0
-    }
-    // 点击事件，每次点击生成一个随机数
-    hanldeBtn = () => {
-        this.setState({
-            number: Math.floor(Math.random() * 3)
-        })
-    }
-    // 将要更新UI的时候会执行这个钩子函数
-    shouldComponentUpdate(nextProps,nextState) {
-         // 判断一下当前生成的 值是否与页面的值相等
-         if(nextState.number !== this.state.number){
-             return true
-         }
-         return false
-    }
-    render() {
-        return (
-            <div>
-                随机数：{this.state.number} <br />
-                <button onClick={this.hanldeBtn}>生成随机数</button>
-            </div>
-        )
-    }
-}
-```
-
-利用props参数来判断是否需要进行更新
-
-```react
-class App extends React.Component {
-    state = {
-        number: 0
-    }
-    // 点击事件，每次点击生成一个随机数
-    hanldeBtn = () => {
-        this.setState({
-            number: Math.floor(Math.random() * 3)
-        })
-    }
-
-    render() {
-        return (
-            <div>
-                <NumberBox number={this.state.number} />
-                <button onClick={this.hanldeBtn}>生成随机数</button>
-            </div>
-        )
-    }
-}
-class NumberBox extends React.Component {
-    // 将要更新UI的时候会执行这个钩子函数
-    shouldComponentUpdate(nextProps, nextState) {
-        // 判断一下当前生成的 值是否与页面的值相等
-        if (nextProps.number !== this.props.number) {
-            return true
-        }
-        return false
-    }
-    render() {
-        return (
-            <h1>随机数：{this.props.number} </h1>
-        )
-    }
-}
-```
-
-### 1.3 纯组件
-
-#### 作用以及使用
-
-- 纯组件： PureComponent 与 React.Component 功能相似
-- 区别： PureComponent 内部自动实现了 shouldComponentUpdate钩子，不需要手动比较
-- 原理：纯组件内部通过分别比对前后两次 props和state的值，来决定是否重新渲染组件
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/PureComponent.png)
-
-#### 实现原理
-
-- 说明：纯组件内部的对比是 shallow compare（浅层对比）
-- 对于值类型来说：比较两个值是否相同
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/值类型比对.png)
-
-- 引用类型：只比对对象的引用地址是否相同
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/引用类型比对.png)
-
-- 注意：state 或 props 中属性值为引用类型时，应该创建新数据，不要直接修改原数据
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/注意点.png)
-
-##建议数组和对象 创建新数据再赋值
-
-## 2 ？虚拟DOM和Diff算法
-
-- React更新视图的思想是：只要state变化就重新渲染视图
-- 特点：思路非常清晰
-- 问题：组件中只有一个DOM元素需要更新时，也得把整个组件的内容重新渲染吗？ 不是这样的
-- 理想状态：部分更新，只更新变化的地方
-- React运用的核心点就是 虚拟DOM 配合 Diff 算法
-
-### 虚拟DOM--控制台查看打印的el
-
-本质上就是一个JS对象，用来描述你希望在屏幕上看到的内容（自己模拟一个）
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/虚拟DOM.png)
-
-### Diff算法
-
-执行过程
-
-- 初次渲染时，React会根据初始化的state（model），创建一个虚拟DOM对象（树）
-- 根据虚拟DOM生成真正的DOM，渲染到页面
-- 当数据变化后(setState())，会重新根据新的数据，创建新的虚拟DOM对象（树）
-- 与上一次得到的虚拟DOM对象，使用Diff算法比对（找不同），得到需要更新的内容
-- 最终，React只将变化的内容更新（patch）到DOM中，重新渲染到页面
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/diff算法.png)
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/对比图.png)
-
-**如图**，
-
-**diff算法有个很重要的概念，叫做同级比较**
-
-1首先会比较最顶层的虚拟dom节点是否一致，假设一致，再去比较下一个节点。
-
-2 假设第一层虚拟dom不一致，这个时候怎么办呢？这个时候react就不会往下比了，他会原始的虚拟dom下面的节点全部删除掉，重新生成一遍节点下面的所有dom，然后用重新生成的dom，替换原始页面的dom，也就是只比对一层dom，
-
-3 这不是性能很低吗？假设第一层节点不同，下面的节点都相同，岂不是下面的节点都没法复用了，确实是这样的，虽然会造成一些dom节点的渲染浪费，
-
-4 但是这种比对有什么好处呢？我们说同层比对，带来的算法非常的简单，只要一层一层的做对比就行了，算法简单，带来的好处就是比对的速度会非常的快，所以可能会造成重新渲染的一些浪费，但大大减少了去比对的算法上的性能消耗。所以采用了同层比对的算法。
-
-**虚拟dom根据key值做关联，只要找到对应的名字一样的节点是否相同，极大的提高了react的性能**
 
 
 
-### 代码演示
-
-- 组件render()调用后，根据状态和JSX结构生成虚拟DOM对象(render()方法的调用并不意味着浏览器进行渲染，render方法调用时意味着Diff算法开始比对了)
-- 示例中，只更新p元素的文本节点内容
-- 初次渲染的DOM对象
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/初次的虚拟DOM对象.png)
-
-- 数据更新之后的虚拟DOM对象
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/更新后的虚拟DOM对象.png)
-
-## 小结
-
-- 工作角度：应用第一，原理第二
-- 原理有助于更好的理解React的自身运行机制
-- setState() 异步更新数据
-- 父组件更新导致子组件更新，纯组件提升性能
-- 思路清晰简单为前提，虚拟DOM和Diff保效率（渲染变化的组件）
-- 虚拟DOM -> state + JSX
-- 虚拟DOM最大的特点是 脱离了浏览器的束缚，也就是意味着只要是能支持js的地方都可以用到react，所以为什么说react是可以进行跨平台的开发
 
 # React路由基础
-
-## 目标
-
-- 能够说出React路由的作用
-- 能够掌握-react-router-dom的基本使用
-- 能够使用编程式导航跳转路由
-- 能够知道React路由的匹配模式
-
-## 2.1 React路由介绍
-
-现代的前端应用大多数是SPA（单页应用程序），也就是只有一个HTML页面的应用程序。因为它的用户体验更好、对服务器压力更小，所以更受欢迎。为了有效的使用单个页面来管理多页面的功能，前端路由应运而生。
-
-- 前端路由功能：让用户从一个视图（页面）导航到另一个视图（页面）
-- 前端路由是一套映射规则，在React中，是URL路径与组件的对应关系
-- 使用React路由简单来说，就是配置路径和组件
 
 ## 2.2 路由的基本使用
 
