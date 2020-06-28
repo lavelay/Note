@@ -370,7 +370,7 @@ export default class extends React.Component {
 
 ## 表单处理
 
-### 1.1 受控组件（★★★）-使用state数据
+### 1.1 受控组件 -使用state数据
 
 使用state数据的组件叫 受控组件
 
@@ -637,51 +637,6 @@ componentDidUpdate(preProps)  preProps 更新之前的老props
 
 # render-props模式 -就是父传子类似
 
-## 思路分析--类似父传子props接收
-
-```
-// 比如App只是一个简单的内容 我们所有组件都需要用到一个Mouse公共组件部分
-// 有同学肯定会说 我们导入使用就行 对的 这是可以的 现在我们强行讲一个其他方法 -render-props
-// 这个render-props我们不一定用  主要是以后大家看见了要知道 不要惊讶
-
-1 先 把APP的内容和Mouse的内容结合起来
-2 再思考传参数
-// Mouse可以充当公共部分 谁要用就按照这种方式去就行
-<Mouse
-    //  render=
-    >
-        {() => (
-        <p>
-          我是App组件的内容哈哈~~：
-        </p>
-      )}
- </Mouse>
-```
-
-- 思路：将要复用的state和操作state的方法封装到一个组件中
-
-- 如何拿到该组件中复用的state
-
-  - 在使用组件时，添加一个值为函数的prop，通过函数参数来获取
-
-    ![](/images/render-props-01.png)
-
-- 如何渲染到任意的UI
-
-  - 使用该函数的返回值作为要渲染的UI内容
-
-    ![](/images/render-props-02.png)
-
-## 使用步骤
-
-- 创建Mouse组件，在组件中提供复用的逻辑代码
-- 将要复用的状态作为 props.render(state)方法的参数，暴露到组件外部
-- 使用props.render() 的返回值作为要渲染的内容
-
-![](/images/render-props模式-01.png)
-
-#### 示例demo
-
 ```react
 class Mouse extends React.Component {
     // 鼠标位置状态
@@ -726,25 +681,15 @@ ReactDOM.render(<App />,document.getElementById('root'))
 - 把prop是一个函数并且告诉组件要渲染什么内容的技术叫做： render props模式
 - 推荐：使用childre代替render属性
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/render-props-children模式.png)
+![](/images/render-props-children模式.png)
 
 # 高阶组件
-
-## 3.1 思路分析
 
 - 高阶组件(HOC、Higher-Order Component) 是一个函数，接收要包装的组件，返回增强后的组件
 
 ![](/images/高阶组件-函数.png)
 
 - 高阶组件内部创建了一个类组件，在这个类组件中提供复用的状态逻辑代码，通过prop将复用的状态传递给被包装组件`WrappedComponent`
-
-## 3.2 使用步骤
-
-高阶函数(形式上):如果一个**函数**的形参或者返回值也是**函数**
-
-高阶组件:如果一个**函数**的形参和返回值是**组件**
-
-**包装函数**
 
 ```react
 // 定义一个函数，在函数内部创建一个相应类组件
@@ -778,10 +723,7 @@ const WithB(类组件) = abc(ComponentB)
 
 ## `4.1 setState()`说明
 
-### 更新数据-异步的
-
 - `setState()`更新数据是异步的
-- 注意：使用该语法，后面的`setState`不要依赖前面`setState`的值
 - 多次调用`setState`，只会触发一次render
 
 ### 语法1---简单写法
@@ -792,32 +734,23 @@ this.setState({
 })
 ```
 
-
-
 ### 语法2 --复杂语法
 
 - ：使用 `setState((state,props) => {})` 语法
-- 参数state： 表示最新的state
-- 参数props： 表示最新的props
-
-![](/images/推荐语法.png)
-
-
 
 ### 注意：第二个参数
 
-- 场景：在状态更新(页面完成重新渲染)后立即执行某个操作
-- 语法：`setState(update[,callback])`
+![](images/第二个参数.png)
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/第二个参数.png)
-
-## 4.2 JSX语法的转化过程 （★★★）
+## 4.2 JSX语法的转化过程
 
 - JSX仅仅是`createElement()` 方法的语法糖(简化语法)
 - JSX语法被 @babel/preset-react 插件编译为`createElement()` 方法
 - React 元素： 是一个对象，用来描述你希望在屏幕上看到的内容
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/语法糖.png)
+![](/images/语法糖.png)
+
+
 
 # React原理揭秘
 
@@ -829,8 +762,6 @@ this.setState({
 
 - 过程：父组件重新渲染时，也会重新渲染子组件，但只会渲染当前组件子树（当前组件以其所有子组件）
 
-![](/images/组件更新.png)
-
 ## 组件性能优化
 
 ### 1.2 减轻state
@@ -839,7 +770,7 @@ this.setState({
 - 注意：不用做渲染的数据   固定死的数据   不要放在state中
 - 对于这种需要在多个方法中用到的数据，应该放到this中
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/减轻state.png)
+![](/images/减轻state.png)
 
 ### 1.2 避免不必要的重新渲染
 
@@ -851,7 +782,7 @@ this.setState({
 - 作用：这个函数有返回值，如果返回true，代表需要重新渲染，如果返回false，代表不需要重新渲染
 - 触发时机：更新阶段的钩子函数，组件重新渲染前执行(shouldComponentUpdate => render)
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-03/笔记/images/shouldComponentUpdata.png)
+![](/images/shouldComponentUpdata.png)
 
 #### 随机数案例
 
@@ -1016,15 +947,15 @@ class NumberBox extends React.Component {
 
 - 使用Router 组件包裹整个应用
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/Router.png)
+![]( /images/Router.png)
 
 - 使用Link组件作为导航菜单（路由入口）
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/link入口.png)
+![]( /images/link入口.png)
 
 - 使用Route组件配置路由规则和要展示的组件（路由出口）
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/route.png)
+![]( /images/route.png)
 
 ### 常用组件说明
 
@@ -1045,7 +976,7 @@ class NumberBox extends React.Component {
 - React路由监听地址栏url的变化
 - React路由内部遍历所有的Route组件，拿着Route里面path规则与pathname进行匹配
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/route匹配.png)
+![]( /images/route匹配.png)
 
 - 当路由规则（path）能够匹配地址栏中的pathname时，就展示该Route组件的内容
 
@@ -1057,7 +988,7 @@ class NumberBox extends React.Component {
 - **push(path)：**跳转到某个页面，参数path表示要跳转的路径
 - go(n)：前进或后退功能，参数n表示前进或后退页面数量
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/编程式导航.png)
+![](/images/编程式导航.png)
 
 ### 3.2 默认 /
 
@@ -1065,7 +996,7 @@ class NumberBox extends React.Component {
 - 默认路由：表示进入页面时就会匹配的路由
 - 默认路由：只需要把path设置为 `'/'`
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/默认路由.png)
+![]( /images/默认路由.png)
 
 ### 3.3 匹配模式
 
@@ -1075,7 +1006,7 @@ class NumberBox extends React.Component {
 - 默认情况下，React路由是模糊匹配模式
 - 模糊匹配规则：只要pathname以path开头就会匹配成功
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/模糊匹配模式.png)
+![]( /images/模糊匹配模式.png)
 
 #### 精准匹配
 
@@ -1083,7 +1014,7 @@ class NumberBox extends React.Component {
 - 给Route组件添加exact属性，让其变为**精准匹配模式**
 - 精确匹配：只有当path和pathname完全匹配时才会展示改路由
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/精确匹配.png)
+![]( /images/精确匹配.png)
 
 ### 4.1  路由参数
 
@@ -1135,53 +1066,11 @@ this.props.match?
 
 / 默认访问 /home/news
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-04/笔记/images/路由.png)
+![]( /images/路由.png)
 
-# ？6 配置服务器与脚手架创建hkzf-111项目
-
-### 小结
-
-- React路由可以有效的管理多个视图实现 SPA
-- 路由先需要通过安装
-- Router组件包裹整个应用，只需要使用一次
-- Link组件是入口，Route组件是出口
-- 通过props.history实现编程式导航
-- 默认是模糊匹配，添加exact编程精确匹配
-- React路由的一切都是组件，可以像思考组件一样思考路由
-
-# 好客租房移动Web - 上
-
-## 目标
-
-- 能够初始化项目
-- 能够使用 antd-mobile 组件库
-- 能够完成项目整体布局
-- 能够理解嵌套路由
-- 能够使用antd-mobile提供的TabBar组件
-- 能够对TabBar进行定制
-- 能够实现首页路由的处理
-- vue  react  angular
-
-## 1. 1 项目介绍
-
-- 好客租房 - 移动 Web 端
-- 项目介绍：本项目是一个在线租房项目，实现了类似链家等项目的功能，解决了用户租房的需求
-- 核心业务：在线找房（地图、条件搜索）、用户登录、房源发布等
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-05/笔记/images/首页.png)
-
-## 1.2 技术栈
-
-- React核心库：react、react-dom、react-router-dom
-- 脚手架：create-react-app    vue-cli(vue ui / vue create...)
-- 数据请求：axios
-- UI组件库：antd-mobile(移动框架 阿里巴巴)
-- 其他组件库：react-virtualized（列表）、formik+yup（表单验证）、react-spring（动画）等
-- 百度地图API
+# 6 配置服务器与脚手架创建hkzf-111项目
 
 ## 1.3 项目准备
-
-### 1.3.1 项目搭建（★★★）
 
 - 本地接口部署
   - 创建并导入数据：数据库名称hkzf(固定名称)  npm start启动服务器 hzkz_v1  工作直接找后台要接口文档发就行
@@ -1190,25 +1079,13 @@ this.props.match?
   - 进入到项目根目录 使用 npm start
   - 后面写react项目 发送ajax 请求 localhost:8080拿数据
 
-### 1.3.2 项目目录结构（★★★）
+### 1.3.2 项目目录结构 
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-05/笔记/images/目录结构.png)
-
-- 调整项目结构
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-05/笔记/images/结构调整.png)
+![](/images/目录结构.png)
 
 1 文件夹名字一般都是自己随便取的  2 如果你要引入  路径找对就行
 
-## 2.1 antd-mobile 组件库（★★★）
-
-antd-mobile  阿里巴巴  移动端
-
-antd   阿里巴巴pc端
-
-ant-design
-
-1 xi
+## 2.1 antd-mobile 组件库
 
 #### 介绍与使用
 
@@ -1241,14 +1118,14 @@ ant-design
 - 在pages文件夹中创建 Home/index.js 和 CityList/index.js 两个组件
 - 使用Route组件配置首页和城市选择页面
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-05/笔记/images/路由基本配置.png)
+![]( /images/路由基本配置.png)
 
 ## 2.3 外观和样式调整
 
 - 修改页面标题，在index.html里面修改
 - 基础样式调整，在index.css 中调整 全局初始化样式
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-05/笔记/images/样式修改.png)
+![]( /images/样式修改.png)
 
 ## 项目整体布局
 
@@ -1258,9 +1135,9 @@ ant-design
 - 无TabBar的页面：城市选择等
 - TabBar 的菜单也可以实现路由切换，也就是路由内部切换路由（嵌套路由）
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-05/笔记/images/tabBar.png)
+![]( /images/tabBar.png)
 
-### 3.2 嵌套路由（★★★）
+### 3.2 嵌套路由
 
 - 嵌套路由：路由内部包含路由
 - 用Home组件表示父路由的内容     home是公共组件 有底部的tabbar 内容区域匹配四个子组件
@@ -1273,9 +1150,9 @@ ant-design
 - 设置嵌套路由的path，格式以父路由path开头(父组件展示了，子组件才会展示)
 - 修改pathname为 /home/news，News组件的内容就会展示在Home组件中了
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-05/笔记/images/news-嵌套路由.png)
+![]( /images/news-嵌套路由.png)
 
-### 实现TabBar（★★★）
+### 实现TabBar
 
 #### 3.3 拷贝TabBar组件结构介绍
 
@@ -1534,7 +1411,7 @@ ant-design
 - 所以我们可以封装一下
 - 提供菜单数据
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-05/笔记/images/tabBar不同的属性.png)
+![]( /images/tabBar不同的属性.png)
 
 - 使用map来进行遍历
 
@@ -1614,7 +1491,7 @@ render() {
 }
 ```
 
-## 5.2 首页实现路由跳转（★★★）
+## 5.2 首页实现路由跳转
 
 constructor可以简单
 
@@ -1647,7 +1524,7 @@ constructor可以简单
 <Route path="/" exact render={() => <Redirect to="/home/index"></Redirect>}></Route>
 ```
 
-## 6.2 轮播图（★★★）
+## 6.2 轮播图 
 
 ### 组件使用的基本步骤
 
@@ -1831,7 +1708,7 @@ render() {
 }
 ```
 
-## 6.1 轮播图的问题（★★★）
+## 6.1 轮播图的问题 
 
 - **刷新后, 轮播图无法自动滚动->**
 
@@ -1910,18 +1787,7 @@ sass也需要下载 node-sass  写样式 就可以写sass
 
 # 首页模块
 
-## 目标
-
-- 能够使用Carousel组件完成轮播图功能
-- 能够安装axios，并且使用axios进行网络请求
-- 能够使用Flex组件完成TabBar功能
-- 能够知道轮播图与TabBar出现的bug，并且解决
-- 能够安装Sass，编写Sass代码
-- 能够使用Grid组件完成租房小组功能
-- 能够利用H5 API获取当前的定位信息
-- 能够使用百度地图API展示地图页面，获取对应城市信息
-
-## 1.1 导航菜单整租合租（★★★）
+## 1.1 导航菜单整租合租
 
 - 利用了antd-moblie的Flex组件进行的布局
 - 导入nav的图片
@@ -2044,14 +1910,6 @@ less  sass 都差不多  可以嵌套写样式
 - 安装Sass： yarn add node-sass
 - 创建后缀名为.scss 或者 .sass 的样式文件
 - 在组件中导入Sass样式
-
-## 3 租房小组（★★★）
-
-### 业务介绍
-
-- 需求：根据当前地理位置展示不同小组信息
-- 需要后台接口根据用户找房数据，推荐用户最感兴趣的内容(正常的逻辑是我们先获取到用户当前定位的信息，把信息发送给后台，后台根据定位信息获取对应的内容)
-- 前端只需要展示数据
 
 ### 数据获取
 
@@ -2322,12 +2180,7 @@ renderNews() {
 
 我们在Home.js中找到 包裹 路由和底部导航栏的div盒子，给其添加 padding-bottom 属性即可
 
-## 4.2 首页-顶部导航功能（★★★）
-
-- 实现结构和样式
-- 添加城市选择、搜索、地图找房页面的路由跳转
-
-相关结构
+## 4.2 首页-顶部导航功能
 
 ```react
  <Flex className='search-box'>
@@ -2422,9 +2275,9 @@ navigator.geolocation.getCurrentPosition(position=>{
 
 
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-06/笔记/images/location.png)
+![]( /images/location.png)
 
-## 5.1 定位相关 百度地图API（★★★）（map组件）
+## 5.1 定位相关 百度地图API （map组件）
 
 - H5的地理位置API只能获取到对应经纬度信息
 - 实际开发中，会使用百度地图/高德地图来完成地理位置的相关功能
@@ -2432,17 +2285,17 @@ navigator.geolocation.getCurrentPosition(position=>{
 - 我们需要去参照[百度地图文档](http://lbsyun.baidu.com/)
 - 1 注册百度开发者账号，申请对应的AK
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-06/笔记/images/百度AK.png)
+![]( /images/百度AK.png)
 
 ## 5.2 百度地图使用步骤
 
 - 在public/index.html引入百度地图的API的JS文件，替换自己申请好的密钥
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-06/笔记/images/使用步骤-01.png)
+![]( /images/使用步骤-01.png)
 
 - 在index.css中设置全局样式
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-06/笔记/images/使用步骤-02.png)
+![]( /images/使用步骤-02.png)
 
 - 创建Map组件，配置路由，在Map组件中，创建地图容器元素，并设置样式 
 
@@ -2452,19 +2305,19 @@ navigator.geolocation.getCurrentPosition(position=>{
 
   ​	const BMap = window.BMap
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-06/笔记/images/使用步骤-03.png)
+![]( /images/使用步骤-03.png)
 
 - 创建地图实例
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-06/笔记/images/使用步骤-04.png)
+![]( /images/使用步骤-04.png)
 
 - 设置中心点坐标
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-06/笔记/images/使用步骤-05.png)
+![]( /images/使用步骤-05.png)
 
 - 初始化地图，同时设置展示级别
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-06/笔记/images/使用步骤-06.png)
+![]( /images/使用步骤-06.png)
 
 
 
@@ -2474,18 +2327,9 @@ navigator.geolocation.getCurrentPosition(position=>{
 - 通过IP定位获取到当前城市名称
 - 调用我们服务器的ajax接口，换取项目中的城市信息
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-06/笔记/images/定位接口.png)
+![]( /images/定位接口.png)
 
-## 6.2  城市列表功能分析
-
-- 切换城市，查看该城市下的房源信息
-- 功能
-  - 顶部导航栏
-  - 城市列表展示
-  - 使用索引快速切换城市
-  - 点击城市名称切换城市
-
-## 城市列表-顶部导航栏（★★★）
+## 城市列表-顶部导航栏
 
 - 打开antd-mobile 组件库的NavBar 导航栏组件 文档
 - 从文档中拷贝组件示例代码到项目中，让其正确运行
@@ -2596,21 +2440,6 @@ async getcitylist(){
 
 
 # 城市选择模块
-
-## 目标
-
-- 能够实现顶部导航栏
-- 能够获取城市列表数据，热门城市数据，当前定位城市数据，并且对数据进行重新封装
-- 知道什么是长列表，以及带来的缺陷
-- 说出长列表性能优化的两种方式
-- 能够使用 react-virtualized进行城市列表的渲染
-- 能够渲染右侧索引列表
-
-## 1获取处理数据（★★★）
-
-- 页面加载时候，根据接口获取到城市列表数据
-- 分析当前数据格式以及该功能需要的数据格式
-- 转换当前数据格式为所需要的数据格式‘
 
 ### 1.1 获取数据
 
@@ -2783,7 +2612,7 @@ cityList['#'] = [diwei]
 cityIndex.unshift('#')
 ```
 
-## 3 长列表性能优化（★★）
+## 3 长列表性能优化 
 
 页面数据很多：1 分页 懒加载 每次显示20条    2 
 
@@ -2816,13 +2645,13 @@ antd mobile 组件本身也有列表  配置麻烦 功能少 不常用  没用�
 
 原理： 只渲染页面可视区域的列表项，非可视区域的数据 **完全不渲染(预加载前面几项和后面几项)** ，在滚动列表时动态更新列表项
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-07/笔记/images/可视区渲染.png)
+![]( /images/可视区渲染.png)
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-07/笔记/images/预加载.png)
+![]( /images/预加载.png)
 
 **使用场景：** 一次性展示大量数据的情况
 
-## 4 react-virtualized（★★★）
+## 4 react-virtualized 
 
 ### 概述
 
@@ -2891,7 +2720,7 @@ ReactDOM.render(
 - 通过 render-props 模式，获取到`AutoSizer` 组件暴露的 width 和 height 属性
 - 设置List组件的 width  和 height 属性
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-07/笔记/images/autosizer.png)
+![]( /images/autosizer.png)
 
 - 设置城市选择页面根元素高度 100%，让List组件占满整个页面
 
@@ -2903,7 +2732,7 @@ ReactDOM.render(
 }
 ```
 
-## 5 渲染城市列表（★★★）
+## 5 渲染城市列表 
 
 1 渲染城市列表
 
@@ -3208,16 +3037,6 @@ changeCity = (label, value) => {
 
 primary 蓝色  success 绿色  danger 红色 warning 黄色 info 灰色或者黑色
 
-
-
-# 渲染城市列表
-
-## 目标
-
-- 完成城市索引高亮效果
-- 完成点击索引跳转到对应位置
-- 能够实现切换城市功能（除了北京，上海，广州，深圳，其他成均无房源信息，需要提示用户）
-
 ## 1.1 城市索引列表高亮
 
 - 给list组件添加onRowsRendered配置项，用于获取当前列表渲染的行信息，在里面就会有相应信息
@@ -3362,24 +3181,7 @@ changeCity = (label, value) => {
 - 首页模块：租房小组结构布局，数据获取，H5地理定位和百度地图地理定位等
 - 城市选择模块：数据结构处理，长列表性能优化，react-virtualized，索引列表等
 
-# 2.3 好客租房移动Web（中）-目标
-
-- 能够在百度地图中展示当前定位城市
-- 能够使用地图标注完成房源信息绘制
-- 能够展示城市所有区的房源数据
-- 能够封装找房页面的条件筛选栏组件
-- 能够使用 react-spring 组件实现动画效果
-- 能够完成房屋详情页面的数据展示
-
-# 地图找房模块
-
-## 目标
-
-- 封装NavHeader组件
-- 实现NavHeader组件中左侧按钮功能
-- 能够解决NavHeader组件中获取不到路由信息的问题
-
-- 对NavHeader的props进行校验
+# 2.3 好客租房移动Web（中）
 
 ## 3.1 功能分析
 
@@ -3552,21 +3354,21 @@ styled-components文档：<https://www.styled-components.com/>
 - 命名采用：BEM（Block块、Element元素、Modifier三部分组成）命名规范。比如： .list_item_active
 - 在React脚手架中演化成：文件名、类名、hash（随机）三部分，只需要指定类名即可
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-08/笔记/images/css-modules.png)
+![]( /images/css-modules.png)
 
 ## 6.1 react中局部样式的使用
 
 - 创建名为xx.module.css 的样式文件（React脚手架中的约定，与普通CSS区分开）
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-08/笔记/images/css-modules使用-01.png)
+![]( /images/css-modules使用-01.png)
 
 - 组件中导入样式文件**（注意语法）**
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-08/笔记/images/css-modules使用-02.png)
+![]( /images/css-modules使用-02.png)
 
 - 通过styles对象访问对象中的样式名来设置样式
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-08/笔记/images/css-modules使用-03.png)
+![]( /images/css-modules使用-03.png)
 
 ## 6.2 使用CSS Modules修改 map样式
 
@@ -3621,17 +3423,7 @@ styled-components文档：<https://www.styled-components.com/>
 
 # 地图找房模块
 
-## 目标
-
-- 完成根据定位展示当前城市
-- 能够完成在地图上渲染出文本覆盖物
-- 能够对文本覆盖物进行内容和样式修改
-- 能够说出地图找房功能的业务逻辑
-- 理解地图找房的封装流程，知道每一个方法的作用是什么？
-- 能够参照老师代码敲出地图找房的封装代码
-- 能够使用Toast的loading效果来对页面进行优化
-
-## 1.1 根据定位展示当前城市（★★★）
+## 1.1 根据定位展示当前城市
 
 - storage拿出来 根据定位展示当前城市地图 获取定位城市
 - 地址解析：省市名字转经纬度 
@@ -3641,9 +3433,9 @@ styled-components文档：<https://www.styled-components.com/>
 - map.addControl(new BMap.NavigationControl());
 - 文档 <http://lbsyun.baidu.com/index.php?title=jspopular3.0/guide/helloworld>
 
-## 实现房源信息子地图中展示（★★★）
+## 实现房源信息子地图中展示
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-08/笔记/images/房源覆盖物.png)
+![]( /images/房源覆盖物.png)
 
 这些房源信息其实就是用文本覆盖物来实现的，所以我们先查看百度开发文档，先创建文本覆盖物
 
@@ -3657,7 +3449,7 @@ styled-components文档：<https://www.styled-components.com/>
 - 掉用setStyle() 方法设置样式
 - 在map对象上调用 addOverlay() 方法，讲文本覆盖物添加到地图中
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-08/笔记/images/创建文本覆盖物.png)
+![]( /images/创建文本覆盖物.png)
 
 ### 1.3 绘制房源覆盖物 修改样式即可
 
@@ -3665,15 +3457,15 @@ styled-components文档：<https://www.styled-components.com/>
 - 调用Label的 setContent方法，传入html结构，修改HTML的内容样式;注意：调用了setContent 那么里面文本的内容就失效了
 - setContent文档 ：<http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference_3_0.html#a3b9>
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-08/笔记/images/绘制覆盖物.png)
+![]( /images/绘制覆盖物.png)
 
 - 调用setStyle方法修改覆盖物样式
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-08/笔记/images/绘制覆盖物-02.png)
+![]( /images/绘制覆盖物-02.png)
 
 - 给覆盖物添加点击事件
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-08/笔记/images/绘制覆盖物-03.png)
+![]( /images/绘制覆盖物-03.png)
 
 - 覆盖的内容结构
 
@@ -3728,7 +3520,7 @@ const labelStyle = {
 
 
 
-## 2 地图找房-业务逻辑分析（★★★）
+## 2 地图找房-业务逻辑分析
 
 区级  --》县镇级-》街道小区级(直接显示当前小区的房子列表)
 
@@ -3783,7 +3575,7 @@ res.data.body.map(item => {
 })
 ```
 
-### 3 封装流程（★★）
+### 3 封装流程 
 
 到目前为止，我们才完成地图找房的一环，也就是获取了区的房源信息，然后可以点击对应区的房源，清除地图上的覆盖物，而我们再实现镇的时候也是相同的逻辑，，实现小区的时候，逻辑流程也是相似的，所以我们可以对此进行一层封装，提高代码复用性
 
@@ -3799,7 +3591,7 @@ res.data.body.map(item => {
 
  this.map.getZoom() 获取当前缩放级别
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-08/笔记/images/地图找房功能分析.png)
+![]( /images/地图找房功能分析.png)
 
 #### 
 
@@ -4006,9 +3798,9 @@ renderHousesList() {
 
 - 移动地图的时候（监听movestart事件），隐藏房源列表
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-08/笔记/images/地图移动.png)
+![]( /images/地图移动.png)
 
-### 6.2 添加Loading效果（★★★）
+### 6.2 添加Loading效果 
 
 - 利用Toast的loading方法来实现
 
@@ -4026,17 +3818,7 @@ renderHousesList() {
 
 # 地图找房模块
 
-## 目标
-
-- 完成根据定位展示当前城市
-- 能够完成在地图上渲染出文本覆盖物
-- 能够对文本覆盖物进行内容和样式修改
-- 能够说出地图找房功能的业务逻辑
-- 理解地图找房的封装流程，知道每一个方法的作用是什么？
-- 能够参照老师代码敲出地图找房的封装代码
-- 能够使用Toast的loading效果来对页面进行优化
-
-## 1.1 根据定位展示当前城市（★★★）
+## 1.1 根据定位展示当前城市 
 
 - storage拿出来 根据定位展示当前城市地图 获取定位城市
 - (逆地址解析就是省市名字转化成坐标经纬度) 
@@ -4045,11 +3827,7 @@ renderHousesList() {
 - map.addControl(new BMap.NavigationControl());
 - 文档 <http://lbsyun.baidu.com/index.php?title=jspopular3.0/guide/helloworld>
 
-## 实现房源信息子地图中展示（★★★）
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-09/笔记/images/房源覆盖物.png)
-
-这些房源信息其实就是用文本覆盖物来实现的，所以我们先查看百度开发文档，先创建文本覆盖物
+## 实现房源信息子地图中展示 
 
 ### 1.2 创建文本覆盖物 demo
 
@@ -4061,7 +3839,7 @@ renderHousesList() {
 - 掉用setStyle() 方法设置样式
 - 在map对象上调用 addOverlay() 方法，讲文本覆盖物添加到地图中
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-09/笔记/images/创建文本覆盖物.png)
+![]( /images/创建文本覆盖物.png)
 
 ### 1.3 绘制房源覆盖物 修改样式即可
 
@@ -4069,15 +3847,15 @@ renderHousesList() {
 - 调用Label的 setContent方法，传入html结构，修改HTML的内容样式;注意：调用了setContent 那么里面文本的内容就失效了
 - setContent文档 ：<http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference_3_0.html#a3b9>
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-09/笔记/images/绘制覆盖物.png)
+![]( /images/绘制覆盖物.png)
 
 - 调用setStyle方法修改覆盖物样式
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-09/笔记/images/绘制覆盖物-02.png)
+![]( /images/绘制覆盖物-02.png)
 
 - 给覆盖物添加点击事件
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-09/笔记/images/绘制覆盖物-03.png)
+![]( /images/绘制覆盖物-03.png)
 
 - 覆盖的内容结构
 
@@ -4102,7 +3880,7 @@ const labelStyle = {
 }
 ```
 
-## 2 地图找房-业务逻辑分析（★★★）
+## 2 地图找房-业务逻辑分析 
 
 区级  --》县镇级-》街道小区级(直接显示当前小区的房子列表)
 
@@ -4157,7 +3935,7 @@ res.data.body.map(item => {
 })
 ```
 
-### 3 封装流程（★★）
+### 3 封装流程 
 
 到目前为止，我们才完成地图找房的一环，也就是获取了区的房源信息，然后可以点击对应区的房源，清除地图上的覆盖物，而我们再实现镇的时候也是相同的逻辑，，实现小区的时候，逻辑流程也是相似的，所以我们可以对此进行一层封装，提高代码复用性
 
@@ -4178,7 +3956,7 @@ res.data.body.map(item => {
 - 这个方法是整个封装的入口
 - 在这个方法需要 接收区域id ，获取对应的房源数据
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-09/笔记/images/renderOverlays-01.png)
+![]( /images/renderOverlays-01.png)
 
 - 
 
@@ -4387,9 +4165,9 @@ renderHousesList() {
 
 - 移动地图的时候（监听movestart事件），隐藏房源列表
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-09/笔记/images/地图移动.png)
+![]( /images/地图移动.png)
 
-### 6.2 添加Loading效果（★★★）
+### 6.2 添加Loading效果 
 
 - 利用Toast的loading方法来实现
 
@@ -4416,7 +4194,7 @@ renderHousesList() {
 
 每一次我们请求接口的时候，每一次都需要写相同的baseUrl。例如：http://localhost:8080，这样太繁琐，所以我们可以对网络请求进行优化，接口域名、图片域名、分为开发环境和生产环境，直接写在代码中，项目发布时，很难替换
 
-## 1.1 配置统一的URL（★★）
+## 1.1 配置统一的URL 
 
 ```react
 axios.defaults.baseURL = 'http://localhost:8080'
@@ -4426,7 +4204,7 @@ const instance = axios.create({
 })
 ```
 
-## 1.2 配置生产环境和开发环境（★★★）
+## 1.2 配置生产环境和开发环境 
 
 ```
 // 通过脚手架的环境变量来解决 开发环境
@@ -4436,19 +4214,19 @@ const instance = axios.create({
 在生产环境变量文件 .env.production 中，配置 REACT_APP_URL=线上接口地址
 ```
 
-## 1.3 使用环境变量（★★★）
+## 1.3 使用环境变量 
 
 在react官网中，有详细说明环境变量的配置
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-10/笔记/images/环境变量.png)
+![]( /images/环境变量.png)
 
 在里面会发现对应的文件还有个 .local 后缀的文件，这个文件的优先级更高，以下就是你输入不同命令，执行文件的优先级
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-10/笔记/images/环境变量优先级.png)
+![]( /images/环境变量优先级.png)
 
 - 在项目根目录中创建文件 .env.development
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-10/笔记/images/环境变量配置-01.jpg)
+![]( /images/环境变量配置-01.jpg)
 
 - 在该文件中添加环境变量 REACT_APP_URL（注意：环境变量约定REACT_APP 开头）,设置 REACT_APP_URL=http://localhost:8080
 
@@ -4471,7 +4249,7 @@ export const BASE_URL = process.env.REACT_APP_URL
 import {BASE_URL} from '../../utils/url.js'
 ```
 
-## 1.4 axios 优化（★★★）
+## 1.4 axios 优化 
 
 - 在utils/api.js 中，导入 axios和BASE_URL
 - 调用 axios.create() 方法创建一个axios实例
@@ -4501,24 +4279,9 @@ import {instance} from '../../utils/api.js'
 
 # 列表找房功能
 
-## 目标
-
-- 说出抽取搜索导航栏的好处
-- 能够说出抽取搜索导航栏的思路，并且参照老师代码能够实现抽取功能
-- 能够说出条件筛选功能的大致思路，Filter组件作用，FilterTitle组件作用，FilterPicker组件作用，FilterFooter组件作用
-- 能够参照老师代码实现FilterTitle组件中的逻辑代码
-- 能够参照老师代码实现FilterPicker组件的逻辑代码
-
-## 2.1 功能分析
-
-- 搜索导航栏组件的封装
-- 条件筛选栏组件封装
-- 条件筛选栏吸顶功能
-- 房屋列表
-
 ## 2.2 顶部搜索导航栏
 
-### 封装搜索导航栏组件（★★★）
+### 封装搜索导航栏组件 
 
 - 在components 目录中创建组件 SearchHeader/index.js
 - 把之前写过的结构拷贝到这个文件中
@@ -4649,7 +4412,7 @@ export default class HouseList extends React.Component {
 
 ## 3 条件筛选
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-10/笔记/images/找房页面分析.png)
+![]( /images/找房页面分析.png)
 
 ### 3.1 结构分析
 
@@ -4831,7 +4594,7 @@ export default function FilterTitle({titleSelectedStatus,onClick}) {
 }
 ```
 
-## 5 FilterPicker 组件（★★★）
+## 5 FilterPicker 组件 
 
 #### 4.3 思路分析
 
@@ -5060,12 +4823,7 @@ export default class FilterPicker extends Component {
 
 # 列表找房模块-条件筛选
 
-## 目标
-
-- 能够设置FilterPicker组件为受控组件
-- 能够获取选中值，并且设置默认选中值
-
-## 1.1 FilterPicker获取选中值（★★★）
+## 1.1 FilterPicker获取选中值 
 
 - 在FilterPicker组件中，添加状态value（用于获取PickerView组件的选中值）
 
@@ -5185,12 +4943,7 @@ onSave = (type, value) => {
 
 - 解决方式：给FilterPicker组件添加key值为openType，这样，在不同标题之间切换时候，key值都不相同，React内部会在key不同时候，重新创建该组件
 
-# 列表找房模块-完善FilterTitle（★★★）
-
-## 目标
-
-- 能够说出FilterTitle高亮显示的逻辑
-- 参照老师代码实现FilterTitle的高亮显示
+# 列表找房模块-完善FilterTitle
 
 ## 2.1 思路
 
@@ -5279,13 +5032,7 @@ this.setState({
 
 # 列表找房模块-FilterMore组件
 
-## 目标
-
-- 能够渲染FilterMore组件
-- 能够实现 清除按钮和确定按钮 的逻辑
-- 能够实现 FilterMore的默认选中
-
-## 3.1 渲染组件数据（★★★）
+## 3.1 渲染组件数据
 
 - 封装renderFilterMore方法，渲染FilterMore组件
 
@@ -5352,7 +5099,7 @@ render() {
 }
 ```
 
-## 3.2 获取选中值并且高亮显示（★★★）
+## 3.2 获取选中值并且高亮显示 
 
 - filtermore在state中添加状态 selectedValues
 
@@ -5398,7 +5145,7 @@ onTagClick(value) {
 }
 ```
 
-## 4.1 清除和确定按钮的逻辑处理（★★★）
+## 4.1 清除和确定按钮的逻辑处理 
 
 - 设置FilterFooter组件的取消按钮文字为： 清除
 
@@ -5437,7 +5184,7 @@ onSave = () => {
 };
 ```
 
-## 4.2 设置默认选中值（★★★）
+## 4.2 设置默认选中值 
 
 - 在渲染FilterMore组件时，从selectedValues中，获取到当前选中值more
 - 通过props讲选中值传递给FilterMore组件
@@ -5476,7 +5223,7 @@ state = {
 
 ​        2 解决：  1 react中 key值不一样 组件就一定会重新创建 我们给FilterPicker组件一个openType一定不一样 小技巧 
 
-## 提前做了5 完善FilterTitle高亮功能（★★）
+## 提前做了5 完善FilterTitle高亮功能 
 
 取消和确定--不管怎么样  有值当前的就选高亮  没值就不高亮
 
@@ -5549,18 +5296,11 @@ state = {
 
 # 列表找房模块-获取房屋列表数据
 
-## 目标
-
-- 能够封装筛选条件对象
-- 能够获取到房屋列表数据
-- 能够实现HouseItem组件在map页面和房屋列表页面的复用
-- 能够渲染房屋列表数据在页面
-
-## 5 组装筛选条件（★★★）
+## 5 组装筛选条件 
 
 - 在Filter组件的onSave方法中，根据最新selectedValues组装筛选的条件数据 filters，以下是数据格式
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-11/笔记/images/数据格式.png)
+![]( /images/数据格式.png)
 
 - 获取区域数据的参数名：area 或 subway(选中值，数组的第一个元素)
 - 获取区域数据值（以最后一个value为准）
@@ -5591,7 +5331,7 @@ filters.price = price[0];
 filters.more = more.join(",");
 ```
 
-## 6.1获取房屋数据（★★★）
+## 6.1获取房屋数据 
 
 - 将筛选条件数据filters传递给父组件HouseList
 
@@ -5639,7 +5379,7 @@ filters.more = more.join(",");
   }
 ```
 
-## 6.2 进入页面时获取数据（★★）
+## 6.2 进入页面时获取数据 
 
 - 在componentDidMount钩子函数中，调用searchHouseList，来获取房屋列表数据
 - 给HouseList组件添加属性 filters，值为对象
@@ -5680,7 +5420,7 @@ filters.more = more.join(",");
   }
 ```
 
-## 6.3 使用List组件渲染数据（★★★）(先不封装HouseItem)
+## 6.3 使用List组件渲染数据 (先不封装HouseItem)
 
 - 先复制 List 简单看看：文档：<https://github.com/bvaughn/react-virtualized/blob/master/docs/List.md>
 
@@ -5797,12 +5537,7 @@ export default HouseItem
 
 # 列表找房模块-房屋列表
 
-## 目标
-
-- 能够使用windowScroller组件解决整个页面无法滚动的问题
-- 能够使用InfiniteLoader组件来实现加载更多逻辑
-
-## 1.1 使用`WindowScroller` 让Lsit跟随页面滚动（★★★）-参数不要少了
+## 1.1 使用`WindowScroller` 让Lsit跟随页面滚动 -参数不要少了
 
 文档 ：https://github.com/bvaughn/react-virtualized/tree/master/docs
 
@@ -5811,7 +5546,7 @@ export default HouseItem
 - **注意：**`WindowScroller`高阶组件只能提供height，无法提供width
 - **解决方式：**在WindowScroller组件中使用AutoSizer高阶组件来为List组件提供width
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-12/笔记/images/WindowScroller.png)
+![]( /images/WindowScroller.png)
 
 ```react
 <WindowScroller>
@@ -5837,7 +5572,7 @@ export default HouseItem
 </WindowScroller>
 ```
 
-## `1.2 InfiniteLoader` 无限滚动加载组件（★★★）
+## `1.2 InfiniteLoader` 无限滚动加载组件 
 
 文档  <https://github.com/bvaughn/react-virtualized/tree/master/docs>
 
@@ -5847,7 +5582,7 @@ export default HouseItem
 - 使用`InfiniteLoader` 组件，来实现无限滚动列表，从而加载更多房屋数据
 - 根据 `InfiniteLoader` 文档示例，在项目中使用组件
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-12/笔记/images/InfiniteLoader.png)
+![]( /images/InfiniteLoader.png)
 
 ```react
 <InfiniteLoader
@@ -5953,14 +5688,7 @@ export default HouseItem
   };
 ```
 
-# 列表找房模块-吸顶功能（★★★）
-
-吸顶功能- 当页面滚动上某个位置 filter就固定不动(fixed)--滚道对应位置又还原位置
-
-## 目标
-
-- 能够完成吸顶的功能
-- 能够封装通用的Sticky组件
+# 列表找房模块-吸顶功能
 
 ## 2.2 实现思路
 
@@ -6071,11 +5799,7 @@ handleScroll=()=>{
   };
 ```
 
-# 列表找房模块-优化（★★★）
-
-## 目标
-
-- 学习在已有代码上寻找bug的思路（定位bug原因，思考解决办法）
+# 列表找房模块-优化
 
 ## 4.1 加载提示
 
@@ -6126,13 +5850,7 @@ handleScroll=()=>{
 
 
 
-# react-spring动画库（★★★）
-
-## 目标
-
-- 知道react-spring组件库的优势
-- 能够参照官方文档，使用react-spring进行简单的透明度变化的动画
-- 能够实现遮罩层动画效果
+# react-spring动画库
 
 ## 5.2 概述
 
@@ -6156,7 +5874,7 @@ vue
 - 给Spring组件添加to属性，指定：组件要更新的新动画状态
 - props就是透明度有0~1中变化的值
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-12/笔记/images/spring.png)
+![]( /images/spring.png)
 
 ## 6 实现了导航栏的显示隐藏
 
@@ -6180,12 +5898,6 @@ vue
 
 # 房屋详情模块-准备工作
 
-## 目标
-
-- 看懂模板HouseDetail的结构
-- 能够获取到数据，渲染到组件上
-- 能够配置通用路由规则，并且获取路由参数
-
 ## 1.1  模板说明
 
 - 创建房屋详情页面HouseDetail
@@ -6228,18 +5940,18 @@ NavHeader.propTypes = {
 export default withRouter(NavHeader)
 ```
 
-## 1.2 路由参数--动态路由（★★★）
+## 1.2 路由参数--动态路由 
 
 - 房源有多个，那么URL路径也就有多个，那么需要多少个路由规则来匹配呢？一个还是多个？
 - 使用 一个 路由规则匹配不同的URL路径，同时I获取到URL中不同的内容，利用路由参数来解决
 - 让一个路由规则，同时匹配多个符合该规则的URL路径
 - 语法：/detail/:id ，其中:id 就是路由参数
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-12/笔记/images/路由参数.png)
+![]( /images/路由参数.png)
 
 - 获取路由参数： props.match.params
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-12/笔记/images/获取路由参数.png)
+![]( /images/获取路由参数.png)
 
 
 
@@ -6261,12 +5973,6 @@ export default withRouter(NavHeader)
 
 # 房屋详情模块-准备工作
 
-## 目标
-
-- 看懂模板HouseDetail的结构
-- 能够获取到数据，渲染到组件上
-- 能够配置通用路由规则，并且获取路由参数
-
 ## 1.1  模板说明
 
 - 创建房屋详情页面HouseDetail
@@ -6309,20 +6015,20 @@ NavHeader.propTypes = {
 export default withRouter(NavHeader)
 ```
 
-## 1.2 路由参数（★★★）
+## 1.2 路由参数 
 
 - 房源有多个，那么URL路径也就有多个，那么需要多少个路由规则来匹配呢？一个还是多个？
 - 使用 一个 路由规则匹配不同的URL路径，同时I获取到URL中不同的内容，利用路由参数来解决
 - 让一个路由规则，同时匹配多个符合该规则的URL路径
 - 语法：/detail/:id ，其中:id 就是路由参数
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/路由参数.png)
+![]( /images/路由参数.png)
 
 - 获取路由参数： props.match.params
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/获取路由参数.png)
+![]( /images/获取路由参数.png)
 
-## 2.1 展示房屋详情（★★★）
+## 2.1 展示房屋详情 
 
 1  根据id发送ajax获取数据
 
@@ -6606,29 +6312,7 @@ a href="tel:187..." 打电话
 
 # 好客租房移动web（下）
 
-登录 登录权限（有些页面需要登录才能看）  打包优化
-
-# 登录模块（★★★）
-
-## 目标
-
-- 能够看懂登录页面的模板结构(/Login/index.js)
-- 能够把文本框和密码框设置为受控组件
-- 能够给form表单绑定onSubmit事件，取消默认行为
-- 能够获取用户名和密码请求服务器，保存token
-- 能够说出token的作用
-
-## 3.1 功能分析
-
-- 用户登录
-- 我的页面
-- 封装路由访问控制组件
-
-## 3.2 用户登录
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/登录页面.jpg)
-
-对应结构:使用模板
+# 登录模块
 
 功能实现：
 
@@ -6761,7 +6445,7 @@ handleSubmit = async e => {
 
 - 推荐：使用更通用的 formik，React中专门用来进行表单处理和表单校验的库
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/表单验证.png)
+![]( /images/表单验证.png)
 
 # formik
 
@@ -6779,7 +6463,7 @@ handleSubmit = async e => {
 - 优势：轻松处理React中的复杂表单，包括：获取表单元素的值，表单验证和错误信息，处理表单提交，并且将这些内容放在一起统一处理，有利于代码阅读，重构，测试等
 - 使用两种方式：1. 高阶组件（withFormik） 2. render-props（<Formik render={() => {}} />）
 
-## formik来实现表单校验（★★★）
+## formik来实现表单校验 
 
 ### 4.3 -5重构
 
@@ -6792,7 +6476,7 @@ handleSubmit = async e => {
 - 在handleSubmit中，通过values获取到表单元素值
 - 在handleSubmit中，完成登录逻辑
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/formit组件使用.png)
+![]( /images/formit组件使用.png)
 
 ```react
 // Login组件中
@@ -6889,11 +6573,11 @@ Login = withFormik({
 
   - 通过validate 配置手动校验
 
-    ![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/validate.png)
+    ![]( /images/validate.png)
 
   - 通过 validationSchema 配置项配合Yup来校验
 
-    ![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/validationSchema.png)
+    ![]( /images/validationSchema.png)
 
 - 推荐： validationSchema配合Yup的方式进行表单校验
 
@@ -6908,12 +6592,12 @@ import * as Yup from 'yup'
 
 - 在 withFormik 中添加配置项 validationSchema，使用 Yup 添加表单校验规则
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/表单校验规则.png)
+![]( /images/表单校验规则.png)
 
 - 在 Login 组件中，通过 props 获取到 errors（错误信息）和  touched（是否访问过，注意：需要给表单元素添加 handleBlur 处理失焦点事件才生效！）
 - 在表单元素中通过这两个对象展示表单校验错误信
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/表单校验-错误.png)
+![]( /images/表单校验-错误.png)
 
 示例代码：
 
@@ -6956,15 +6640,15 @@ Login = withFormik({
 
 - 导入 Form组件，替换form元素，去掉onSubmit
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/form组件.png)
+![]( /images/form组件.png)
 
 - 导入Field组件，替换input表单元素，去掉onChange，onBlur，value
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/field.png)
+![]( /images/field.png)
 
 - 导入 ErrorMessage 组件，替换原来的错误消息逻辑代码
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-13/笔记/images/ErrorMessage.png)
+![]( /images/ErrorMessage.png)
 
 - 去掉所有 props
 
@@ -7134,9 +6818,9 @@ render() {
 
 - 在页面中展示登录或未登录信息，就要通过state变化来体现，因此，需要一个标示是否登录的状态
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-14/笔记/images/我的页面功能分析.png)
+![]( /images/我的页面功能分析.png)
 
-## 1.3 判断用户是否登陆步骤（★★★）-必须判断200否则容易出错
+## 1.3 判断用户是否登陆步骤 -必须判断200否则容易出错
 
 - 在state中添加两个状态：isLogin（是否登录）和userInfo（用户信息）
 
@@ -7267,7 +6951,7 @@ render(){
 }
 ```
 
-## 2.1 退出功能（★★★）
+## 2.1 退出功能 
 
 - 点击退出按钮，弹出对话框，提示是否确定退出
 - 给退出按钮绑定点击事件，创建方法logout作为事件处理函数
@@ -7356,7 +7040,7 @@ alert('提示', '是否确定退出?', [
 
 对于需要登录才能访问的页面使用 **路由控制**
 
-## 2.3 功能处理-使用axios拦截器统一处理token（★★★）
+## 2.3 功能处理-使用axios拦截器统一处理token 
 
 - 在api.js 中，添加请求拦截器  (API.interceptors.request.user())
 - 获取到当前请求的接口路径（url）
@@ -7396,7 +7080,7 @@ API.interceptors.response.use(response => {
 })
 ```
 
-## 3 页面处理-AuthRoute鉴权路由组件（★★★）
+## 3 页面处理-AuthRoute鉴权路由组件 
 
 ### 3.1 实现原理
 
@@ -7408,7 +7092,7 @@ API.interceptors.response.use(response => {
 
   - 使用
 
-  ![](C:/Users/hp/Desktop/全部讲义笔记/day-14/笔记/images/使用.png)
+  ![]( /images/使用.png)
 
 - render方法：render props模式，指定该路由要渲染的组件内容
 
@@ -7531,19 +7215,7 @@ export default AuthRoute
 
 # 我的收藏模块
 
-## 目标
-
-- 能够实现检测房源是否收藏
-- 能够实现收藏房源功能
-
-## 4.2 功能分析
-
-- 收藏房源
-- 功能：
-  - 检查房源是否收藏
-  - 收藏房源
-
-## 4.3 检查房源是否收藏（★★）
+## 4.3 检查房源是否收藏 
 
 - 在state中添加状态，isFavorite（表示是否收藏），默认值是false
 
@@ -7610,7 +7282,7 @@ async checkFavorite() {
 </Flex>
 ```
 
-## 5 收藏房源（★★★）
+## 5 收藏房源 
 
 ### 5.1  判断是否登录
 
@@ -7750,15 +7422,6 @@ handleFavorite = async () => {
 
 # 房源发布模块
 
-## 目标
-
-- 如何解决JS 文本输入框防抖（用户输入过快导致请求服务器的压力过大）
-- 能够完成搜索模块
-- 能够获取发布房源的相关信息
-- 能够知道图片上传的流程
-- 能够完成图片上传功能
-- 能够完成房源发布功能
-
 ## 去出租 前期准备工作】
 
 封装的路由  记住   <Yemian {...newprops}></Yemian>  需要传不然没有history了 
@@ -7767,25 +7430,25 @@ handleFavorite = async () => {
 
 - 获取房源的小区信息，房源图片上传，房源发布等
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/发布房源.png)
+![]( /images/发布房源.png)
 
 ### 1.2 模板改动说明
 
 - 修改首页（Index）去出租链接为： /rent/add
 - 修改公共组件NoHouse的children属性校验为： node（任何可以渲染的内容）
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/noHouse.jpg)
+![]( /images/noHouse.jpg)
 
 - 修改公共组件HousePackage，添加onSelect的默认值
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/onSelect.png)
+![]( /images/onSelect.png)
 
 - 添加获取  封装当前定位城市
 
 
 - 创建了三个页面组件：Rent（已发布房源列表）、Rent/Add（发布房源）、Rent/Search（关键词搜索校区信息）
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/rent.png)
+![]( /images/rent.png)
 
 - Rent 模板代码
 
@@ -7895,7 +7558,7 @@ export default class Rent extends Component {
 <AuthRoute path="/rent/search" component={RentSearch} />
 ```
 
-## 搜索模块（★★★）
+## 搜索模块 
 
 ### 2.1 关键词搜索小区信息
 
@@ -7906,7 +7569,7 @@ export default class Rent extends Component {
 - **问题：**搜索栏中每输入一个值，就发一次请求，这样对服务器压力比较大，用户体验不好
 - **解决方式：**使用定时器来进行延迟执行（关键词：JS文本框输入 防抖）
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/输入框防抖.png)
+![]( /images/输入框防抖.png)
 
 #### 2.2 实现步骤
 
@@ -8034,7 +7697,7 @@ componentDidMount(){
 
 ### 3.1 布局结构 模板
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/发布房源 -布局结构.png)
+![]( /images/发布房源 -布局结构.png)
 
 - List列表 组件
 - InputItem 文本输入组件
@@ -8043,7 +7706,7 @@ componentDidMount(){
 - ImagePicker 图片选择器组件
 - 模板结构
 
-### 3.2 获取房源数据分析（★★）
+### 3.2 获取房源数据分析 
 
 - InputItem、TextareaItem、Picker组件，都使用onChange配置项，来获取当前值
 - 处理方式：封装一个事件处理函数 getValue 来统一获取三种组件的值
@@ -8052,7 +7715,7 @@ componentDidMount(){
   - 分别给 InputItem/TextareaItem/Picker 组件，添加onChange配置项
   - 分别调用 getValue 并传递 name 和 value 两个参数（注意：Picker组件选中值为数组，而接口需要字符串，所以，取索引号为 0 的值即可）
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/getValue.png)
+![]( /images/getValue.png)
 
 示例代码：
 
@@ -8073,7 +7736,7 @@ componentDidMount(){
   
 ```
 
-### 3.3 获取房屋配置数据 洗衣机..（★★）
+### 3.3 获取房屋配置数据 洗衣机.. 
 
 - 给HousePackge 组件， 添加 onSelect 属性
 - 在onSelect 处理方法中，通过参数获取到当前选中项的值
@@ -8094,7 +7757,7 @@ handleSupporting = selected => {
 <HousePackge select onSelect={this.handleSupporting} />
 ```
 
-### 4 图片上传（★★★）
+### 4 图片上传 
 
 1 发布房源（4房屋图片上传分析）
 
@@ -8115,7 +7778,7 @@ formdata 循环追加好所有图片 上传
 - 如何获取房屋图片？ ImagePicker图片选择器组件，通过onChange配置项来获取
 - 如何上传房屋图片？ 根据图片上传接口，将图片转化为FormData数据后再上传，由接口返回图片路径
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/图片上传接口.png)
+![]( /images/图片上传接口.png)
 
 #### 获取房屋图片
 
@@ -8253,22 +7916,12 @@ addHouse = async () => {
 
 # 项目打包
 
-## 目标
-
-- 能够配置生产环境的环境变量
-- 能够完成简易的打包
-- 知道react中如果要配置webpack的两种方式
-- 知道 antd-mobile 按需加载的好处
-- 知道路由代码分割的好处
-- 能够参照笔记来进行 按需加载配置和代码分割配置，然后打包
-- 能够知道如何解决react中跨域问题
-
-## 5.2 简易打包（★★★）
+## 5.2 简易打包 
 
 - 打开 create-react-app 脚手架的 [打包文档说明](https://facebook.github.io/create-react-app/docs/deployment)
 - 在根目录创建 .env.production 文件，配置生产环境的接口基础路径
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/生产环境.jpg)
+![]( /images/生产环境.jpg)
 
 - 在项目根目录中，打开终端
 - 输入命令： yarn build，进行项目打包，生成build文件夹（打包好的项目内容）
@@ -8277,7 +7930,7 @@ addHouse = async () => {
 
 **如果出现以下提示，就代表打包成功，在根目录中就会生成一个build文件夹**
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/build命令.png)
+![]( /images/build命令.png)
 
 ```
   打包后的文件 返回到服务器 需要注意
@@ -8289,7 +7942,7 @@ addHouse = async () => {
 
 
 
-## 5.3 脚手架的配置说明（★★★）
+## 5.3 脚手架的配置说明 
 
 - create-react-app 中隐藏了 webpack的配置，隐藏在react-scripts包中
 
@@ -8307,7 +7960,7 @@ addHouse = async () => {
 
   - 通过第三方包重写 webpack配置（比如：**[react-app-rewired](https://mobile.ant.design/docs/react/use-with-create-react-app-cn)** 等）
 
-## 6.1 antd-mobile 按需加载（★★★）
+## 6.1 antd-mobile 按需加载 
 
 - 打开 antd-mobile 在create-react-app中的使用文档
 
@@ -8329,11 +7982,11 @@ addHouse = async () => {
 
 - 
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/scripts配置.png)
+![]( /images/scripts配置.png)
 
 - 在项目根目录创建文件： config-overrides.js(用于覆盖脚手架默认配置)
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/overrides.png)
+![]( /images/overrides.png)
 
 - 安装 yarn add babel-plugin-import 插件（用于按需加载组件代码和样式）
 - 修改 config-overrides.js 文件，配置按需加载功能
@@ -8354,9 +8007,9 @@ module.exports = override(
 
  打完包后，你会发现，两次打包的体积会有变化，这样达到了一个代码体积优化的层面
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/两次打包对比.png)
+![]( /images/两次打包对比.png)
 
-## 6.2 基于路由代码分割（★★★）
+## 6.2 基于路由代码分割 
 
 - 目的：将代码按照路由进行分割，只在访问该路由的时候才加载该组件内容，提高首屏加载速度
 - 如何实现？ React.lazy() 方法 + import() 方法、Suspense组件（[React Code-Splitting文档](https://reactjs.org/docs/code-splitting.html)）
@@ -8364,15 +8017,15 @@ module.exports = override(
 - import('组件路径')，作用：告诉webpack，这是一个代码分割点，进行代码分割
 - Suspense组件：用来在动态组件加载完成之前，显示一些loading内容，需要包裹动态组件内容
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/路由分割.png)
+![]( /images/路由分割.png)
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/suspense.png)
+![]( /images/suspense.png)
 
 项目中代码修改：
 
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/项目代码.png)
+![]( /images/项目代码.png)
 
-## 6.3 其他性能优化（★★）
+## 6.3 其他性能优化 
 
 - React.js 优化性能[文档](https://reactjs.org/docs/docs/optimizing-performance.html)
 
@@ -8402,12 +8055,3 @@ module.exports = override(
   ```
   - **注意：**无需在任何位置导入此文件。它在启动开发服务器时自动注册，此文件仅支持Node的JavaScript语法。请务必仅使用支持的语言功能（即不支持Flow，ES模块等）。将路径传递给代理功能允许您在路径上使用通配和/或模式匹配，这比快速路由匹配更灵活
   ```
-
-![](C:/Users/hp/Desktop/全部讲义笔记/day-15/笔记/images/长列表优化.png)
-
-# 6.4 好客租房移动Web（下）-总结
-
-- 登录模块：使用Fomik组件实现了表单处理和表单校验、封装鉴权路由AuthRoute和axios拦截器实现登录访问控制
-- 我的收藏模块：添加、取消收藏
-- 发布房源模块：小区关键词搜索、图片上传、发布房源信息
-- 项目打包和优化：antd-mobile组件库按需加载，基于路由的代码分割实现组件的按需加载，提高了首屏加载速度
