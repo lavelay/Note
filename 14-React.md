@@ -719,7 +719,7 @@ const WithB(类组件) = abc(ComponentB)
 
 
 
-# 4React原理说明
+# React原理说明
 
 ## `4.1 setState()`说明
 
@@ -885,25 +885,16 @@ class NumberBox extends React.Component {
 
 ![](/images/注意点.png)
 
-##建议数组和对象 创建新数据再赋值
+##### 建议数组和对象 创建新数据再赋值
 
 ## 2 虚拟DOM和Diff算法
 
 - React更新视图的思想是：只要state变化就重新渲染视图
-- 特点：思路非常清晰
-- 问题：组件中只有一个DOM元素需要更新时，也得把整个组件的内容重新渲染吗？ 不是这样的
-- 理想状态：部分更新，只更新变化的地方
 - React运用的核心点就是 虚拟DOM 配合 Diff 算法
-
-### 虚拟DOM--控制台查看打印的el
-
-本质上就是一个JS对象，用来描述你希望在屏幕上看到的内容
 
 ![](/images/虚拟DOM.png)
 
 ### Diff算法
-
-执行过程
 
 - 初次渲染时，React会根据初始化的state（model），创建一个虚拟DOM对象（树）
 - 根据虚拟DOM生成真正的DOM，渲染到页面
@@ -916,8 +907,6 @@ class NumberBox extends React.Component {
 ### 代码演示
 
 - 组件render()调用后，根据状态和JSX结构生成虚拟DOM对象(render()方法的调用并不意味着浏览器进行渲染，render方法调用时意味着Diff算法开始比对了)
-- 示例中，只更新p元素的文本节点内容
-- 初次渲染的DOM对象
 
 ![](/images/初次的虚拟DOM对象.png)
 
@@ -930,8 +919,6 @@ class NumberBox extends React.Component {
 
 
 # React路由基础
-
-## 2.2 路由的基本使用
 
 ### 使用步骤
 
@@ -975,8 +962,6 @@ class NumberBox extends React.Component {
 - 当我们切换地址时候，修改了浏览器地址栏中的url
 - React路由监听地址栏url的变化
 - React路由内部遍历所有的Route组件，拿着Route里面path规则与pathname进行匹配
-
-![]( /images/route匹配.png)
 
 - 当路由规则（path）能够匹配地址栏中的pathname时，就展示该Route组件的内容
 
@@ -1066,11 +1051,7 @@ this.props.match?
 
 / 默认访问 /home/news
 
-![]( /images/路由.png)
-
 # 6 配置服务器与脚手架创建hkzf-111项目
-
-## 1.3 项目准备
 
 - 本地接口部署
   - 创建并导入数据：数据库名称hkzf(固定名称)  npm start启动服务器 hzkz_v1  工作直接找后台要接口文档发就行
@@ -2644,10 +2625,6 @@ antd mobile 组件本身也有列表  配置麻烦 功能少 不常用  没用�
 可视区域渲染：只是显示你看到的那个部分 这样性能很高
 
 原理： 只渲染页面可视区域的列表项，非可视区域的数据 **完全不渲染(预加载前面几项和后面几项)** ，在滚动列表时动态更新列表项
-
-![]( /images/可视区渲染.png)
-
-![]( /images/预加载.png)
 
 **使用场景：** 一次性展示大量数据的情况
 
