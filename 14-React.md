@@ -916,8 +916,6 @@ class NumberBox extends React.Component {
 
 
 
-
-
 # React路由基础
 
 ### 使用步骤
@@ -977,7 +975,7 @@ class NumberBox extends React.Component {
 
 ### 3.2 默认 /
 
-- 现在的路由都是通过点击导航菜单后展示的，如果进入页面的时候就主动触发路由呢
+- 现在的路由都是通过点击导航菜单后展示的，如果进入页面的时候就主动触发路由
 - 默认路由：表示进入页面时就会匹配的路由
 - 默认路由：只需要把path设置为 `'/'`
 
@@ -997,7 +995,7 @@ class NumberBox extends React.Component {
 
 - 默认路由认可情况下都会展示，如果避免这种问题？
 - 给Route组件添加exact属性，让其变为**精准匹配模式**
-- 精确匹配：只有当path和pathname完全匹配时才会展示改路由
+- 精确匹配：只有当path和pathname完全匹配时才会展示该路由
 
 ![]( /images/精确匹配.png)
 
@@ -1041,7 +1039,7 @@ this.props.match?
 
 
 
-# 5  简单路由案例   新闻 我的  属于home组件子路由  
+# 新闻 我的  属于home组件子路由  
 
 /home 是公共组件
 
@@ -1051,7 +1049,7 @@ this.props.match?
 
 / 默认访问 /home/news
 
-# 6 配置服务器与脚手架创建hkzf-111项目
+# 配置服务器与脚手架创建hkzf-111项目
 
 - 本地接口部署
   - 创建并导入数据：数据库名称hkzf(固定名称)  npm start启动服务器 hzkz_v1  工作直接找后台要接口文档发就行
@@ -1542,43 +1540,43 @@ constructor可以简单
 
   - 结构
 
-
-
-    <div className="index">
-    <Carousel
-        {/* 自动播放 */}
-        autoplay={false}
-        {/* 无限循环 */}
-        infinite
-        {/* 轮播图切换前的回调函数 */}
-        beforeChange={(from, to) => console.log(`slide from ${from} to ${to}`)}
-        {/* 轮播图切换后的回调函数 */}
-        afterChange={index => console.log('slide to', index)}
-        {/* 自动切换的时间 */}
-        autoplayInterval='2000'
-    >    
-        {/* 遍历状态里面的数据，创建对应的a标签和img图片标签 */}
-        {this.state.data.map(val => (
-            <a
-                key={val}
-                href="http://www.alipay.com"
-                style={{ display: 'inline-block', width: '100%', height: this.state.imgHeight }}
-            >
-                <img
-                    src={`https://zos.alipayobjects.com/rmsportal/${val}.png`}
-                    alt=""
-                    style={{ width: '100%', verticalAlign: 'top' }}
-                    {/* 图片加载完成的时候调用 */}
-                    onLoad={() => {
-                        // fire window resize event to change height
-                        window.dispatchEvent(new Event('resize'));
-                        this.setState({ imgHeight: 'auto' });
-                    }}
-                />
-            </a>
-        ))}
-    </Carousel>
-    </div>
+```react
+<div className="index">
+<Carousel
+    {/* 自动播放 */}
+    autoplay={false}
+    {/* 无限循环 */}
+    infinite
+    {/* 轮播图切换前的回调函数 */}
+    beforeChange={(from, to) => console.log(`slide from ${from} to ${to}`)}
+    {/* 轮播图切换后的回调函数 */}
+    afterChange={index => console.log('slide to', index)}
+    {/* 自动切换的时间 */}
+    autoplayInterval='2000'
+>    
+    {/* 遍历状态里面的数据，创建对应的a标签和img图片标签 */}
+    {this.state.data.map(val => (
+        <a
+            key={val}
+            href="http://www.alipay.com"
+            style={{ display: 'inline-block', width: '100%', height: this.state.imgHeight }}
+        >
+            <img
+                src={`https://zos.alipayobjects.com/rmsportal/${val}.png`}
+                alt=""
+                style={{ width: '100%', verticalAlign: 'top' }}
+                {/* 图片加载完成的时候调用 */}
+                onLoad={() => {
+                    // fire window resize event to change height
+                    window.dispatchEvent(new Event('resize'));
+                    this.setState({ imgHeight: 'auto' });
+                }}
+            />
+        </a>
+    ))}
+</Carousel>
+</div>
+```
 
 - 现在我们需要对轮播图进行定制
 
@@ -1691,7 +1689,7 @@ render() {
 
 ## 6.1 轮播图的问题 
 
-- **刷新后, 轮播图无法自动滚动->**
+- 刷新后, 轮播图无法自动滚动
 
   > 原因分析
 
@@ -1724,18 +1722,13 @@ render() {
           // 把获取到的值设置给state
           this.setState({
               swipers: res.body
-          })
-          
+          }) 
           
   		//延迟修改确保有数据了		
   		setTimeout(()=>{
-  
               this.setState({
-  
                   isplay:true
-  
               })
-  
          },10)
   
         也可以
@@ -1938,14 +1931,6 @@ componentDidMount() {
 - 使用获取到的数据渲染租房小组数据
 
 ### 页面结构样式
-
-- 实现标题的结构和样式
-- 打开Grid 宫格组件 
-- 选择 基本 菜单，点击(`</>`) 显示源码
-- 拷贝核心代码到Index组件中
-- 分析调整代码
-
-布局结构
 
 ```react
  {/* 租房小组 */}
@@ -2266,8 +2251,6 @@ navigator.geolocation.getCurrentPosition(position=>{
 - 我们需要去参照[百度地图文档](http://lbsyun.baidu.com/)
 - 1 注册百度开发者账号，申请对应的AK
 
-![]( /images/百度AK.png)
-
 ## 5.2 百度地图使用步骤
 
 - 在public/index.html引入百度地图的API的JS文件，替换自己申请好的密钥
@@ -2382,7 +2365,6 @@ import {NavBar, Icon} from 'antd-mobile'
 componentDidMount() {
    this.getcitylist()
 }
-
 ```
 
 ```
@@ -2566,7 +2548,6 @@ export let getCurrentCity=()=>{
                 // 返回
                 resolve(diwei.data.body)
             }); 
-
         })
     }else{//有
         // 这也和上面统一给promise
@@ -2576,10 +2557,7 @@ export let getCurrentCity=()=>{
         //     resolve(city)
         // })
     }
-
-
 }
-
 ```
 
 - 将定位的城市信息添加到 `cityList`和`cityIndex`中
@@ -2595,20 +2573,13 @@ cityIndex.unshift('#')
 
 ## 3 长列表性能优化 
 
-页面数据很多：1 分页 懒加载 每次显示20条    2 
+页面数据很多：1 分页 懒加载 每次显示20条   
 
 ### 很多概述
-
-antd mobile 组件本身也有列表  配置麻烦 功能少 不常用  没用他
 
 在展示大型列表和表格数据的时候（城市列表、通讯录、微博等），会导致页面卡顿，滚动不流畅等性能问题，这样就会导致移动设备耗电加快，影响移动设备的电池寿命
 
 产生性能问题的元素：大量DOM节点的重绘和重排 (以后尽量少创建删除等等操作dom元素)
-
-优化方案：
-
-- 懒渲染
-- 可视区域渲染
 
 ### 懒渲染
 
@@ -3010,9 +2981,7 @@ changeCity = (label, value) => {
 }
 ```
 
-#  好客租房移动Web（上）-总结
-
-primary 蓝色  success 绿色  danger 红色 warning 黄色 info 灰色或者黑色
+#  好客租房移动Web（上）
 
 ## 1.1 城市索引列表高亮
 
@@ -3151,21 +3120,9 @@ changeCity = (label, value) => {
 }
 ```
 
-# 2.2 好客租房移动Web（上）-总结
 
-- 项目准备：部署本地接口，脚手架初始化项目，antd-mobile，路由等
-- 项目整体布局：分析两种页面布局，使用嵌套路由实现带TabBar页面布局等
-- 首页模块：租房小组结构布局，数据获取，H5地理定位和百度地图地理定位等
-- 城市选择模块：数据结构处理，长列表性能优化，react-virtualized，索引列表等
 
 # 2.3 好客租房移动Web（中）
-
-## 3.1 功能分析
-
-- map组件展示当前定位城市 并且 发送ajax展示该城市所有区的房源数据(每个区有多少套房子)
-- 点击区展示某区下  所有镇的房源数据
-- 点击镇  展示某镇下所有的街道小区的房源数据
-- 点击小区 展示某小区下的房源数据列表 显示出来一个ul li类似的列表
 
 ## 封装顶部导航栏
 
@@ -3294,10 +3251,6 @@ vue scoped 局部样式  不加scoped 全局
 
 react 默认写的css  scss 全局的   ---react也可以写局部样式
 
-## 目标
-
-- 能够利用CSS Modules解决组件之间样式覆盖的问题
-
 ## 5.1 组件之间样式覆盖 概念演示
 
 - 问题：Map组件的样式，会影响首页组件的样式
@@ -3385,8 +3338,6 @@ styled-components文档：<https://www.styled-components.com/>
 
 页面结构
 
-
-
 ```react
 <div className={styles.map}>
     <NavHeader>
@@ -3396,7 +3347,7 @@ styled-components文档：<https://www.styled-components.com/>
 </div>
 ```
 
-总结：
+
 
 # 地图找房模块
 
@@ -3411,10 +3362,6 @@ styled-components文档：<https://www.styled-components.com/>
 - 文档 <http://lbsyun.baidu.com/index.php?title=jspopular3.0/guide/helloworld>
 
 ## 实现房源信息子地图中展示
-
-![]( /images/房源覆盖物.png)
-
-这些房源信息其实就是用文本覆盖物来实现的，所以我们先查看百度开发文档，先创建文本覆盖物
 
 ### 1.2 创建文本覆盖物 demo
 
@@ -3497,17 +3444,6 @@ const labelStyle = {
 
 
 
-## 2 地图找房-业务逻辑分析
-
-区级  --》县镇级-》街道小区级(直接显示当前小区的房子列表)
-
-- 进入获取区房源数据，渲染覆盖物
-- 点击覆盖物：
-  - 放大地图
-  - 获取数据，渲染下一级覆盖物
-- 区、镇覆盖物的点击事件中，清除现有的覆盖物，获取下一级数据，创建新的覆盖物
-- 小区：不清楚覆盖物，移动地图，展示该小区下的房源信息
-
 ### 2.1 获取所有区的信息
 
 - 发送请求获取房源数据
@@ -3554,10 +3490,6 @@ res.data.body.map(item => {
 
 ### 3 封装流程 
 
-到目前为止，我们才完成地图找房的一环，也就是获取了区的房源信息，然后可以点击对应区的房源，清除地图上的覆盖物，而我们再实现镇的时候也是相同的逻辑，，实现小区的时候，逻辑流程也是相似的，所以我们可以对此进行一层封装，提高代码复用性
-
-地图找房功能的封装流程
-
    11 显示区   13 显示县镇  15 显示小区名 (再点就不放大了 显示房源列表即可)
 
    // 假设当前地图缩放级别为 11，此时，type 为 circle（圆形覆盖物）
@@ -3570,11 +3502,9 @@ res.data.body.map(item => {
 
 ![]( /images/地图找房功能分析.png)
 
-#### 
-
 #### 4.2 this.renderOverly(id,type) 
 
-```
+```react
 async renderOverlays(id,type){
         let fgwRes= await axios.get("http://localhost:8080/area/map?id="+id)
         console.log("房源覆盖物",fgwRes)
@@ -3653,13 +3583,6 @@ async renderOverlays(id,type){
 
 ## 5 获取并展示小区房源数据 
 
-- 创建Label、设置 样式、设置html内容，绑定事件
-- 在单击事件中，获取小区下的所有房源数据
-- 展示房源列表
-- 渲染获取到的房源列表
-
-​       
-
 ### 5.1 单击获取数据展示房源列表
 
 展示房源列表 show代表显示 点击了就true 默认false不显示
@@ -3679,12 +3602,6 @@ tag标签  类名  tag1  tag2 tag3
                                 className={[styles.tag, styles[tagClass]].join(' ')}
                                 ...
 ```
-
-
-
-房源列表相关样式：
-
-房屋列表样式
 
 示例demo
 
@@ -3763,8 +3680,6 @@ renderHousesList() {
 
  		<http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference_3_0.html>
 
-
-
 - 使用地图的 panBy() 方法，移动地图到中间位置
 
   - 垂直位移：(window.innerHeight（屏幕高度）-330（房源列表高度）/2） 
@@ -3793,383 +3708,9 @@ renderHousesList() {
 
   ​        Toast.hide()
 
-# 地图找房模块
 
-## 1.1 根据定位展示当前城市 
-
-- storage拿出来 根据定位展示当前城市地图 获取定位城市
-- (逆地址解析就是省市名字转化成坐标经纬度) 
-- 调用 centerAndZoom() 方法在地图中展示当前城市，并设置缩放级别为11
-- 在地图中添加比例尺和平移缩放控件
-- map.addControl(new BMap.NavigationControl());
-- 文档 <http://lbsyun.baidu.com/index.php?title=jspopular3.0/guide/helloworld>
-
-## 实现房源信息子地图中展示 
-
-### 1.2 创建文本覆盖物 demo
-
-打开百度地图添加文字标签DEMO
-
-文档地址： <http://lbsyun.baidu.com/jsdemo.htm#c1_14>
-
-- 创建Label 示例对象
-- 掉用setStyle() 方法设置样式
-- 在map对象上调用 addOverlay() 方法，讲文本覆盖物添加到地图中
-
-![]( /images/创建文本覆盖物.png)
-
-### 1.3 绘制房源覆盖物 修改样式即可
-
-- 由于默认提供的本文覆盖物与我们效果不符合，所以我们需要进行重新的绘制
-- 调用Label的 setContent方法，传入html结构，修改HTML的内容样式;注意：调用了setContent 那么里面文本的内容就失效了
-- setContent文档 ：<http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference_3_0.html#a3b9>
-
-![]( /images/绘制覆盖物.png)
-
-- 调用setStyle方法修改覆盖物样式
-
-![]( /images/绘制覆盖物-02.png)
-
-- 给覆盖物添加点击事件
-
-![]( /images/绘制覆盖物-03.png)
-
-- 覆盖的内容结构
-
-```html
-<div class="${styles.bubble}">
-    <p class="${styles.name}">朝阳区</p>
-    <p>10套</p>
- </div>
-```
-
-- 覆盖物的样式
-
-```react
-const labelStyle = {
-    cursor: 'pointer',
-    border: '0px solid rgb(255,0,0)',
-    padding: '0px',
-    whiteSpace: 'nowrap',
-    fontSize: '12px',
-    color: 'rbg(255,255,255)',
-    textAlign: 'center'
-}
-```
-
-## 2 地图找房-业务逻辑分析 
-
-区级  --》县镇级-》街道小区级(直接显示当前小区的房子列表)
-
-- 进入获取区房源数据，渲染覆盖物
-- 点击覆盖物：
-  - 放大地图
-  - 获取数据，渲染下一级覆盖物
-- 区、镇覆盖物的点击事件中，清除现有的覆盖物，获取下一级数据，创建新的覆盖物
-- 小区：不清楚覆盖物，移动地图，展示该小区下的房源信息
-
-### 2.1 获取所有区的信息
-
-- 发送请求获取房源数据
-- 遍历数据，创建覆盖物，给每一个覆盖物添加唯一标识
-- 给覆盖物添加点击事件
-- 在单击事件中，获取到当前单击项的唯一标识 id->value
-- 以当前覆盖物放大地图（级别为13），调用clearOverlays()方法清除当前覆盖物
-
-```react
-// 请求接口，获取房源数据
-let res = await axios.get(`http://localhost:8080/area/map?id=${value}`)
-// 遍历房源信息，创建对应的覆盖物
-res.data.body.map(item => {
-    // 给每一条数据添加覆盖物
-    // 得到返回的经纬度信息
-    let { coord: { longitude, latitude }, label: areaName, count, value } = item
-    // 创建覆盖物
-    let label = new BMap.Label('', {
-        position: new BMap.Point(longitude, latitude),
-        offset: new BMap.Size(-35, -35)
-    })
-    // 设置覆盖物内容
-    label.setContent(`<div class="${styles.bubble}">
-    <p class="${styles.name}">${areaName}</p>
-    <p>${count}套</p>
-  </div>`)
-    // 设置样式
-    label.setStyle(labelStyle)
-    // 添加点击事件
-    label.addEventListener('click', function () {
-        // 当点击了覆盖物，要以当前点击的覆盖物为中心来放大地图
-        map.centerAndZoom(this.K.position, 13);
-        // 解决清除覆盖物的时候，百度地图js报错问题
-        setTimeout(function () {
-            map.clearOverlays()
-        }, 0)
-    })
-    // 给label添加唯一标识
-    label.id = value
-    // 添加到地图上
-    map.addOverlay(label)
-})
-```
-
-### 3 封装流程 
-
-到目前为止，我们才完成地图找房的一环，也就是获取了区的房源信息，然后可以点击对应区的房源，清除地图上的覆盖物，而我们再实现镇的时候也是相同的逻辑，，实现小区的时候，逻辑流程也是相似的，所以我们可以对此进行一层封装，提高代码复用性
-
-地图找房功能的封装流程
-
-   11 显示区   13 显示县镇  15 显示小区名 (再点就不放大了 显示房源列表即可)
-
-   // 假设当前地图缩放级别为 11，此时，type 为 circle（圆形覆盖物）
-
-​    // 假设当前地图缩放级别为 13，此时，type 为 circle（圆形覆盖物）
-
-​    // 假设当前地图缩放级别为 15，此时，type 为 rect（矩形覆盖物）
-
- this.map.getZoom() 获取当前缩放级别
-
-#### 3.1 renderOverlays 方法的封装
-
-- 这个方法是整个封装的入口
-- 在这个方法需要 接收区域id ，获取对应的房源数据
-
-![]( /images/renderOverlays-01.png)
-
-- 
-
-#### 4.1
-
-#### 4.2 this.renderOverly(id,type) 
-
-```
-async renderOverly(id,type){
-
-        // 获取 当前城市对应的覆盖物数据
-        let fgwRes=await axios.get('http://localhost:8080/area/map?id='+id) 
-
-        console.log("覆盖物数据",fgwRes)
-        
-        //循环 创建地图覆盖物
-        fgwRes.data.body.forEach(item=>{
-            // longitude经度
-            let { coord: { longitude, latitude }, label: areaName, count, value }=item
-            let areaPoint=new BMap.Point(longitude, latitude)
-            // 循环一次 创建一个覆盖物
-            if(type=='cycle'){
-                var opts = {
-                    position : areaPoint,    // 指定坐标 注意要百度的坐标
-                    offset   : new BMap.Size(-35, -35)    //设置文本位置
-                }
-                var label = new BMap.Label("", opts);  // 创建文本标注对象
-                // 直接写html结构
-                label.setContent(`<div class="${styles.bubble}">
-                    <p class="${styles.name}">${areaName}</p>
-                    <p>${count}套</p>
-                </div>`)
-            }else{
-                var opts = {
-                    position : areaPoint,    // 指定坐标 注意要百度的坐标
-                    offset   : new BMap.Size(-35, -35)    //设置文本位置
-                }
-                var label = new BMap.Label("", opts);  // 创建文本标注对象
-                // 直接写html结构
-                label.setContent(`<div class="${styles.rect}">
-                <span class="${styles.housename}">${areaName}</span>
-                <span class="${styles.housenum}">${count}套</span>
-                <i class="${styles.arrow}"></i>
-              </div>`)
-            }
-            // 设置外层样式
-            label.setStyle(labelStyle);
-            label.id=value
-            // 点击覆盖物
-            label.addEventListener("click",e=>{
-                console.log("点了label啦",label.id)
-                // 如果点击的时候是11 我就跳到13 ..
-                let zoom= this.map.getZoom()
-                console.log("zoom",zoom)
-                // 放大地图 把当前覆盖物到中心 
-                if(zoom==11){
-                    this.map.centerAndZoom(areaPoint, 13);
-                    // 发送请求获取县镇数据
-                    this.renderOverly(label.id,'cycle')
-                }else if(zoom==13){
-                    this.map.centerAndZoom(areaPoint, 15);
-                    // 发送请求获取街道小区数据显示 矩形覆盖物
-                    this.renderOverly(label.id,'rect')
-                }else if(zoom==15){
-                    //  发送请求显示房子列表
-                    console.log("发送ajax获取房子数据")
-                    return;
-                }
-                
-                // 清除所有覆盖物
-                setTimeout(()=>{
-                    this.map.clearOverlays()  
-                },10)
-                // 发送请求获取 县镇的数据 循环生成覆盖物
-            })
-            // 添加覆盖物到地图上
-            this.map.addOverlay(label); 
-        })
-
-    }
-```
-
-
-
-## 5 获取并展示小区房源数据 
-
-- 创建Label、设置 样式、设置html内容，绑定事件
-- 在单击事件中，获取小区下的所有房源数据
-- 展示房源列表
-- 渲染获取到的房源列表
-
-​       
-
-### 5.1 单击获取数据展示房源列表
-
-展示房源列表 show代表显示 点击了就true 默认false不显示
-
-接口地址：http://localhost:8080/houses?cityId=AREA%7C88cff55c-aaa4-e2e0
-
-​	1发送请求 getHouseList 2 复制结构样式
-
-### 5.2  获取并展示小区房源数据（优化）
-
-tag标签  类名  tag1  tag2 tag3
-
-```
- const tagClass = 'tag' + (index + 1)
-                        return (
-                            <span
-                                className={[styles.tag, styles[tagClass]].join(' ')}
-                                ...
-```
-
-
-
-房源列表相关样式：
-
-房屋列表样式
-
-示例demo
-
-```react
-// 逻辑代码
-
-async getHouseList(id) {
-    let res = await axios.get('http://localhost:8080/houses?cityId=' + id)
-    this.setState({
-        housesList: res.data.body.list,
-        isShowList: true
-    })
-}
-//结构
-{/* 房源列表 */}
-{/* 添加 styles.show 展示房屋列表 */}
-    <div
-        className={[
-            styles.houseList,
-            this.state.isShowList ? styles.show : ''
-        ].join(' ')}
-    >
-        <div className={styles.titleWrap}>
-            <h1 className={styles.listTitle}>房屋列表</h1>
-            <Link className={styles.titleMore} to="/home/list">
-                更多房源</Link>
-        </div>
-        <div className={styles.houseItems}>
-            {/* 房屋结构 */}
-            {this.renderHousesList()}
-        </div>
-    </div>
-</div>
-// 渲染房屋列表的item方法
-/**
- * 渲染房源列表
- */
-renderHousesList() {
-    return this.state.housesList.map(item => (
-        <div className={styles.house}>
-            <div className={styles.imgWrap}>
-                <img className={styles.img} src={`http://localhost:8080${item.houseImg}`} alt="" />
-            </div>
-            <div className={styles.content}>
-                <h3 className={styles.title}>{item.title}</h3>
-                <div className={styles.desc}>{item.desc}</div>
-                <div>
-                    {/* ['近地铁', '随时看房'] */}
-                    {item.tags.map((tag, index) => {
-                        const tagClass = 'tag' + (index + 1)
-                        return (
-                            <span
-                                className={[styles.tag, styles[tagClass]].join(' ')}
-                                key={tag}
-                            >
-                                {tag}
-                            </span>
-                        )
-                    })}
-                </div>
-                <div className={styles.price}>
-                    <span className={styles.priceNum}>{item.price}</span> 元/月
-    </div>
-            </div>
-        </div>
-    )
-    )
-}
-```
-
-
-
-## 6 移动地图与添加loading
-
-### 6.1  点击小区 移动地图到中间
-
- 		<http://lbsyun.baidu.com/cms/jsapi/reference/jsapi_reference_3_0.html>
-
-
-
-- 使用地图的 panBy() 方法，移动地图到中间位置
-
-  - 垂直位移：(window.innerHeight（屏幕高度）-330（房源列表高度）/2） 
-
-    -e.changedTouches[0].clientY（目标覆盖层的位置）
-
-  - 水平位移：window.innerWidth（屏幕宽度）/2 - e.changedTouches[0].clientX
-
-- 移动地图的时候（监听movestart事件），隐藏房源列表
-
-![]( /images/地图移动.png)
-
-### 6.2 添加Loading效果 
-
-- 利用Toast的loading方法来实现
-
-- 在每次请求开始的时候开启loading    Toast.loading('加载中。。。', 0, null, false)
-
-- 在请求结束后关闭loading   Toast.hide()
-
-- 2 添加loading优化体验
-
-  显示0秒代表不隐藏     Toast.loading('正在加载...', 0, null, false)
-
-  ​    // 请求成功 隐藏loading
-
-  ​        Toast.hide()
 
 # axios优化&环境变量
-
-## 目标
-
-- 能够通过 axios.create() 方法来构建axios实例对象，并且配置baseURL
-- 能够知道 .env.development 和 .env.production 两个文件的作用
-- 能够配置开发环境变量
-- 能够在代码中引入配置的环境变量的值
-
-每一次我们请求接口的时候，每一次都需要写相同的baseUrl。例如：http://localhost:8080，这样太繁琐，所以我们可以对网络请求进行优化，接口域名、图片域名、分为开发环境和生产环境，直接写在代码中，项目发布时，很难替换
 
 ## 1.1 配置统一的URL 
 
@@ -4257,8 +3798,6 @@ import {instance} from '../../utils/api.js'
 # 列表找房功能
 
 ## 2.2 顶部搜索导航栏
-
-### 封装搜索导航栏组件 
 
 - 在components 目录中创建组件 SearchHeader/index.js
 - 把之前写过的结构拷贝到这个文件中
@@ -4357,23 +3896,17 @@ export default class HouseList extends React.Component {
     background-color: #f5f6f5;
     padding: 0 10px;
 }
-
-
 /* 控制左侧小箭头 */
 
 .header :global(.icon-back) {
     font-size: 16px!important;
     color: #999;
 }
-
-
 /* 控制右侧的图标 */
 
 .header :global(.icon-map) {
     color: #00ae66;
 }
-
-
 /* 控制search输入框 */
 
 .header :global(.search) {
@@ -4388,15 +3921,6 @@ export default class HouseList extends React.Component {
 ```
 
 ## 3 条件筛选
-
-![]( /images/找房页面分析.png)
-
-### 3.1 结构分析
-
-- 父组件：Filter
-- 子组件：FilterTitle 标题菜单组件
-- 子组件：FilterPicker 前三个菜单对应的内容组件
-- 子组件：FilterMore 最后一个菜单对应的内容组件
 
 ###  3.2 功能分析
 
@@ -4418,12 +3942,6 @@ export default class HouseList extends React.Component {
   - 有筛选条件选中时
   - 标题高亮状态：提升至父组件Filter中，由父组件提供高亮状态，子组件通过props接受状态来实现高亮
   - 原则：单一数据源，也就是说，状态只应该有一个组件提供并且提供操作状态的方法，其他组件直接使用组件中状态和操作状态的方法即可
-
-## 4 步骤
-
-- 通过props接受，高亮状态对象 titleSelectedStatus
-- 遍历titleList数组，渲染标题列表
-- 判断高亮对象中当前标题是否高亮，如果是，添加高亮类
 
 ### 4.1 -FilterTitle组件实现（1高亮逻辑） 
 
@@ -5811,7 +5329,6 @@ handleScroll=()=>{
       }
   ```
 
-  
 
 ## 4.2 条件筛选栏优化
 
@@ -5825,15 +5342,8 @@ handleScroll=()=>{
 
   
 
-
-
 # react-spring动画库
 
-## 5.2 概述
-
-vue 
-
-- 场景：展示筛选对话框的时候，实现动画效果，增强用户体验
 - react-spring是基于spring-physics（弹簧物理）的react动画库，动画效果更加流畅、自然
 - 优势：
   - 几乎可以实现任意UI动画效果
@@ -5855,8 +5365,6 @@ vue
 
 ## 6 实现了导航栏的显示隐藏
 
-- 
-
 ```react
  {/* 搜索顶部导航 */}
             <Spring
@@ -5872,8 +5380,6 @@ vue
 ```
 
 ## 6.2 房子详情页面
-
-# 房屋详情模块-准备工作
 
 ## 1.1  模板说明
 
@@ -5929,12 +5435,6 @@ export default withRouter(NavHeader)
 - 获取路由参数： props.match.params
 
 ![]( /images/获取路由参数.png)
-
-
-
-+ 点击跳转详情页面
-
-在找房页面中，给每一个房源列表添加点击事件，在点击时跳转到房屋详情页面
 
 # houselist房子列表 小bug
 
@@ -6054,11 +5554,7 @@ componentDidMount() {
         latitude: this.state.houseInfo.coord.latitude,
         longitude: this.state.houseInfo.coord.longitude
       })
-
-
-
     })
-
   }
 ```
 
@@ -6271,8 +5767,6 @@ componentDidMount() {
 
 a href="tel:187..." 打电话
 
-
-
 百度：环信客服
 
 前端：注册账号  -》登录客服云-》点击右上角管理员模式->渠道管理-》选中网站之类
@@ -6281,15 +5775,11 @@ a href="tel:187..." 打电话
 
 测试：我注册账号直接引入他的js就可以  <http://leijuncao.applinzi.com/kuayu/1.html>
 
-# 2.3 好客租房移动Web（中）小结
 
-- 地图找房模块：百度地图API，地图覆盖物，CSS Modules解决样式覆盖问题，脚手架环境变量，axios公共URL配置
-- 列表找房模块：条件筛选组件封装（变化点），房源列表，react-virtualized（InfiniteLoader，WindowScroller），react-spring动画库
-- 房屋详情模块：路由参数（/:id 和 props.match.params），展示房屋详情
 
 # 好客租房移动web（下）
 
-# 登录模块
+## 登录模块
 
 功能实现：
 
@@ -6425,13 +5915,6 @@ handleSubmit = async e => {
 ![]( /images/表单验证.png)
 
 # formik
-
-## 目标
-
-- 知道formik的作用
-- 能够参照文档来实现简单的表单校验
-- 能够给登录功能添加表单校验
-- 能够使用formik中提供的组件：Form, Field, ErrorMessage，来对登录模块进行优化
 
 ## 4.2 介绍
 
@@ -6673,11 +6156,6 @@ import { withFormik, Form, Field, ErrorMessage } from 'formik'
 
 # 我的页面
 
-## 目标
-
-- 我的页面能够实现判断用户登录状态来显示不同的效果
-- 能够实现退出登录功能
-
 ## 1.1 结构和样式
 
 - 对应的结构样式可以直接拿过来用，我们最主要要实现里面的代码逻辑，文件在 pages/Profile/index
@@ -6896,7 +6374,6 @@ async getUserInfo() {
   }
 }
 
-
 // render方法中 
 render(){
     const { history } = this.props
@@ -6988,16 +6465,6 @@ alert('提示', '是否确定退出?', [
 ```
 
 # 登录访问控制
-
-## 目标
-
-- 理解访问控制中的两种功能和两种页面
-- 能够说出处理两种功能用什么方式来实现
-- 能够写出 axios请求拦截器与响应拦截器，并且能够说出这两种拦截器分别在什么时候触发，有什么作用
-- 能够说出处理两种页面用什么方式来实现
-- 能够说出AuthRoute 鉴权路由组件实现思路
-- 能够参照官网自己封装AuthRoute 鉴权路由组件
-- 能够实现修改登录成功后的跳转
 
 ## 2.2 概述
 
@@ -7151,8 +6618,6 @@ function AuthRoute({Yemian,...reset}){
             } >
         </Route>
 }
-
-
 
 export default AuthRoute
 ```
@@ -7399,15 +6864,7 @@ handleFavorite = async () => {
 
 # 房源发布模块
 
-## 去出租 前期准备工作】
-
 封装的路由  记住   <Yemian {...newprops}></Yemian>  需要传不然没有history了 
-
-### 1.1 功能
-
-- 获取房源的小区信息，房源图片上传，房源发布等
-
-![]( /images/发布房源.png)
 
 ### 1.2 模板改动说明
 
@@ -7672,17 +7129,6 @@ componentDidMount(){
 
 ## 发布房源
 
-### 3.1 布局结构 模板
-
-![]( /images/发布房源 -布局结构.png)
-
-- List列表 组件
-- InputItem 文本输入组件
-- TextareaItem 多行输入组件
-- Picker 选择器组件
-- ImagePicker 图片选择器组件
-- 模板结构
-
 ### 3.2 获取房源数据分析 
 
 - InputItem、TextareaItem、Picker组件，都使用onChange配置项，来获取当前值
@@ -7945,7 +7391,7 @@ addHouse = async () => {
 
 - 修改package.json 中的 scripts
 
-- ```
+- ```json
   /* package.json */
   "scripts": {
   -   "start": "react-scripts start",
@@ -7957,9 +7403,6 @@ addHouse = async () => {
   }
   ```
 
-- 
-
-![]( /images/scripts配置.png)
 
 - 在项目根目录创建文件： config-overrides.js(用于覆盖脚手架默认配置)
 
@@ -7983,8 +7426,6 @@ module.exports = override(
 - 将index.css 移动到App后面，让index.css 中的页面背景生效
 
  打完包后，你会发现，两次打包的体积会有变化，这样达到了一个代码体积优化的层面
-
-![]( /images/两次打包对比.png)
 
 ## 6.2 基于路由代码分割 
 
@@ -8030,5 +7471,5 @@ module.exports = override(
     ```
 
   ```
-  - **注意：**无需在任何位置导入此文件。它在启动开发服务器时自动注册，此文件仅支持Node的JavaScript语法。请务必仅使用支持的语言功能（即不支持Flow，ES模块等）。将路径传递给代理功能允许您在路径上使用通配和/或模式匹配，这比快速路由匹配更灵活
+  - **注意：**无需在任何位置导入此文件。它在启动开发服务器时自动注册，此文件仅支持Node的JavaScript语法。请务必仅使用支持的语言功能（即不支持Flow，ES模块等）。将路径传递给代理功能允许您在路径上使用通配和/或模式匹配，这比快速路由匹配更灵
   ```
