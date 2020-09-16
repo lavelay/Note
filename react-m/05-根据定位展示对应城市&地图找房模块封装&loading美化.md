@@ -9,11 +9,7 @@
 - map.addControl(new BMap.NavigationControl());
 - 文档 <http://lbsyun.baidu.com/index.php?title=jspopular3.0/guide/helloworld>
 
-## 实现房源信息子地图中展示（★★★）
 
-![](images/房源覆盖物.png)
-
-这些房源信息其实就是用文本覆盖物来实现的，所以我们先查看百度开发文档，先创建文本覆盖物
 
 ### 1.2 创建文本覆盖物 demo
 
@@ -66,16 +62,7 @@ const labelStyle = {
 }
 ```
 
-## 2 地图找房-业务逻辑分析（★★★）
 
-区级  --》县镇级-》街道小区级(直接显示当前小区的房子列表)
-
-- 进入获取区房源数据，渲染覆盖物
-- 点击覆盖物：
-  - 放大地图
-  - 获取数据，渲染下一级覆盖物
-- 区、镇覆盖物的点击事件中，清除现有的覆盖物，获取下一级数据，创建新的覆盖物
-- 小区：不清楚覆盖物，移动地图，展示该小区下的房源信息
 
 ### 2.1 获取所有区的信息
 
@@ -121,11 +108,7 @@ res.data.body.map(item => {
 })
 ```
 
-### 3 封装流程（★★）
-
-到目前为止，我们才完成地图找房的一环，也就是获取了区的房源信息，然后可以点击对应区的房源，清除地图上的覆盖物，而我们再实现镇的时候也是相同的逻辑，，实现小区的时候，逻辑流程也是相似的，所以我们可以对此进行一层封装，提高代码复用性
-
-地图找房功能的封装流程
+### 3 封装流程
 
    11 显示区   13 显示县镇  15 显示小区名 (再点就不放大了 显示房源列表即可)
 
@@ -144,13 +127,10 @@ res.data.body.map(item => {
 
 ![](images/renderOverlays-01.png)
 
-#### 4.1
-
 #### 4.2 this.renderOverly(id,type) 
 
-```
+```react
 async renderOverly(id,type){
-
         // 获取 当前城市对应的覆盖物数据
         let fgwRes=await axios.get('http://localhost:8080/area/map?id='+id) 
 
@@ -223,15 +203,6 @@ async renderOverly(id,type){
     }
 ```
 
-
-
-## 5 获取并展示小区房源数据 
-
-- 创建Label、设置 样式、设置html内容，绑定事件
-- 在单击事件中，获取小区下的所有房源数据
-- 展示房源列表
-- 渲染获取到的房源列表
-
 ​       
 
 ### 5.1 单击获取数据展示房源列表
@@ -254,17 +225,8 @@ tag标签  类名  tag1  tag2 tag3
                                 ...
 ```
 
-
-
-房源列表相关样式：
-
-房屋列表样式
-
-示例demo
-
 ```react
 // 逻辑代码
-
 async getHouseList(id) {
     let res = await axios.get('http://localhost:8080/houses?cityId=' + id)
     this.setState({
@@ -329,7 +291,7 @@ renderHousesList() {
 }
 ```
 
-## 6 移动地图与添加loading
+
 
 ### 6.1  点击小区 移动地图到中间
 
@@ -345,9 +307,7 @@ renderHousesList() {
 
 - 移动地图的时候（监听movestart事件），隐藏房源列表
 
-![](/Users/renzhezheng/Documents/react-note/Note/react-m/images/地图移动.png)
-
-### 6.2 添加Loading效果（★★★）
+### 6.2 添加Loading效果
 
 - 利用Toast的loading方法来实现
 
@@ -362,4 +322,3 @@ renderHousesList() {
   ​    // 请求成功 隐藏loading
 
   ​        Toast.hide()
-

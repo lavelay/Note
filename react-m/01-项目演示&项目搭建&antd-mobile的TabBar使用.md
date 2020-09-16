@@ -402,15 +402,13 @@ render() {
 
 ### 轮播图的移植
 
-- 拷贝示例代码中的内容
+- 导入组件
 
-  - 导入组件
+```react
+import { Carousel, WingBlank } from 'antd-mobile';
+```
 
-  ```react
-  import { Carousel, WingBlank } from 'antd-mobile';
-  ```
-
-  - 状态
+- 状态
 
 
   - 声明周期钩子函数，修改状态，设置数据
@@ -577,17 +575,9 @@ render() {
 
 - **刷新后, 轮播图无法自动滚动->**
 
-  > 原因分析
-
   1. 图片加载前-> autoplay={true}
-  2. 为true时, 还没有图片-> 不能自动
-
-  > 解决方案
-
-  1. 需求: 控制视图变化->通过数据控制视图->提供state数据
-  2. autoplay={this.state.isplay}
-  3. 图片加载完毕-> 改isplay为true
-
+2. 为true时, 还没有图片-> 不能自动
+  
 - 解决办法
 
   - 在state中添加轮播图数据是否加载完成的状态
@@ -609,30 +599,17 @@ render() {
           this.setState({
               swipers: res.body
           })
-          
-          
-  		//延迟修改确保有数据了		
-  		setTimeout(()=>{
-
-              this.setState({
-
-                  isplay:true
-
-              })
-
-         },10)
-
-        也可以
+      
         // 赋值修改数据 this.setState 他是异步的 会稍微延迟 而且有第二个参数数据一定成功
           this.setState({
               swipers:res.data.body,
-          },()=>{
+        },()=>{
               // 第二个回调函数里面 数据一定是设置成功了
-              this.setState({
+            this.setState({
                   isplay:true//数据有了之后 设置为true
-              })
+            })
           })
-  ```
+```
 
 ### sass--less
 

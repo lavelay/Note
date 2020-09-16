@@ -326,10 +326,6 @@ componentDidMount() {
 
 # 电话与客服
 
-a href="tel:187..." 打电话
-
-
-
 百度：环信客服
 
 前端：注册账号  -》登录客服云-》点击右上角管理员模式->渠道管理-》选中网站之类
@@ -341,12 +337,6 @@ a href="tel:187..." 打电话
 
 
 # 登录模块
-
-- 用户登录
-- 我的页面
-- 封装路由访问控制组件
-
-功能实现：
 
 - 添加状态：username和password
 
@@ -481,16 +471,12 @@ handleSubmit = async e => {
 
 # formik
 
-## 4.2 介绍
-
 - Github地址：[formik文档](http://jaredpalmer.com/formik/docs/overview)
 - 场景：表单处理，表单验证
 - 优势：轻松处理React中的复杂表单，包括：获取表单元素的值，表单验证和错误信息，处理表单提交，并且将这些内容放在一起统一处理，有利于代码阅读，重构，测试等
 - 使用两种方式：1. 高阶组件（withFormik） 2. render-props（<Formik render={() => {}} />）
 
-## formik来实现表单校验（★★★）
-
-### 4.3 -5重构
+## formik来实现表单校验
 
 - 安装： yarn add formik
 - 导入 withFormik，使用withFormit 高阶组件包裹Login组件
@@ -594,15 +580,13 @@ Login = withFormik({
 
 ### 5 两种表单验证方式
 
-- 两种方式
+- 通过validate 配置手动校验
 
-  - 通过validate 配置手动校验
+  ![](images/validate.png)
 
-    ![](images/validate.png)
+- 通过 validationSchema 配置项配合Yup来校验
 
-  - 通过 validationSchema 配置项配合Yup来校验
-
-    ![](images/validationSchema.png)
+  ![](images/validationSchema.png)
 
 - 推荐： validationSchema配合Yup的方式进行表单校验
 

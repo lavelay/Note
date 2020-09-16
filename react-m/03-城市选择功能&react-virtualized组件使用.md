@@ -2,9 +2,6 @@
 
 ### 1.1 获取数据
 
-- 根据接口文档提供的url进行网络请求
-- 获取到相应的数据信息
-
 ```react
 // 当组件被挂载的时候调用
 componentDidMount() {
@@ -154,10 +151,7 @@ export let getCurrentCity=()=>{
         //     resolve(city)
         // })
     }
-
-
 }
-
 ```
 
 - 将定位的城市信息添加到 `cityList`和`cityIndex`中
@@ -171,10 +165,7 @@ cityList['#'] = [diwei]
 cityIndex.unshift('#')
 ```
 
-## 3 长列表性能优化（★★）
-
-- 懒渲染
-- 可视区域渲染
+## 3 长列表性能优化
 
 ### 懒渲染
 
@@ -196,19 +187,11 @@ cityIndex.unshift('#')
 
 ## 4 react-virtualized
 
-- 在项目中的应用：实现城市选择列表页面的渲染
-- react-virtualized 是React组件，用来高效渲染大型列表和表格数据  他功能很多
-- GitHub地址： [react-virtualized](https://github.com/bvaughn/react-virtualized)
-
-### 4.1 List基本使用
-
 - 安装： yarn add react-virtualized
 - 在项目入口文件 index.js 中导入样式文件  List 渲染列表数据
 - 打开 [文档](https://github.com/bvaughn/react-virtualized/blob/master/docs)， 点击List组件，进入List的文档中
 - 示例 ：<https://bvaughn.github.io/react-virtualized/#/components/List>
-- 拷贝示例代码到我们项目中，分析示例代码
-  1 看官网 2 英文看不懂 翻译 3 直接百度 
-- 1 。数据写在 state里面  2 把每行的内容函数放到组件 写了单词+城市的div 3 修改List组件的加上this...
+- 1 数据写在 state里面  2 把每行的内容函数放到组件 写了单词+城市的div 3 修改List组件的加上this...
 
 ```react
 import React from 'react';
