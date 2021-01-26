@@ -1919,13 +1919,6 @@ let uesrRouter = require('./router/userRouter.js');
 
 
 
-#### serve工具快速开启服务端
-
-- 安装：
-  - npm install -g serve
-- 使用：
-  - 任意文件目录下，打开黑框执行  serve 命令即可，并根据提示访问
-
 ### JSONP跨域方式
 
 - 使用场景：
