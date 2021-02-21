@@ -44,11 +44,7 @@ var p = new Promise((ok,err)=>{
 
 以上代码中会正常输出1,2 。 调用ok()这个方法会修改promise的状态，而不会中断函数的执行。
 
-## Promise 对象的三种状态promiseStatus
-
-一个Promise对象可能处于如下`三种状态`， 就好像水有三种形态一样。
-PromiseStatus: pending | resolved | rejected
-下面分别介绍这三种状态。
+## Promise 对象的三种状态
 
 ####  `pending` 
 
@@ -97,13 +93,11 @@ console.dir(p)
 var p = new Promise( (resolve,reject) => { } );
 ```
 
-- 状态转换是不可逆的。一旦从pending ---> resolved（或者是rejected），就不可能再回到pending。也不能由resolved变成rejected，或者反过来。 （这一点与水不同，水可以在液态，固态，气态三种状态中相互转换）。
+- 状态转换是不可逆的。一旦从pending ---> resolved（或者是rejected），就不可能再回到pending。也不能由resolved变成rejected，或者反过来。 
 
 ## promise的值PromiseValue
 
 一个promise对象除了状态之外，还有PromiseValue。在构造函数内部，这个值指的是调用resolve和reject方法时传入的实参值。
-
-例如：
 
 ```js
 var p = new Promise( (resolve,reject) => { resolve(123); } );

@@ -689,13 +689,13 @@ class Child2 extends React.Component {
 
 - 在组件外面 调用 `React.createContext()` 创建 Provider(提供数据) 和 Consumer(获取数据) 两个组件
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/创建Context.png)
+![](/Users/renzhezheng/Documents/Note/images/创建Context.png)
 
 - 使用Provider 组件作为父节点
 
 - 设置value属性，表示要传递的数据
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/设置value属性.png)
+![](/Users/renzhezheng/Documents/Note/images/设置value属性.png)
 
 - 哪一层想要接收数据，就用Consumer进行包裹，在里面回调函数中的参数就是传递过来的值
 
@@ -712,7 +712,7 @@ class Child2 extends React.Component {
 - children属性： 表示组件标签的子节点，当组件标签有子节点时，props就会有该属性
 - children属性与普通的props一样，值可以使任意值（文本、react元素、组件、甚至是函数）
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/props-children.png)
+![](/Users/renzhezheng/Documents/Note/images/props-children.png)
 
 
 
@@ -723,7 +723,7 @@ class Child2 extends React.Component {
 
 - 作用：捕获使用组件时因为props导致的错误，给出明确的错误提示，增加组件的健壮性
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/props-错误提示.png)
+![](/Users/renzhezheng/Documents/Note/images/props-错误提示.png)
 
 #### 使用步骤
 
@@ -747,13 +747,13 @@ class Child2 extends React.Component {
 - 特定结构的对象： `shape({})`
 - 更多的[约束规则](<https://zh-hans.reactjs.org/docs/typechecking-with-proptypes.html#proptypes>)
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/props-约束规则.png)
+![](/Users/renzhezheng/Documents/Note/images/props-约束规则.png)
 
 ### 6.3 props的默认值
 
 - 场景：分页组件 -> 每页显示条数
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/props默认值.png)
+![](/Users/renzhezheng/Documents/Note/images/props默认值.png)
 
 
 
@@ -765,9 +765,9 @@ class Child2 extends React.Component {
 
 - 执行时机：组件创建时（页面加载时）
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/创建时-函数执行顺序.png)
+![](/Users/renzhezheng/Documents/Note/images/创建时-函数执行顺序.png)
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/创建时-函数的作用.png)
+![](/Users/renzhezheng/Documents/Note/images/创建时-函数的作用.png)
 
 ### 更新时
 
@@ -775,9 +775,9 @@ class Child2 extends React.Component {
 
 说明：以上三者任意一种变化，组件就会重新渲染
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/更新时.png)
+![](/Users/renzhezheng/Documents/Note/images/更新时.png)
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/更新时-函数作用.png)
+![](/Users/renzhezheng/Documents/Note/images/更新时-函数作用.png)
 
 componentDidUpdate(preProps)  preProps 更新之前的老props
 
@@ -787,13 +787,13 @@ componentDidUpdate(preProps)  preProps 更新之前的老props
 
 作用：用来做清理操作
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/卸载时.png)
+![](/Users/renzhezheng/Documents/Note/images/卸载时.png)
 
 
 
 #### 新版完整生命周期钩子函数
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/新版生命周期函数.png)
+![](/Users/renzhezheng/Documents/Note/images/新版生命周期函数.png)
 
 ##### `getDerivedStateFromProps()`
 
@@ -859,7 +859,7 @@ ReactDOM.render(<App />,document.getElementById('root'))
 
 - 推荐：使用childre代替render属性
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/render-props-children模式.png)
+![](/Users/renzhezheng/Documents/Note/images/render-props-children模式.png)
 
 
 
@@ -867,7 +867,7 @@ ReactDOM.render(<App />,document.getElementById('root'))
 
 - 高阶组件(HOC、Higher-Order Component) 是一个函数，接收要包装的组件，返回**增强**后的组件
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/高阶组件-函数.png)
+![](/Users/renzhezheng/Documents/Note/images/高阶组件-函数.png)
 
 - 高阶组件内部创建了一个类组件，在这个类组件中提供复用的状态逻辑代码，通过prop将复用的状态传递给被包装组件`WrappedComponent`
 
@@ -922,12 +922,12 @@ this.setState({
 - 参数state： 表示最新的state
 - 参数props： 表示最新的props
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/推荐语法.png)
+![](/Users/renzhezheng/Documents/Note/images/推荐语法.png)
 
 - 场景：在状态更新(页面完成重新渲染)后立即执行某个操作
 - 语法：`setState(update[,callback])`
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/第二个参数.png)
+![](/Users/renzhezheng/Documents/Note/images/第二个参数.png)
 
 ## 4.2 JSX语法的转化过程
 
@@ -935,7 +935,7 @@ this.setState({
 
   JSX语法被 @babel/preset-react 插件编译为`createElement()` 方法
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/语法糖.png)
+![](/Users/renzhezheng/Documents/Note/images/语法糖.png)
 
 
 
@@ -953,7 +953,7 @@ this.setState({
 - 注意：不用做渲染的数据   固定死的数据   不要放在state中
 - 对于这种需要在多个方法中用到的数据，应该放到this中
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/减轻state.png)
+![](/Users/renzhezheng/Documents/Note/images/减轻state.png)
 
 ### 1.2 避免不必要的重新渲染
 
@@ -964,7 +964,7 @@ this.setState({
 - 作用：这个函数有返回值，如果返回true，代表需要重新渲染，如果返回false，代表不需要重新渲染
 - 触发时机：更新阶段的钩子函数，组件重新渲染前执行(shouldComponentUpdate => render)
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/shouldComponentUpdata.png)
+![](/Users/renzhezheng/Documents/Note/images/shouldComponentUpdata.png)
 
 ##### 案例
 
@@ -1132,11 +1132,11 @@ class NumberBox extends React.Component {
 
 - 使用Link组件作为导航菜单（路由入口）
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/link入口.png)
+![](/Users/renzhezheng/Documents/Note/images/link入口.png)
 
 - 使用Route组件配置路由规则和要展示的组件（路由出口）
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/route.png)
+![](/Users/renzhezheng/Documents/Note/images/route.png)
 
 ### 常用组件说明
 
@@ -1175,14 +1175,14 @@ class NumberBox extends React.Component {
 - 默认情况下，React路由是模糊匹配模式
 - 模糊匹配规则：只要pathname以path开头就会匹配成功
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/模糊匹配模式.png)
+![](/Users/renzhezheng/Documents/Note/images/模糊匹配模式.png)
 
 #### 精准匹配
 
 - 给Route组件添加exact属性，让其变为**精准匹配模式**
 - 精确匹配：只有当path和pathname完全匹配时才会展示改路由
 
-![](/Users/renzhezheng/Documents/react-note/Note/images/精确匹配.png)
+![](/Users/renzhezheng/Documents/Note/images/精确匹配.png)
 
 
 

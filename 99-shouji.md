@@ -69,7 +69,7 @@ DNS：把域名翻译成IP地址   域名系统
 - 递归搜索：www.baidu.com
   - .com下查找DNS解析
   - .baidu下查找DNS解析
-  - .www下查找DNS解析
+  - www下查找DNS解析
   - 再找不到就会出错
 
 **2.TCP连接：TCP三次握手**
