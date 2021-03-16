@@ -11,10 +11,8 @@ var p = new Promise((resolve,reject)=>{
 });
 ```
 
-要点：
-
 - 这个构造器的实参是一个函数，这个函数的特殊之处在于它有两个形参，这两个形参也是函数。
-- 在函数体的内部， 我们做一些事情，然后根据情况来调用ok()或者是error()
+- 在函数体的内部， 我们做一些事情，然后根据情况来调用resolve()或者是reject()
 - p是一个Promise对象。
 
 从语法上讲，如下代码也是正确的，只是没有什么意义。
@@ -22,59 +20,59 @@ var p = new Promise((resolve,reject)=>{
 ```js
 var p = new Promise( ()=> {} )
 console.info(p)
-typeof p
+typeof p  // "object"
 ```
 
 （1）我们给Promise传入了一个空函数作为实参。
-（2）得到的结果如下：
-
-（3）如果你不给Promise构造器传递任何的参数，则会报语法错误。
+（2）如果你不给Promise构造器传递任何的参数，则会报语法错误。
 
 
 
 ### 构造器中的代码会立即执行
 
 ```js
-var p = new Promise((ok,err)=>{
+var p = new Promise((resolve,reject)=>{
 	console.log(1);
-	ok();
+	resolve();
 	console.log(2)
 });
 ```
 
-以上代码中会正常输出1,2 。 调用ok()这个方法会修改promise的状态，而不会中断函数的执行。
+以上代码中会正常输出1,2 。 调用resolve()这个方法会修改promise的状态，而不会中断函数的执行。
+
+
 
 ## Promise 对象的三种状态
 
 ####  `pending` 
 
 pending,"行将发生的"。相当于是一个初始状态。 
-创建Promise对象时，且没有调用ok或者是err方法，相当于是初始状态。这个初始状态会随着你调用ok，或者是error函数而切换到另一种状态。
+创建Promise对象时，相当于是初始状态。这个初始状态会随着你调用resolve，或者是reject函数而切换到另一种状态。
 
 ```js
-var p = new Promise((ok,err)=>{ console.info('发呆.....' )})
+var p = new Promise((resolve,reject)=>{ console.info('发呆.....' )})
 console.dir(p);
 ```
 
 #### `resolved`
 
-创建Promise对象时，在实参函数中调用了ok方法。
+创建Promise对象时，在实参函数中调用了resolve方法。
 
-```
-var p = new Promise((ok,err)=>{ console.info('发呆.....' ); ok();})
+```js
+var p = new Promise((resolve,reject)=>{ console.info('发呆.....' ); resolve();})
 console.dir(p)
 ```
-
-注意，上面的ok和err只是一个形参名字而已，我们在实参函数中主动调用了第一个形参。
 
 ####  `rejected`
 
-创建Promise对象时，调用error方法。
+创建Promise对象时，调用reject方法。
 
-```
-var p = new Promise((ok,err)=>{ console.info('发呆.....' ); err()})
+```js
+var p = new Promise((resolve,reject)=>{ console.info('发呆.....' ); reject()})
 console.dir(p)
 ```
+
+
 
 ### 三种状态的理解
 
@@ -82,18 +80,15 @@ console.dir(p)
 
   最初创建promise对象时，默认状态是pending，如果在函数体内部调用了第一个参数对应的函数，则状态变成了resolved；如果调用了第二个参数对应的函数，则状态变成了rejected。
 
-  ```
-   pending ----- 	ok()   --> resolved;
+  ```js
+   pending ----- 	resolve()   --> resolved;
    pending ----- error() --> rejected ;
   ```
 
-  上面使用的ok,error其实只是形参名字而已，在更多的场合下，我们会用`resolve`和`reject`来表示。如下：
-
-```js
-var p = new Promise( (resolve,reject) => { } );
-```
 
 - 状态转换是不可逆的。一旦从pending ---> resolved（或者是rejected），就不可能再回到pending。也不能由resolved变成rejected，或者反过来。 
+
+
 
 ## promise的值PromiseValue
 
@@ -108,6 +103,8 @@ var p = new Promise( (resolve,reject) => { reject(1); } );
 ```
 
 > 单独来看PromiseValue似乎没有什么意义，它的使用场景在于结合promise对象的实例方法一起来用。
+
+
 
 ## Promise实例的方法
 
@@ -133,20 +130,13 @@ arr.push === Array.protoType.push ; // true
 - catch()
 - finally()
 
+
+
 ##  then()方法
 
 > then方法的作用是为Promise对象添加**状态改变**时的回调函数。
 >
-> 实际上new Promise()操作本身是同步的，下面要学习的then/catch/finally方法才是异步执行的。
-
-目标：
-
-- 3个方法的执行时机
-
-- 格式
-
-- 参数与执行时机
-- 返回值
+> 实际上new Promise()操作本身是同步的，then/catch/finally方法才是异步执行的。
 
 ### 格式
 
@@ -169,7 +159,7 @@ promise对象.then(参数1)
 它的两个参数都是函数。它们的执行逻辑是:
 
 - 如果promise对象的状态是resolved，则`promisec对象.then()`会自动调用第一个函数; 
-- 如果promise对象的状态是rejected，则`promisec对象.then()`会自动调用第二个函数，如果此时then方法并没有设置第二个参数，就会报错; 这种情况的处理方法在后面介绍
+- 状态是rejected，则`promisec对象.then()`会调用第二个函数，如果此时then方法并没有设置第二个参数，就会报错; 
 
  ```javascript
 var p = new Promise((resolve,reject)=>{
@@ -265,6 +255,8 @@ var p3 = p2.catch(function(err){
 });
 ```
 
+
+
 ### finally()方法
 
 无论状态如何，都会执行
@@ -275,13 +267,12 @@ var p3 = p2.catch(function(err){
 
 
 
-### *方法异步验证
+### 方法异步验证
 
 ```js
 new Promise((resolve, reject) => {
   console.log(1);
-  // resolve();
-  reject();
+  resolve();
 })
   .then(() => {
     console.log('执行resolve');
@@ -297,7 +288,6 @@ console.log(2);
 /* 
 	执行结果：
 					 1 2 '执行resolve' '执行finally' 
- 		 	 或者 1 2 '执行reject' '执行finally'
  	可说明new Promise()本身是同步操作，then/catch/finally为异步
 */
 ```
@@ -329,13 +319,15 @@ readFile('./server.js1')
   }); 
 ```
 
+
+
 ## async函数
 
 es2017 引入async函数，让异步操作更加方便，写法上更接近同步。
 
 `async`
 
-它用来修饰一个函数，会返回一个promise对象，可以使用then方法添加回调函数。当函数执行时，如果遇到 了await就会先返回，等 到异步操作完成，再接着执行函数体后面的语句。
+它用来修饰一个函数，会返回一个promise对象，可以使用then方法添加回调函数。当函数执行时，如果遇到 了await就会先返回，等到异步操作完成，再接着执行函数体后面的语句。
 
 `await`
 
@@ -358,7 +350,7 @@ function readFile(filename) {
     });
   });
 }
-async function dosomethin(){
+async function dosomething(){
     let rs = await readFile();
     // if(rs)
 } 
@@ -366,20 +358,9 @@ async function dosomethin(){
 
 
 
-## promise
+## 应用
 
 > 目的：通过promise的处理，让异步操作书写的像同步代码一样，不需要书写多层的嵌套结构
-
-- 使用方式
-  - new Promise()
-    - 参数为回调函数
-      - 参数1是用来触发then()的函数
-      - 参数2是用来触发catch()的函数
-  - promise实例对象有3个方法
-    - then()  catch() finally()
-- 解决上面的示例问题
-  - 好处：可以让多次异步操作不需要书写为嵌套结构
-  - 书写形式为链式写法（同步写法）
 
 ```javascript
 // 将读取文件功能进行封装
@@ -426,7 +407,7 @@ readFile('./1.json')
 
 
 
-## async await
+## 用async await 改写
 
 > ES6认为promise的.then() .catch()还是有些麻烦，又推出了一种新的写法，用来简化
 
@@ -444,8 +425,8 @@ function readFile(path) {
     })
   });
 }
-// --- 下面的是常用的写法:
-// 1 后续我们设置一个async函数
+// --- 常用的写法:
+// 1 后续设置一个async函数
 async function myFun() {
   // 2 调用可以返回promise对象的函数readFile()
   //  - 调用前设置await
@@ -461,23 +442,75 @@ async function myFun() {
 myFun();
 ```
 
-## Promise
-
-它是一个对象，是用来处理**异步**操作的，可以让我们写异步调用的时候写起来更加优雅，更加美观便于阅读。
-
-`Promise的三种状态`：
-
-1. pending（进行中
-
-2. resolved（完成）
-
-3. rejected（失败） 
-
-异步：在同一个时间中，可以发送**多个**进行执行
-
-同步：在同一个时间点，只有**一个**进程在执行
-
-`作用`：
-
 1. 解决了异步调用彼此嵌套的**回调地狱**问题
 2. 解决了多个异步过程**顺序执行**问题
+
+
+
+## 并行执行
+
+主要是依赖Promise.all和Promise.race
+
+- `Promise.all:`是**所有的Promise执行完毕后**（reject|resolve）返回一个Promise对象。
+- 所有`promise`对象都`resolved`完成，返回所有参数的`resolve`结果。
+- 其中一个`promise`对象`rejected`失败，此实例返回失败，失败原因是第一个失败的结果。
+- `Promise.race`是**任意一个Promise对象执行完毕后返回**一个Promise对象。
+
+一旦**其中一个`promise`对象**返回成功或失败， 返回的实例就会返回成功或失败的结果。
+
+
+
+##### Promise.all 
+
+```js
+Promise.all([p1, p2]).then(data=>{
+    console.log(data)
+})
+.catch(e => console.log(e)；
+```
+
+
+
+##### Promise.race
+
+```js
+// Promise.race([p1, p2, p3])里面哪个结果获得的快，就返回那个结果，不管结果本身是成功状态还是失败状态。
+
+let p1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('success')
+  },1000)
+})
+
+let p2 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject('failed')
+  }, 500)
+})
+
+Promise.race([p1, p2]).then((result) => {
+  console.log(result)
+}).catch((error) => {
+  console.log(error)  // 打开的是 'failed'
+})
+```
+
+
+
+
+
+```js
+Promise.resolve(1)
+  .then(2)
+  .then(Promise.resolve(3))
+  .then(console.log)
+
+// 1
+
+// then 方法接受的参数是函数，而如果传递的并非是一个函数，它实际上会将其解释为 then(null)，这就会导致前一个 Promise 的结果会穿透下面
+```
+
+#### [关于 ES6 中 Promise 的题](https://segmentfault.com/a/1190000016848192)
+
+#### [45道Promise题](https://juejin.cn/post/6844904077537574919#heading-2)
+
