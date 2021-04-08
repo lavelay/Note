@@ -95,7 +95,7 @@ const store = new vuex.Store({
 
 
 
-### vuex基础-mapState
+### vuex-mapState
 
 - 把vuex中的state数据映射到组件的计算属性中。
 - 辅助函数，生成计算属性。
@@ -150,7 +150,7 @@ import { mapState } from 'vuex'
 
 
 
-### vuex基础-mutations
+### vuex-mutations
 
 - 修改数据
 
@@ -186,7 +186,7 @@ vuex申明：
 
 
 
-### vuex基础-mapMutations
+### vuex-mapMutations
 
 - 把vuex中的mutations的函数映射到组件的methods中
 - 通俗：通过mapMutations函数可以生成methods中函数
@@ -210,7 +210,7 @@ vuex申明：
 
 
 
-### vuex基础-actions
+### vuex-actions
 
 - 异步获取数据
 
@@ -244,7 +244,7 @@ getData () {
 
 
 
-### vuex基础-mapActions
+### vuex-mapActions
 
 - mapActions辅助函数，把actions中的函数映射组件methods中
 - 通俗：通过mapActions函数可以生成methods中函数
@@ -346,50 +346,32 @@ export default router
 
 ### vuex案例-配置路由及组件
 
-- 封装组件
+```js
+// 路由规则
+  routes: [
+    { path: '/', redirect: '/hot' },
+    { path: '/hot', component: Hot },
+    { path: '/movie', component: Movie },
+    { path: '/top', component: Top },
+    { path: '/detail', component: Detail }
+  ]
+```
 
-  - 头部组件
-  - 底部组件
-  - 路由组件
-    - 正在热映
-    - 即将上映
-    - top250
-    - 电影详情
-
-- 路由规则
-
-  - /hot
-  - /  重定向  /hot
-  - /movie
-  - /top
-  - /detail
-
-  ```js
-  // 路由规则
-    routes: [
-      { path: '/', redirect: '/hot' },
-      { path: '/hot', component: Hot },
-      { path: '/movie', component: Movie },
-      { path: '/top', component: Top },
-      { path: '/detail', component: Detail }
-    ]
-  ```
-
-  ```html
-  <div class="my-footer">
-        <ul>
-          <li><router-link :to="{path:'/hot'}"><span class="iconfont icon-remen"></span>
-              <p>正在热映</p>
-            </router-link></li>
-          <li><router-link :to="{path:'/movie'}"><span class="iconfont icon-dianying"></span>
-              <p>即将上映</p>
-            </router-link></li>
-          <li><router-link :to="{path:'/top'}"><span class="iconfont icon-top"></span>
-              <p>top250</p>
-            </router-link></li>
-        </ul>
-      </div>
-  ```
+```html
+<div class="my-footer">
+      <ul>
+        <li><router-link :to="{path:'/hot'}"><span class="iconfont icon-remen"></span>
+            <p>正在热映</p>
+          </router-link></li>
+        <li><router-link :to="{path:'/movie'}"><span class="iconfont icon-dianying"></span>
+            <p>即将上映</p>
+          </router-link></li>
+        <li><router-link :to="{path:'/top'}"><span class="iconfont icon-top"></span>
+            <p>top250</p>
+          </router-link></li>
+      </ul>
+    </div>
+```
 
 
 
